@@ -34,7 +34,7 @@ export class utilityDefaults {
   }
 
   getDefaultLineSpacing() {
-    if ('ontouchstart' in document && window.width() < 1500) {
+    if ('ontouchstart' in document && 800 < 1500) {
       return this.defaultDesktopSpacing; // desktop
     }
 
@@ -57,8 +57,8 @@ export default class compressionHandler {
       this.maze = maze;
       this.ensureNodesHavePathDirections(this.maze);
       this.hex = this.exportNodesAsHex(this.maze);
-      this.shareLink = this.constructUrlFromCurrentMazeData();
-      window.history.pushState(null, null, this.shareLink);
+      // this.shareLink = this.constructUrlFromCurrentMazeData();
+      // window.history.pushState(null, null, this.shareLink);
     }
     // else {
     //   this.updateBundleWithUrlData();
@@ -91,49 +91,49 @@ export default class compressionHandler {
     }
     return hx;
   }
-  constructUrlFromCurrentMazeData() {
-    return window.location.href.split("?")[0] +
-      "?" +
-      ("m=" + this.hex + "&") +
-      ("c=" + this.maze.cols + "&") +
-      ("r=" + this.maze.rows + "&") +
-      ("l=" + this.maze.currentLevel);
-  }
-  updateBundleWithUrlData() {
-    let urlParams = "";
-    if (window.location.href.indexOf("?") > -1) {
-      urlParams = window.location.href.split("?")[1];
-    }
-    let data = urlParams.split("&");
-    for (let i = 0; i < data.length; i++) {
-      let dataParts = data[i].split("=");
-      let type = dataParts[0], content = dataParts[1];
-      if (type === "m") {
-        this.hex = content;
-      }
-      else if (type === "c") {
-        this.cols = +content;
-      }
-      else if (type === "r") {
-        this.rows = +content;
-      }
-      else if (type === "l") {
-        this.level = +content;
-      }
-    }
-    if (this.level == null) {
-      this.level = 1;
-    }
-    this.bundle = {
-      hexstring: this.hex,
-      cols: this.cols,
-      rows: this.rows,
-      level: this.level
-    };
-  }
+  // constructUrlFromCurrentMazeData() {
+  //   return window.location.href.split("?")[0] +
+  //     "?" +
+  //     ("m=" + this.hex + "&") +
+  //     ("c=" + this.maze.cols + "&") +
+  //     ("r=" + this.maze.rows + "&") +
+  //     ("l=" + this.maze.currentLevel);
+  // }
+  // updateBundleWithUrlData() {
+  //   let urlParams = "";
+  //   if (window.location.href.indexOf("?") > -1) {
+  //     urlParams = window.location.href.split("?")[1];
+  //   }
+  //   let data = urlParams.split("&");
+  //   for (let i = 0; i < data.length; i++) {
+  //     let dataParts = data[i].split("=");
+  //     let type = dataParts[0], content = dataParts[1];
+  //     if (type === "m") {
+  //       this.hex = content;
+  //     }
+  //     else if (type === "c") {
+  //       this.cols = +content;
+  //     }
+  //     else if (type === "r") {
+  //       this.rows = +content;
+  //     }
+  //     else if (type === "l") {
+  //       this.level = +content;
+  //     }
+  //   }
+  //   if (this.level == null) {
+  //     this.level = 1;
+  //   }
+  //   this.bundle = {
+  //     hexstring: this.hex,
+  //     cols: this.cols,
+  //     rows: this.rows,
+  //     level: this.level
+  //   };
+  // }
   getMazeBundle() {
     if (this.bundle == null) {
-      this.updateBundleWithUrlData();
+      //this.updateBundleWithUrlData();
     }
     return this.bundle;
   }

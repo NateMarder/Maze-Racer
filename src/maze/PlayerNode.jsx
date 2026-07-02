@@ -1,17 +1,17 @@
-/* eslint-disable no-use-before-define, prefer-const, consistent-return,
-  no-param-reassign, react-hooks/exhaustive-deps, no-return-assign, prefer-destructuring */
-
+'use client';
 
 import React, { useEffect } from 'react';
-import Velocity from 'velocity-animate';
 import { eventServer, events } from '../../src/events/events';
+import Velocity from 'velocity-animate';
 
 const PlayerNode = (props) => {
+
   let userNodeRef = React.createRef();
   const nodeMap = {};
   let [cooldown, keyboardCoolDown, keyIsDown] = [false, false, false];
   let { cx, cy, r, offset, map, destnodekey, mzgraphref } = props;
   const [startX, startY] = [cx, cy];
+
 
   const sendPlayerHome = ({ x, y, graph }) => {
     cooldown = true;
@@ -67,7 +67,8 @@ const PlayerNode = (props) => {
       e: userNodeRef.current, p: { cx, cy, translateZ: 0 }, o: { duration: 50 },
     };
 
-    Velocity.animate(moveNodeLocation)
+
+   Velocity.animate(moveNodeLocation)
       .then(() => {
         if (newKey === destnodekey) {
           eventServer.emit(
@@ -79,6 +80,7 @@ const PlayerNode = (props) => {
           determineNextMove(newKey, currentKey);
         }
       }).catch(e => console.error(e));
+
   };
 
   const keyDownListener = ({ which }) => {
@@ -116,9 +118,9 @@ const PlayerNode = (props) => {
 
   return (
     <circle ref={userNodeRef}
-      onKeyDown={e => keyDownListener(e) }
-      onKeyUp={() => keyIsDown = false }
-      onBlur={() => userNodeRef.current.focus() }
+      onKeyDown={e => keyDownListener(e)}
+      onKeyUp={() => keyIsDown = false}
+      onBlur={() => userNodeRef.current.focus()}
       className="mz-node user-node"
       cx={cx} cy={cy} r={r} tabIndex="0" />
   );

@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React, { useState, useEffect, useRef, ReactNode } from 'react';
 
@@ -39,8 +39,13 @@ export default function Blinker({ children, interval = 500 }: BlinkyProps) {
   }, interval);
 
   return (
-    <div style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.1s' }}>
+    // <div style={{ opacity: isVisible ? 1 : 0, transition: 'opacity 0.1s' }}>
+    //   {children}
+    // </div>
+
+
+    <>
       {children}
-    </div>
+    </>
   );
 }

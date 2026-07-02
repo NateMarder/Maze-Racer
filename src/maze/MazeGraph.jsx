@@ -69,6 +69,7 @@ export default class MazeGraph extends React.Component {
       const mazeCreator = new LevelOne();
       const result = mazeCreator.run(prevState);
       const [x, y] = result.destNodeKey.split('.');
+      console.log("result.route: ", result.route);
       return {
         carvedWallKeys: result.route,
         destNodeX: x,
@@ -115,8 +116,8 @@ export default class MazeGraph extends React.Component {
       if (nodeRef1 && nodeRef2) {
         nodeRef1.siblingKeys.push(nodeRef2.key);
         nodeRef2.siblingKeys.push(nodeRef1.key);
-        nodeRef1.siblingKeys = _.uniq(nodeRef1.siblingKeys);
-        nodeRef2.siblingKeys = _.uniq(nodeRef2.siblingKeys);
+        nodeRef1.siblingKeys = [...new Set(nodeRef1.siblingKeys)];
+        nodeRef2.siblingKeys = [...new Set(nodeRef2.siblingKeys)];
       }
     });
 

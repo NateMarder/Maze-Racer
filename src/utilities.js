@@ -1,6 +1,6 @@
 export const getScreenDimensions = () => ({
-  height: window.innerHeight,
-  width: window.innerWidth,
+  height: 800,
+  width: 800,
 });
 
 export const mazeGraphDefaults = {

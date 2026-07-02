@@ -53,10 +53,6 @@ a {
   outline: none;
 }
 
-svg:not(:root) {
-  overflow: inherit;
-}
-
 .game-container {
   height: 100vh;
   padding: 10px;
