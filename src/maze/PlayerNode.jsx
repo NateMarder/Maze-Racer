@@ -1,9 +1,10 @@
 /* eslint-disable no-use-before-define, prefer-const, consistent-return,
   no-param-reassign, react-hooks/exhaustive-deps, no-return-assign, prefer-destructuring */
 
+
 import React, { useEffect } from 'react';
 import Velocity from 'velocity-animate';
-import { eventServer, events } from '../../events/events';
+import { eventServer, events } from '../../src/events/events';
 
 const PlayerNode = (props) => {
   let userNodeRef = React.createRef();

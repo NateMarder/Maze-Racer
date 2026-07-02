@@ -1,12 +1,12 @@
+'use client'
+
 import React from 'react';
-import _ from 'lodash';
-import { mazeGraphDefaults as DEFAULTS } from '../../utilities';
+import { mazeGraphDefaults as DEFAULTS } from '../utilities';
 import { NodeFactory, PlayerNode } from './node/index';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall, MazeWallFactory } from './wall/index';
-import { LevelOne } from '../../mazeGenerator/index';
-import { attemptEncoding } from '../../mazeCodec/compressionPlayGround';
+import LevelOne from '../maze/engine/levelOneEngine';
 
 export default class MazeGraph extends React.Component {
   constructor(props) {
@@ -91,22 +91,26 @@ export default class MazeGraph extends React.Component {
   logSerializedMaze = () => {
 
     try {
-      attemptEncoding(this.state.nodes)
+      const clonedNodes = [...this.state.nodes];
+      console.log('\nattemptEncoding with:', clonedNodes)
     } catch(error) {
       console.log(error);
     }
   }
 
   updateSiblingsUsingPaths = () => {
-    const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
+    //const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
+    const clonedNodes = [...this.state.nodes];
     clonedNodes.forEach((n) => {
       n.siblingKeys = []; // eslint-disable-line no-param-reassign
     });
 
     this.state.allPaths.forEach((mazePath) => {
       const [node1, node2] = mazePath.nodeKeys;
-      const nodeRef1 = _.find(clonedNodes, n => n.key === node1);
-      const nodeRef2 = _.find(clonedNodes, n => n.key === node2);
+      //const nodeRef1 = _.find(clonedNodes, n => n.key === node1);
+      const nodeRef1 = clonedNodes.find(n => n.key === node1);
+      //const nodeRef2 = _.find(clonedNodes, n => n.key === node2);
+      const nodeRef2 = clonedNodes.find(n => n.key === node2);
 
       if (nodeRef1 && nodeRef2) {
         nodeRef1.siblingKeys.push(nodeRef2.key);

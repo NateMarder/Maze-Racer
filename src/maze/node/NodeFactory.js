@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import mazeNode from './MazeNode';
 
 export default class NodeFactory {
@@ -49,13 +48,13 @@ export default class NodeFactory {
   };
 
   bindNodes = ([key1, key2], nodeArray) => {
-    const nodeRef1 = _.find(nodeArray, n => n.key === key1);
-    const nodeRef2 = _.find(nodeArray, n => n.key === key2);
+    const nodeRef1 = nodeArray.find(n => n.key === key1);
+    const nodeRef2 = nodeArray.find(n => n.key === key2);
 
     nodeRef1.siblingKeys.push(nodeRef2.key);
     nodeRef2.siblingKeys.push(nodeRef1.key);
-    nodeRef1.siblingKeys = _.uniq(nodeRef1.siblingKeys);
-    nodeRef2.siblingKeys = _.uniq(nodeRef2.siblingKeys);
+    nodeRef1.siblingKeys = [...new Set(nodeRef1.siblingKeys)]
+    nodeRef2.siblingKeys = [...new Set(nodeRef2.siblingKeys)]
   };
 
   getNodes({ rows, cols, spacing }) {
