@@ -52,7 +52,7 @@ const PlayerNode: React.FC<PlayerNodeProps> = (props) => {
   const sendPlayerHome = ({ x, y, graph }: SendHomeArgs) => {
     cooldown.current = true;
 
-    const tl = gsap.timeline({
+    const timeLine = gsap.timeline({
       onComplete: () => {
         cooldown.current = false;
         keyboardCoolDown.current = false;
@@ -62,7 +62,7 @@ const PlayerNode: React.FC<PlayerNodeProps> = (props) => {
 
     // Spin the board (GPU-accelerated layout rotation)
     if (graph.current) {
-      tl.to(graph.current, {
+      timeLine.to(graph.current, {
         rotation: '+=720',
         duration: 1.2,
         ease: 'power2.inOut',
@@ -71,7 +71,7 @@ const PlayerNode: React.FC<PlayerNodeProps> = (props) => {
 
     // Move player back to start position instantly/smoothly
     if (userNodeRef.current) {
-      tl.to(userNodeRef.current, {
+      timeLine.to(userNodeRef.current, {
         x: 0, // Reset transform offsets back to initial base cx/cy
         y: 0,
         duration: 0.5,

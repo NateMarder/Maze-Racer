@@ -145,7 +145,7 @@ export default class MazeGraph extends React.Component {
 
   getInnerWalls = () => this.state.walls.map((wall) => {
     const { id, x1, y1, x2, y2 } = wall;
-    return <MazeWall key={id} id={id} x1={x1} y1={y1} x2={x2} y2={y2} className="mz-wall insidewall" />;
+    return <MazeWall key={id} id={id} x1={x1} y1={y1} x2={x2} y2={y2} className="insidewall" />;
   });
 
   getOutterWalls = () => {

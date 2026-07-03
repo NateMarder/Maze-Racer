@@ -1,8 +1,16 @@
 import { filter, includes } from 'lodash';
 import React from 'react';
 
-export const MazeWall = ({ id, x1, y1, x2, y2 }) => <line id={id} className="mz-wall" x1={x1} y1={y1} x2={x2} y2={y2} />;
+export const MazeWall = ({ id, x1, y1, x2, y2, className }) => {
+  
+  let specialClass = "mz-wall";
 
+  if (className) {
+    specialClass = `${specialClass} ${className}`;
+  }
+  
+  return <line id={id} className={specialClass} x1={x1} y1={y1} x2={x2} y2={y2} />;
+}
 export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
   const buffer = [];
   let x1;
