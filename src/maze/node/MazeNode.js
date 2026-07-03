@@ -1,3 +1,4 @@
+'use client';
 export default class MazeNode {
   constructor({ x, y, isStart, isDest, disoveredBy }) {
     this.key = `${+x}.${+y}`;
@@ -7,5 +8,6 @@ export default class MazeNode {
     this.distFromStart = 0;
     this.discoveredBy = disoveredBy;
     this.siblingKeys = [];
+    this.pathDirections = [];
   }
 }

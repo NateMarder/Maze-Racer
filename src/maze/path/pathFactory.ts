@@ -11,9 +11,9 @@ function wallKeyToNodeKeys(wallKey: WallKey): [NodeKey, NodeKey] {
 }
 
 export function createPathsFromInactiveWalls(
-  carvedWallKeys: WallKey[]
+  inactiveWallKeys: WallKey[]
 ): MazePathType[] {
-  return carvedWallKeys.map((wallKey) => {
+  return inactiveWallKeys.map((wallKey) => {
     const [nodeKey1, nodeKey2] = wallKeyToNodeKeys(wallKey);
     return new MazePath({ nodeKey1, nodeKey2 });
   });

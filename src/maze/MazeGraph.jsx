@@ -7,6 +7,8 @@ import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall, MazeWallFactory } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
+import { getNodeDirections, getHexRepresentationOfNodePair } from './codec/codeHelpers';
+;
 
 export default class MazeGraph extends React.Component {
   constructor(props) {
@@ -20,9 +22,10 @@ export default class MazeGraph extends React.Component {
       nodes: null,
       allPaths: [],
       walls: [],
-      carvedWallKeys: [],
+      inactiveWallKeys: [],
       destNodeX: 0,
       destNodeY: 0,
+      hexString: ''
     };
     this.mazeGraphRef = React.createRef();
   }
@@ -45,6 +48,8 @@ export default class MazeGraph extends React.Component {
      *      algorithm: "dfs",
      *    });
      */
+
+    console.log("\n checking if this is CSR or SSR. Window type =", typeof window);
 
     // step 1
     this.setState((prevState, props) => ({
@@ -69,9 +74,8 @@ export default class MazeGraph extends React.Component {
       const mazeCreator = new LevelOne();
       const result = mazeCreator.run(prevState);
       const [x, y] = result.destNodeKey.split('.');
-      console.log("result.route: ", result.route);
       return {
-        carvedWallKeys: result.route,
+        inactiveWallKeys: result.route,
         destNodeX: x,
         destNodeY: y,
       };
@@ -82,35 +86,24 @@ export default class MazeGraph extends React.Component {
       walls: MazeWallFactory(prevState),
     }), () => {
       this.setState(prevState => ({
-        allPaths: createPathsFromInactiveWalls(prevState.carvedWallKeys),
+        allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
       }), () => {
         this.updateSiblingsUsingPaths();
       });
-    },()=>this.logSerializedMaze());
+    });
   };
-
-  logSerializedMaze = () => {
-
-    try {
-      const clonedNodes = [...this.state.nodes];
-      console.log('\nattemptEncoding with:', clonedNodes)
-    } catch(error) {
-      console.log(error);
-    }
-  }
 
   updateSiblingsUsingPaths = () => {
     //const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
     const clonedNodes = [...this.state.nodes];
+
     clonedNodes.forEach((n) => {
       n.siblingKeys = []; // eslint-disable-line no-param-reassign
     });
 
     this.state.allPaths.forEach((mazePath) => {
       const [node1, node2] = mazePath.nodeKeys;
-      //const nodeRef1 = _.find(clonedNodes, n => n.key === node1);
       const nodeRef1 = clonedNodes.find(n => n.key === node1);
-      //const nodeRef2 = _.find(clonedNodes, n => n.key === node2);
       const nodeRef2 = clonedNodes.find(n => n.key === node2);
 
       if (nodeRef1 && nodeRef2) {
@@ -123,20 +116,41 @@ export default class MazeGraph extends React.Component {
 
     this.setState((prevState, props) => ({
       nodes: clonedNodes,
-    }));
+    }), (prevState) => {
+      // console.log('this is state after the update siblings method:', this.state);
+      // this.state.hexString = exportNodesAsHex(this.state);
+
+      for (let i = 0; i < 5; i += 2) {
+        let tempNode1 = this.state.nodes[i]
+        let tempNode2 = this.state.nodes[i+1];
+        console.log(`${tempNode1.key} with sibs: [${tempNode1.siblingKeys}] returns --> [${getNodeDirections(tempNode1)}]`)
+        console.log(`${tempNode2.key} with sibs: [${tempNode2.siblingKeys} returns --> [${getNodeDirections(tempNode2)}]`)
+      }
+      // this.state.nodes.forEach(node => {
+      //   console.log(`${node.siblingKeys} returns --> [${getNodeDirections(node)}]`)
+      // });
+
+      console.log('\n\n\n')
+
+      for (let i = 0; i < 5; i += 2) {
+        let node1 = this.state.nodes[i];
+        let node2 = this.state.nodes[i + 1];
+        console.log(`getHexRepresentationOfNodePair returns --> [${getHexRepresentationOfNodePair(node1, node2)}]`)
+      }
+    });
   };
 
   getUserControlNode = () => (
-      <PlayerNode
-        cx={Math.round(DEFAULTS.desktopSpacing / 2)}
-        cy={Math.round(DEFAULTS.desktopSpacing / 2)}
-        r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
-        map={this.state.nodes}
-        destnodekey={`${this.state.destNodeX}.${this.state.destNodeY}`}
-        offset={DEFAULTS.desktopSpacing}
-        mzgraphref={this.mazeGraphRef}
-        handleswipebindings={this.props.handleswipebindings}
-      />
+    <PlayerNode
+      cx={Math.round(DEFAULTS.desktopSpacing / 2)}
+      cy={Math.round(DEFAULTS.desktopSpacing / 2)}
+      r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
+      map={this.state.nodes}
+      destnodekey={`${this.state.destNodeX}.${this.state.destNodeY}`}
+      offset={DEFAULTS.desktopSpacing}
+      mzgraphref={this.mazeGraphRef}
+      handleswipebindings={this.props.handleswipebindings}
+    />
   );
 
   getInnerWalls = () => this.state.walls.map((wall) => {

@@ -3,7 +3,7 @@ import React from 'react';
 
 export const MazeWall = ({ id, x1, y1, x2, y2 }) => <line id={id} className="mz-wall" x1={x1} y1={y1} x2={x2} y2={y2} />;
 
-export const MazeWallFactory = ({ rows, cols, spacing, carvedWallKeys }) => {
+export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
   const buffer = [];
   let x1;
   let y1;
@@ -25,5 +25,5 @@ export const MazeWallFactory = ({ rows, cols, spacing, carvedWallKeys }) => {
       buffer.push({ id: `${x1}.${y1}.${x2}.${y2}`, x1, y1, x2, y2 });
     }
   }
-  return filter(buffer, w => !includes(carvedWallKeys, w.id));
+  return filter(buffer, w => !includes(inactiveWallKeys, w.id));
 };

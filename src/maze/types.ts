@@ -9,6 +9,7 @@ export type MazeNode = {
   isVisited: boolean;
   distFromStart: number;
   discoveredBy?: NodeKey;
+  pathDirections?: any[];
 };
 
 export type MazeWall = {
@@ -38,7 +39,7 @@ export type MazeState = {
 
   nodes: MazeNode[];
   walls: MazeWall[];
-  carvedWallKeys: WallKey[];
+  inactiveWallKeys: WallKey[];
   allPaths: MazePath[];
 
   destNodeX: string;
