@@ -196,17 +196,17 @@ export const transformSiblingKeysToDirections = () => {
 
   for (let sibKey of this.siblings) {
     const split = sibKey.split(".");
-    const sibX = parseInt(split[0]);
-    const sibY = parseInt(split[1]);
+    const x = parseInt(split[0]);
+    const y = parseInt(split[1]);
 
-    if (sibX !== this.cx) { // horizontal sibling but keep in mind we iterate from left to right
-      if (sibX < this.cx) {
+    if (x !== this.cx) { // horizontal sibling but keep in mind we iterate from left to right
+      if (x < this.cx) {
         this.pathDirections.push(directions.Left);
       } else {
         this.pathDirections.push(directions.Right);
       }
-    } else if (sibY !== this.cy) { // vertical sibling but keep in mind we iterate from top to bottom
-      if (sibY < this.cy) {
+    } else if (y !== this.cy) { // vertical sibling but keep in mind we iterate from top to bottom
+      if (y < this.cy) {
         this.pathDirections.push(directions.Up);
       } else {
         this.pathDirections.push(directions.Down);

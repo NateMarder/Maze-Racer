@@ -109,33 +109,23 @@ export default class MazeGraph extends React.Component {
       if (nodeRef1 && nodeRef2) {
         nodeRef1.siblingKeys.push(nodeRef2.key);
         nodeRef2.siblingKeys.push(nodeRef1.key);
-        nodeRef1.siblingKeys = [...new Set(nodeRef1.siblingKeys)];
-        nodeRef2.siblingKeys = [...new Set(nodeRef2.siblingKeys)];
+        // nodeRef1.siblingKeys = [...new Set(nodeRef1.siblingKeys)];
+        // nodeRef2.siblingKeys = [...new Set(nodeRef2.siblingKeys)];
       }
     });
 
     this.setState((prevState, props) => ({
       nodes: clonedNodes,
-    }), (prevState) => {
+    }), () => {
       // console.log('this is state after the update siblings method:', this.state);
       // this.state.hexString = exportNodesAsHex(this.state);
-
-      for (let i = 0; i < 5; i += 2) {
-        let tempNode1 = this.state.nodes[i]
-        let tempNode2 = this.state.nodes[i+1];
-        console.log(`${tempNode1.key} with sibs: [${tempNode1.siblingKeys}] returns --> [${getNodeDirections(tempNode1)}]`)
-        console.log(`${tempNode2.key} with sibs: [${tempNode2.siblingKeys} returns --> [${getNodeDirections(tempNode2)}]`)
-      }
-      // this.state.nodes.forEach(node => {
-      //   console.log(`${node.siblingKeys} returns --> [${getNodeDirections(node)}]`)
-      // });
-
-      console.log('\n\n\n')
-
-      for (let i = 0; i < 5; i += 2) {
-        let node1 = this.state.nodes[i];
-        let node2 = this.state.nodes[i + 1];
-        console.log(`getHexRepresentationOfNodePair returns --> [${getHexRepresentationOfNodePair(node1, node2)}]`)
+      
+      console.log(`here are the first 4 maze nodes...`)
+      for (let i = 0; i < 4; i += 2) {
+        let tempNode1 = clonedNodes[i]
+        let tempNode2 = clonedNodes[i+1];
+        console.log(`node at index: ${i}: ${tempNode1.key}, siblings: ${tempNode1.siblingKeys}`);
+        console.log(`node at index: ${i+1}: ${tempNode2.key}, siblings: ${tempNode2.siblingKeys}`);
       }
     });
   };

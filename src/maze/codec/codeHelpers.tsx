@@ -1,7 +1,12 @@
 
 import { MazeNode } from "../node";
-import { directions } from "./compressionHandler";
 
+export const directions = {
+  Up: 0,
+  Right: 1,
+  Down: 2,
+  Left: 3,
+};
 
 // takes an individual node and returns a node with path directions
 // the codec functions that exist currently are doing a lot of 
@@ -11,10 +16,14 @@ import { directions } from "./compressionHandler";
 export function getNodeDirections(node: MazeNode) {
     // evidently we really wanted this to just run once per node
     const result = { ...node };
-    const siblings = [...node.siblingKeys];
-    const [x, y] = [...node.key.split('.')];
+    const siblings = [...result.siblingKeys];
+    const [x, y] = [...result.key.split('.')];
     const cx = parseInt(x);
     const cy = parseInt(y);
+    
+    console.log(`\ncurrent node key: ${result.key}`);
+
+
 
     for (let sibKey of siblings) {
         const split = sibKey.split(".");
@@ -39,6 +48,12 @@ export function getNodeDirections(node: MazeNode) {
     return result.pathDirections.sort();
 }
 
+
+export function getNodesWithPathDirections(nodes: MazeNode[]) {
+    
+    
+}
+
 function getHexFromDecimalString(input: number) {
     switch (input) {
         case 10: return "a";
@@ -51,22 +66,21 @@ function getHexFromDecimalString(input: number) {
     }
 }
 
-export function getHexRepresentationOfNodePair(node1: MazeNode, node2?: MazeNode):string {
-    let hx = "";
-    let numberVal = 0;
-    let binary = ""; // note this is a string, which we add too, one digit at a time
-    let node1Paths = node1.pathDirections;
-    binary += node1Paths.indexOf(directions.Right) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
-    binary += node1Paths.indexOf(directions.Down) > -1 ? "1" : "0";
 
-    if (node2) {
-        let node2Paths = node2.pathDirections;
-        binary += node2Paths.indexOf(directions.Right) > -1 ? "1" : "0";
-        binary += node2Paths.indexOf(directions.Down) > -1 ? "1" : "0";
-    }
+// export function getHexRepresentationOfNodes(mazeNodes: MazeNode[]): string {
+//     let numberVal = 0;
+//     let binary = ""; // note this is a string, which we add too, one digit at a time
+//     let node1Paths = node1.pathDirections;
+//     binary += node1Paths.indexOf(directions.Right) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
+//     binary += node1Paths.indexOf(directions.Down) > -1 ? "1" : "0";
 
-    numberVal = parseInt(binary, 2);
-    hx += getHexFromDecimalString(numberVal);
 
-    return hx;
-}
+//     let node2Paths = node2.pathDirections;
+//     binary += node2Paths.indexOf(directions.Right) > -1 ? "1" : "0";
+//     binary += node2Paths.indexOf(directions.Down) > -1 ? "1" : "0";
+
+
+//     numberVal = parseInt(binary, 2);
+
+//     return getHexFromDecimalString(numberVal);;
+// }
