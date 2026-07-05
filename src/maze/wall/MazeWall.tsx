@@ -1,7 +1,24 @@
-import { filter, includes } from 'lodash';
 import React from 'react';
 
-export const MazeWall = ({ id, x1, y1, x2, y2, className }) => {
+
+interface MazeWallProps {
+  id: string,
+  x1: string,
+  y1: string,
+  x2: string, 
+  y2: string,
+  className?:string,
+}
+
+interface MazeWallFactoryProps {
+  rows: number,
+  cols: number,
+  spacing: number,
+  inactiveWallKeys: string[]
+}
+
+
+export const MazeWall = ({ id, x1, y1, x2, y2, className }:MazeWallProps) => {
   let specialClass = "mz-wall";
   if (className) {
     specialClass = `${specialClass} ${className}`;
@@ -9,7 +26,14 @@ export const MazeWall = ({ id, x1, y1, x2, y2, className }) => {
   
   return <line id={id} className={specialClass} x1={x1} y1={y1} x2={x2} y2={y2} />;
 }
-export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
+
+/**
+ * 
+ * @desription we use this to create a new maze - by creating all the possible
+ * walls, and then filtering out the wallKeys we know shouldn't be their because
+ * the of an orthogonal path crossing. 
+ */
+export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }:MazeWallFactoryProps) => {
   const wallCache = [];
   let x1;
   let y1;
@@ -31,5 +55,8 @@ export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
       wallCache.push({ id: `${x1}.${y1}.${x2}.${y2}`, x1, y1, x2, y2 });
     }
   }
-  return filter(wallCache, w => !includes(inactiveWallKeys, w.id));
+
+  // only return
+  const activeWalls = wallCache.filter(w => !inactiveWallKeys.includes(w.id));
+  return activeWalls;
 };
