@@ -98,3 +98,10 @@ a {
   stroke-width: 8;
   stroke-linecap: round;
 }
+
+.debug-output {
+  display: flex;
+  flex-direction: column, row;
+  color: #fff;
+  background: rgb(181, 181, 181);
+}

@@ -2,9 +2,7 @@ import { filter, includes } from 'lodash';
 import React from 'react';
 
 export const MazeWall = ({ id, x1, y1, x2, y2, className }) => {
-  
   let specialClass = "mz-wall";
-
   if (className) {
     specialClass = `${specialClass} ${className}`;
   }
@@ -12,7 +10,7 @@ export const MazeWall = ({ id, x1, y1, x2, y2, className }) => {
   return <line id={id} className={specialClass} x1={x1} y1={y1} x2={x2} y2={y2} />;
 }
 export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
-  const buffer = [];
+  const wallCache = [];
   let x1;
   let y1;
   let x2;
@@ -22,7 +20,7 @@ export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
       x1 = x2 = i * spacing;
       y1 = j * spacing;
       y2 = y1 + spacing;
-      buffer.push({ id: `${x1}.${y1}.${x2}.${y2}`, x1, y1, x2, y2 });
+      wallCache.push({ id: `${x1}.${y1}.${x2}.${y2}`, x1, y1, x2, y2 });
     }
   }
   for (let i = 1; i <= rows - 1; i += 1) {
@@ -30,8 +28,8 @@ export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }) => {
       y1 = y2 = i * spacing;
       x1 = j * spacing;
       x2 = x1 + spacing;
-      buffer.push({ id: `${x1}.${y1}.${x2}.${y2}`, x1, y1, x2, y2 });
+      wallCache.push({ id: `${x1}.${y1}.${x2}.${y2}`, x1, y1, x2, y2 });
     }
   }
-  return filter(buffer, w => !includes(inactiveWallKeys, w.id));
+  return filter(wallCache, w => !includes(inactiveWallKeys, w.id));
 };

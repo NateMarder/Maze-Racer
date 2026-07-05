@@ -5,36 +5,16 @@ export const directions = {
   Left: 3,
 };
 
-export function exportNodesAsHex({ nodes }) {
-  let hx = "";
-  console.log(nodes, typeof nodes);
-  let nodeKeys = [];
-  nodes.forEach(n => {
-    nodeKeys.push(n.key)
-  });
-
-  for (let i = 0; i < nodes.length - 1; i += 2) {
-    let binary = "";
-    let node1Paths = nodes[i].pathDirections;
-    let node2Paths = nodes[i + 1].pathDirections;
-    binary += node1Paths.indexOf(directions.Right) > -1 ? "1" : "0";
-    binary += node1Paths.indexOf(directions.Down) > -1 ? "1" : "0";
-    binary += node2Paths.indexOf(directions.Right) > -1 ? "1" : "0";
-    binary += node2Paths.indexOf(directions.Down) > -1 ? "1" : "0";
-    let numberVal = parseInt(binary, 2);
-    hx += getHexFromDecimalString(numberVal);
-  }
-  return hx;
-}
 
 export class compressionHandler {
   constructor(maze) {
     this.shareLink = "";
     if (maze != null) {
-      this.maze = maze;
+      // this.maze = maze;
       // this actually swaps out sibling keys with pathDirections. current nate disagrees with past nate
       // here. current nate wants to have both of these present and represented in their own fields
-      this.ensureNodesHavePathDirections(this.maze); 
+      //this.ensureNodesHavePathDirections(this.maze); 
+      this.maze = ensureNodesHavePathDirections(maze); // this adds all the path directions
       this.hex = this.exportNodesAsHex(this.maze);
       this.shareLink = this.constructUrlFromCurrentMazeData();
       window.history.pushState(null, null, this.shareLink);
@@ -73,7 +53,7 @@ export class compressionHandler {
   //  - if we have a maze with lets say 10 rows x 10 cols, we can represent the maze's 
   //    paths and walls within just 50 hex-characters
   exportNodesAsHex({ nodes }) {
-    let hx = "";
+    let hexResult = "";
     console.log(nodes, typeof nodes);
     let nodeKeys = [];
     nodes.forEach(n => {
@@ -95,22 +75,22 @@ export class compressionHandler {
       binary += node2Paths.indexOf(directions.Right) > -1 ? "1" : "0";
       binary += node2Paths.indexOf(directions.Down) > -1 ? "1" : "0";
       let numberVal = parseInt(binary, 2);
-      hx += getHexFromDecimalString(numberVal);
+      hexResult = getHexFromDecimalString(numberVal);
     }
-    return hx;
+    return hexResult;
   }
 
-  getHexFromDecimalString( input ) {
-        switch ( input ) {
-            case 10: return "a";
-            case 11: return "b";
-            case 12: return "c";
-            case 13: return "d";
-            case 14: return "e";
-            case 15: return "f";
-            default: return input.toString();
-        }
+  getHexFromDecimalString(input) {
+    switch (input) {
+      case 10: return "a";
+      case 11: return "b";
+      case 12: return "c";
+      case 13: return "d";
+      case 14: return "e";
+      case 15: return "f";
+      default: return input.toString();
     }
+  }
 
   // This function take a look at the window.location.href object and then 
   // uses data from a valid mazegraph (hex, number of columns, number of rows, and level)

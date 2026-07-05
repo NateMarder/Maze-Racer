@@ -87,31 +87,27 @@ export default class MazeGraph extends React.Component {
     }), () => {
       this.setState(prevState => ({
         allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
-      }), () => {
+      }), (prevState) => {
         this.updateSiblingsUsingPaths();
       });
     });
   };
 
   updateSiblingsUsingPaths = () => {
-    //const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
-    const clonedNodes = [...this.state.nodes];
+    const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
+    //const clonedNodes = [...this.state.nodes];
 
     clonedNodes.forEach((n) => {
       n.siblingKeys = []; // eslint-disable-line no-param-reassign
     });
 
+    console.log("this states paths", this.state.allPaths);
     this.state.allPaths.forEach((mazePath) => {
-      const [node1, node2] = mazePath.nodeKeys;
-      const nodeRef1 = clonedNodes.find(n => n.key === node1);
-      const nodeRef2 = clonedNodes.find(n => n.key === node2);
-
-      if (nodeRef1 && nodeRef2) {
-        nodeRef1.siblingKeys.push(nodeRef2.key);
-        nodeRef2.siblingKeys.push(nodeRef1.key);
-        // nodeRef1.siblingKeys = [...new Set(nodeRef1.siblingKeys)];
-        // nodeRef2.siblingKeys = [...new Set(nodeRef2.siblingKeys)];
-      }
+      const [node1Key, node2Key] = mazePath.nodeKeys;
+      const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
+      const nodeRef2 = clonedNodes.find(n => n.key === node2Key);
+      nodeRef1.siblingKeys.push(nodeRef2.key);
+      nodeRef2.siblingKeys.push(nodeRef1.key);
     });
 
     this.setState((prevState, props) => ({
@@ -119,13 +115,11 @@ export default class MazeGraph extends React.Component {
     }), () => {
       // console.log('this is state after the update siblings method:', this.state);
       // this.state.hexString = exportNodesAsHex(this.state);
-      
+
       console.log(`here are the first 4 maze nodes...`)
-      for (let i = 0; i < 4; i += 2) {
+      for (let i = 0; i < 20; i += 1) {
         let tempNode1 = clonedNodes[i]
-        let tempNode2 = clonedNodes[i+1];
         console.log(`node at index: ${i}: ${tempNode1.key}, siblings: ${tempNode1.siblingKeys}`);
-        console.log(`node at index: ${i+1}: ${tempNode2.key}, siblings: ${tempNode2.siblingKeys}`);
       }
     });
   };
@@ -173,6 +167,10 @@ export default class MazeGraph extends React.Component {
             r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
           />
         </svg>
+                <br></br>
+        <div className="debug-output">
+          debug
+        </div>
       </div>
     );
   };
