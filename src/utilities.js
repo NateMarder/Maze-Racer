@@ -3,6 +3,10 @@ export const getScreenDimensions = () => ({
   width: 800,
 });
 
+export const defaultColumnCount = 10;
+
+export const defaultRowCount = 10;
+
 export const mazeGraphDefaults = {
   desktopSpacing: 60,
   mobileSpacing: 50,

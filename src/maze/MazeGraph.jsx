@@ -7,8 +7,8 @@ import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall, MazeWallFactory } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
-import { getNodeDirections, getHexRepresentationOfNodePair } from './codec/codeHelpers';
-;
+import { getHexRepresentationOfNodeArray, hydratePathDirections } from './codec/compressionHandler';
+
 
 export default class MazeGraph extends React.Component {
   constructor(props) {
@@ -17,8 +17,8 @@ export default class MazeGraph extends React.Component {
       height: props.height,
       width: props.width,
       spacing: DEFAULTS.desktopSpacing,
-      cols: 0,
-      rows: 0,
+      cols: DEFAULTS.cols,
+      rows: DEFAULTS.rows,
       nodes: null,
       allPaths: [],
       walls: [],
@@ -116,11 +116,19 @@ export default class MazeGraph extends React.Component {
       // console.log('this is state after the update siblings method:', this.state);
       // this.state.hexString = exportNodesAsHex(this.state);
 
-      console.log(`here are the first 4 maze nodes...`)
-      for (let i = 0; i < 20; i += 1) {
-        let tempNode1 = clonedNodes[i]
-        console.log(`node at index: ${i}: ${tempNode1.key}, siblings: ${tempNode1.siblingKeys}`);
-      }
+      console.log(`here are the maze nodes...`)
+      let hydratedNodes = hydratePathDirections(clonedNodes);
+      let h = getHexRepresentationOfNodeArray(hydratedNodes);
+      console.log('hex:', h);
+      const currentUrl = new URL(window.location.href);
+
+      // 2. Modify the search parameters
+      currentUrl.searchParams.set("h", h);
+      currentUrl.searchParams.set("c", this.state.cols);
+      currentUrl.searchParams.set("r", this.state.rows);
+
+      // 3. Update the browser URL bar without refreshing
+      window.history.replaceState(null, '', currentUrl.toString());
     });
   };
 
@@ -167,7 +175,7 @@ export default class MazeGraph extends React.Component {
             r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
           />
         </svg>
-                <br></br>
+        <br></br>
         <div className="debug-output">
           debug
         </div>
