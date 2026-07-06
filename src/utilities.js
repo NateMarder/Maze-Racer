@@ -1,3 +1,5 @@
+export const verbosity = "quiet";
+
 export const getScreenDimensions = () => ({
   height: 800,
   width: 800,

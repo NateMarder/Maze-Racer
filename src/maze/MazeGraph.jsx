@@ -25,7 +25,8 @@ export default class MazeGraph extends React.Component {
       inactiveWallKeys: [],
       destNodeX: 0,
       destNodeY: 0,
-      hexString: ''
+      hexString: '',
+      debugStatement: ""
     };
     this.mazeGraphRef = React.createRef();
   }
@@ -49,7 +50,6 @@ export default class MazeGraph extends React.Component {
      *    });
      */
 
-    console.log("\n checking if this is CSR or SSR. Window type =", typeof window);
 
     // step 1
     this.setState((prevState, props) => ({
@@ -101,7 +101,7 @@ export default class MazeGraph extends React.Component {
       n.siblingKeys = []; // eslint-disable-line no-param-reassign
     });
 
-    console.log("this states paths", this.state.allPaths);
+    //console.log("this states paths", this.state.allPaths);
     this.state.allPaths.forEach((mazePath) => {
       const [node1Key, node2Key] = mazePath.nodeKeys;
       const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
@@ -112,14 +112,13 @@ export default class MazeGraph extends React.Component {
 
     this.setState((prevState, props) => ({
       nodes: clonedNodes,
-    }), () => {
+    }), (prevState) => {
       // console.log('this is state after the update siblings method:', this.state);
       // this.state.hexString = exportNodesAsHex(this.state);
 
-      console.log(`here are the maze nodes...`)
+      // console.log(`here are the maze nodes...`)
       let hydratedNodes = hydratePathDirections(clonedNodes);
       let h = getHexRepresentationOfNodeArray(hydratedNodes);
-      console.log('hex:', h);
       const currentUrl = new URL(window.location.href);
 
       // 2. Modify the search parameters
@@ -129,6 +128,8 @@ export default class MazeGraph extends React.Component {
 
       // 3. Update the browser URL bar without refreshing
       window.history.replaceState(null, '', currentUrl.toString());
+
+      this.setState(prevState => ({ debugStatement: h }));
     });
   };
 
@@ -177,7 +178,7 @@ export default class MazeGraph extends React.Component {
         </svg>
         <br></br>
         <div className="debug-output">
-          debug
+          {this.state.debugStatement}
         </div>
       </div>
     );

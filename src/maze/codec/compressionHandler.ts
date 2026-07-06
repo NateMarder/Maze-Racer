@@ -1,5 +1,5 @@
 import { MazeNode } from "../node";
-import { mazeGraphDefaults, defaultColumnCount, defaultRowCount } from '../../utilities';
+import { mazeGraphDefaults, defaultColumnCount, defaultRowCount, verbosity } from '../../utilities';
 
 export enum directions {
   Up = 0,
@@ -16,14 +16,6 @@ export const hydratePathDirections = (nodes: MazeNode[]) => {
 
   for (let j = 0; j <= clones.length - 1; j++) {
     clones[j] = getNodeWithDirections(clones[j]);
-    let currKey = clones[j].key
-    let [currX, currY] = currKey.split(".");
-    let node1 = { ...clones[j] };
-    let node2 = clones.find(n => n.key === `${currX + mazeGraphDefaults.desktopSpacing}.${currY}`)
-    console.log(`node1 (${node1.key}) should have paths: [${getPathDirections(node1)}]`);
-    if (node2) {
-      console.log(`node2 (${node2?.key}) should have paths: [${getPathDirections(node2)}]`);
-    }
   }
 
   return clones;
@@ -146,7 +138,9 @@ export function getHexRepresentationOfNodeArray(nodes: MazeNode[]) {
       binary += node2Paths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
       let numberVal = parseInt(binary, 2);
       let hexVal = getHexFromDecimalString(numberVal);
-      console.log(`${nodes[i].key} and ${nodes[j].key} :: gives binary chunk: ${binary} and numberVal: ${numberVal}, and hx value: ${hexVal}`);
+      if (verbosity !== "quiet") {
+        console.log(`${nodes[i].key} and ${nodes[j].key} :: gives binary chunk: ${binary} and numberVal: ${numberVal}, and hx value: ${hexVal}`);
+      }
       hexResult += hexVal;
     }
   }
