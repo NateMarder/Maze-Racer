@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 interface MazeWallProps {
   id: string,
   x1: string,
