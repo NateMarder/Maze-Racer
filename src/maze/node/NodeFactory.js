@@ -13,6 +13,7 @@ export default class NodeFactory {
             isStart: i + j === 0,
             isDest: i === cols - 1 && j === rows - 1,
             discoveredBy: '',
+            isVisited: false
           }),
         );
       }

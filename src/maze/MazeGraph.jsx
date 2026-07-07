@@ -1,13 +1,13 @@
 'use client'
 
 import React from 'react';
-import { mazeGraphDefaults as DEFAULTS } from '../utilities';
+import { defaultColumnCount, defaultRowCount, mazeGraphDefaults as DEFAULTS } from '../utilities';
 import { NodeFactory, PlayerNode } from './node/index';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall, MazeWallFactory } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
-import { getHexRepresentationOfNodeArray, hydratePathDirections } from './codec/compressionHandler';
+import { getHexRepresentationOfNodeArray, hydratePathDirections, binaryFromHex } from './codec/compressionHandler';
 
 
 export default class MazeGraph extends React.Component {
@@ -26,7 +26,7 @@ export default class MazeGraph extends React.Component {
       destNodeX: 0,
       destNodeY: 0,
       hexString: '',
-      debugStatement: ""
+      level: props.level || DEFAULTS.level
     };
     this.mazeGraphRef = React.createRef();
   }
@@ -125,6 +125,7 @@ export default class MazeGraph extends React.Component {
       currentUrl.searchParams.set("h", h);
       currentUrl.searchParams.set("c", this.state.cols);
       currentUrl.searchParams.set("r", this.state.rows);
+      currentUrl.searchParams.set("l", this.state.level)
 
       // 3. Update the browser URL bar without refreshing
       window.history.replaceState(null, '', currentUrl.toString());
@@ -161,6 +162,83 @@ export default class MazeGraph extends React.Component {
     </>;
   };
 
+  announceNodesToConsole = () => {
+    console.clear();
+    console.log("\n [debug] current state's nodes: ", this.state.nodes);
+  }
+
+  announceWallsToConsole = () => {
+    console.clear();
+    console.log("\n [debug] current state's walls: ", this.state.walls);
+  }
+
+  announcePathsToConsole = () => {
+    console.clear();
+    console.log("\n [debug] current state's paths: ", this.state.allPaths);
+  }
+
+  refresh = () => {
+    console.clear();
+    this.componentDidMount();
+  }
+
+  refreshUsingHex = () => {
+    console.log(`lets rebuild the maze using hex... ${this.state.hexString}`);
+    this.setState({
+      cols: defaultColumnCount,
+      rows: defaultRowCount,
+      level: this.level || 1,
+      walls: [],
+      nodes: [],
+      allPaths: [],
+      inactiveWallKeys: [],
+      destNodeX: -5,
+      destNodeY: -5,
+    })
+
+    this.render();
+
+    // things are cleared. but in order for the wall-factory to work we need to pass the 'inactiveWallKeys', which we need to 
+    // rebuild from hex.
+    console.clear();
+    console.log(`rebuilding inactive wall keys...`);
+    const queryParams = new URLSearchParams(window.location.search);
+
+    const hexValue = queryParams.get('h');
+    const colsValue = queryParams.get('c');
+    const rowsValue = queryParams.get('r');
+    const levelValue = queryParams.get('l');
+    console.log("just found hex: ", hexValue);
+    console.log("just found colsValue: ", colsValue);
+    console.log("just found rowsValue: ", rowsValue);
+    console.log("just found levelValue: ", levelValue);
+    // for (let row = 0; row < defaultRowCount - 1; row += 1) {
+    // for (let i = row; i < clonedNodes.length - (defaultColumnCount - 1); i += 20) {
+    //   const nextHexChar = hexValue.charAt(i);
+    //   const binaryValue = binaryFromHex(nextHexChar)
+    //   console.log(`${nextHexChar} --> ${binaryValue}`)
+    // }}
+
+    // for starters we should just print the binary string for each hex value
+    for (let i = 0; i < hexValue.length - 1; i++) {
+      const nextHexChar = hexValue.charAt(i);
+      const binaryValue = binaryFromHex(nextHexChar);
+      console.log(`${nextHexChar} --> ${binaryValue}`)
+    }
+
+    // 
+    //     this.setState(prevState => ({
+    //   walls: MazeWallFactory(prevState),
+    // }), () => {
+    //   this.setState(prevState => ({
+    //     allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
+    //   }), (prevState) => {
+    //     this.updateSiblingsUsingPaths();
+    //   });
+    // });
+
+  }
+
   render = () => {
     const { destNodeX, destNodeY, width, height } = this.state;
 
@@ -176,11 +254,15 @@ export default class MazeGraph extends React.Component {
             r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
           />
         </svg>
+
         <br></br>
-        <div className="debug-output">
-          {this.state.debugStatement}
-        </div>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceNodesToConsole}> nodes </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceWallsToConsole}> walls </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announcePathsToConsole}> paths </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refresh}> new maze </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refreshUsingHex}> reconstruct with hex </button>
       </div>
     );
   };
 }
+

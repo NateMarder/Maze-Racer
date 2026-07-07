@@ -176,3 +176,10 @@ a.secondary {
   height: 100vh;
   display: grid;
 }
+
+.debug-button {
+  font-size: 32px;
+  color: #1a1a1a;
+  background-color: cadetblue;
+  font-family: monospace;
+}

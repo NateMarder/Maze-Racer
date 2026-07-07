@@ -1,4 +1,4 @@
-import { MazeNode } from "../node";
+import { MazeNode } from "../types";
 import { mazeGraphDefaults, defaultColumnCount, defaultRowCount, verbosity } from '../../utilities';
 
 export enum directions {
@@ -130,8 +130,8 @@ export function getHexRepresentationOfNodeArray(nodes: MazeNode[]) {
     for (let i = row; i < clonedNodes.length - (defaultColumnCount - 1); i += 20) {
       let binary = ""; // note this is a string, which we add too, one digit at a time
       let j = i + 10; // right hand node
-      let node1Paths = nodes[i].pathDirections;
-      let node2Paths = nodes[j].pathDirections;
+      let node1Paths = nodes[i].pathDirections ?? [];
+      let node2Paths = nodes[j].pathDirections ?? [];
       binary += node1Paths.indexOf(directions.Right.toString()) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
       binary += node1Paths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
       binary += node2Paths.indexOf(directions.Right.toString()) > -1 ? "1" : "0";
@@ -157,6 +157,28 @@ function getHexFromDecimalString(input: number): string {
     case 14: return "e";
     case 15: return "f";
     default: return input.toString();
+  }
+}
+
+export function binaryFromHex (input: string): number[] {
+  switch (input) {
+    case "0": return [0,0,0,0];
+    case "1": return [0,0,0,1];
+    case "2": return [0,0,1,0];
+    case "3": return [0,0,1,1];
+    case "4": return [0,1,0,0];
+    case "5": return [0,1,0,1];
+    case "6": return [0,1,1,0];
+    case "7": return [0,1,1,1];
+    case "8": return [1,0,0,0]; //8
+    case "9": return [0,1,1,1]; //9
+    case "a": return [1,0,1,0]; //10
+    case "b": return [0,1,0,1]; //11
+    case "c": return [0,1,0,1]; //12
+    case "d": return [0,1,0,1]; //13
+    case "e": return [1,1,1,0]; //14
+    case "f": return [1,1,1,1]; //15
+    default: return [0] // TODO throw err here
   }
 }
 

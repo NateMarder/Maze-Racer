@@ -8,8 +8,9 @@ export type MazeNode = {
   isDest: boolean;
   isVisited: boolean;
   distFromStart: number;
-  discoveredBy?: NodeKey;
+  discoveredBy?: string;
   pathDirections?: any[];
+  [key: string]: any; // Allows other dynamic properties inside node objects
 };
 
 export type MazeWall = {
@@ -30,7 +31,7 @@ export type MazePath = {
 export type NodeAdjacencyMap = Record<NodeKey, Record<NodeKey, 1>>;
 
 export type MazeState = {
-  currentLevel: number;
+  level: number;
   rows: number;
   cols: number;
   width: number;
