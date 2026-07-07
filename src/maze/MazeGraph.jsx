@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { defaultColumnCount, defaultRowCount, mazeGraphDefaults as DEFAULTS } from '../utilities';
-import { NodeFactory, PlayerNode } from './node/index';
+import { MazeNode, NodeFactory, PlayerNode } from './node/index';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall, MazeWallFactory } from './wall/index';
@@ -212,18 +212,35 @@ export default class MazeGraph extends React.Component {
     console.log("just found colsValue: ", colsValue);
     console.log("just found rowsValue: ", rowsValue);
     console.log("just found levelValue: ", levelValue);
-    // for (let row = 0; row < defaultRowCount - 1; row += 1) {
-    // for (let i = row; i < clonedNodes.length - (defaultColumnCount - 1); i += 20) {
-    //   const nextHexChar = hexValue.charAt(i);
-    //   const binaryValue = binaryFromHex(nextHexChar)
-    //   console.log(`${nextHexChar} --> ${binaryValue}`)
-    // }}
 
     // for starters we should just print the binary string for each hex value
-    for (let i = 0; i < hexValue.length - 1; i++) {
-      const nextHexChar = hexValue.charAt(i);
-      const binaryValue = binaryFromHex(nextHexChar);
-      console.log(`${nextHexChar} --> ${binaryValue}`)
+    // for (let i = 0; i < hexValue.length - 1; i++) {
+    //   const nextHexChar = hexValue.charAt(i);
+    //   const binaryValue = binaryFromHex(nextHexChar);
+    //   console.log(`${nextHexChar} --> ${binaryValue}`)
+    // }
+
+    const offset = DEFAULTS.desktopSpacing / 2;
+    const expectedNodeCount = colsValue * rowsValue;
+    let hexCounter = 0;
+
+    for (let i = 0; i < defaultRowCount-1; i += 1) {
+      for (let j = 0; j < defaultColumnCount-1; j += 2) {
+
+        const nextHexChar = hexValue.charAt(hexCounter++);
+
+        const binaryValue = binaryFromHex(nextHexChar);
+        const actualColVal = i === 0 ? 0 : i;
+        const actualRowVal = j === 0 ? 0 : j;
+        // const node1X = col === 0 ? offset : (col * offset)/20;
+        // const node1Y = row === 0 ? offset : row * offset;
+
+        // const node2X = node1X + DEFAULTS.desktopSpacing;
+        // const node2Y = node1Y
+
+        console.log(`working on column=${actualRowVal},row=${actualColVal} with binary value: ${binaryValue} (${nextHexChar})`);
+        // console.log(`${nextHexChar} --> ${binaryValue} --> nodes = (${node1X},${node1Y}) & (${node2X},${node2Y})`);
+      }
     }
 
     // 

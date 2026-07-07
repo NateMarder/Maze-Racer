@@ -54,13 +54,13 @@ export class compressionHandler {
   //    paths and walls within just 50 hex-characters
   exportNodesAsHex({ nodes }) {
     let hexResult = "";
-    console.log(nodes, typeof nodes);
+    //console.log(nodes, typeof nodes);
     let nodeKeys = [];
     nodes.forEach(n => {
       nodeKeys.push(n.key)
     });
 
-    console.log(nodeKeys, typeof nodeKeys);
+    //console.log(nodeKeys, typeof nodeKeys);
     // nodes.forEach((T, index) => {
     //   let binary = "";
     //   let n1Paths = T.pathDirections;

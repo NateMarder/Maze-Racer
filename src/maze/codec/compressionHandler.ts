@@ -138,9 +138,9 @@ export function getHexRepresentationOfNodeArray(nodes: MazeNode[]) {
       binary += node2Paths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
       let numberVal = parseInt(binary, 2);
       let hexVal = getHexFromDecimalString(numberVal);
-      if (verbosity !== "quiet") {
-        console.log(`${nodes[i].key} and ${nodes[j].key} :: gives binary chunk: ${binary} and numberVal: ${numberVal}, and hx value: ${hexVal}`);
-      }
+      // if (verbosity !== "quiet") {
+      //   console.log(`${nodes[i].key} and ${nodes[j].key} :: gives binary chunk: ${binary} and numberVal: ${numberVal}, and hx value: ${hexVal}`);
+      // }
       hexResult += hexVal;
     }
   }
