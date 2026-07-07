@@ -213,13 +213,6 @@ export default class MazeGraph extends React.Component {
     console.log("just found rowsValue: ", rowsValue);
     console.log("just found levelValue: ", levelValue);
 
-    // for starters we should just print the binary string for each hex value
-    // for (let i = 0; i < hexValue.length - 1; i++) {
-    //   const nextHexChar = hexValue.charAt(i);
-    //   const binaryValue = binaryFromHex(nextHexChar);
-    //   console.log(`${nextHexChar} --> ${binaryValue}`)
-    // }
-
     const offset = DEFAULTS.desktopSpacing / 2;
     const expectedNodeCount = colsValue * rowsValue;
     let hexCounter = 0;
@@ -232,13 +225,14 @@ export default class MazeGraph extends React.Component {
         const binaryValue = binaryFromHex(nextHexChar);
         const actualColVal = i === 0 ? 0 : i;
         const actualRowVal = j === 0 ? 0 : j;
-        // const node1X = col === 0 ? offset : (col * offset)/20;
-        // const node1Y = row === 0 ? offset : row * offset;
 
-        // const node2X = node1X + DEFAULTS.desktopSpacing;
-        // const node2Y = node1Y
+        const node1X = j === 0 ? offset : j * DEFAULTS.desktopSpacing;
+        const node1Y = i === 0 ? offset : i * DEFAULTS.desktopSpacing;
+        const node2X = node1X + DEFAULTS.desktopSpacing;
+        const node2Y = node1Y;
 
         console.log(`working on column=${actualRowVal},row=${actualColVal} with binary value: ${binaryValue} (${nextHexChar})`);
+        console.log(`   node1 --> cx:${node1X}, cy:${node1Y} ::\n   node2 --> cx:${node2X}, cy:${node2Y}`)
         // console.log(`${nextHexChar} --> ${binaryValue} --> nodes = (${node1X},${node1Y}) & (${node2X},${node2Y})`);
       }
     }
