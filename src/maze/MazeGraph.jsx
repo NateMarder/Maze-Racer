@@ -273,6 +273,8 @@ export default class MazeGraph extends React.Component {
     this.updateSiblingsUsingPaths();
 
     this.setState({ walls: activeWalls, level: levelValue, hexString });
+
+    console.log("....done!")
   }
 
 }
