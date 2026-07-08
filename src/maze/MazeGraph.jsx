@@ -2,14 +2,14 @@
 
 import React from 'react';
 import { defaultColumnCount, defaultRowCount, mazeGraphDefaults as DEFAULTS } from '../utilities';
-import { MazeNode, NodeFactory, PlayerNode } from './node/index';
+import { NodeFactory, PlayerNode } from './node/index';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
-import { MazeWall, MazeWallFactory } from './wall/index';
+import { MazeWall } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
-import { getHexRepresentationOfNodeArray, hydratePathDirections, binaryFromHex } from './codec/compressionHandler';
+import { getHexRepresentationOfNodeArray, hydratePathDirections } from './codec/compressionHandler';
 import { getFreshMazeNodes, getInactiveWallsFromHex } from '../maze/codec/decoder';
-import { getWallsFromInactiveWallKeys, MazeWallFactoryProps } from './wall/MazeWall';
+import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 
 
 export default class MazeGraph extends React.Component {
@@ -96,13 +96,10 @@ export default class MazeGraph extends React.Component {
 
   updateSiblingsUsingPaths = () => {
     const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
-    //const clonedNodes = [...this.state.nodes];
-
     clonedNodes.forEach((n) => {
       n.siblingKeys = []; // eslint-disable-line no-param-reassign
     });
 
-    //console.log("this states paths", this.state.allPaths);
     this.state.allPaths.forEach((mazePath) => {
       const [node1Key, node2Key] = mazePath.nodeKeys;
       const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
@@ -157,6 +154,35 @@ export default class MazeGraph extends React.Component {
     </>;
   };
 
+  render = () => {
+    const { destNodeX, destNodeY, width, height } = this.state;
+
+    return (
+      <div ref={this.mazeGraphRef}>
+        <svg width={width} height={height} id="mz-svg">
+          {this.getOutterWalls()}
+          {this.getInnerWalls()}
+          {this.getUserControlNode()}
+          <DestinationNode
+            x={destNodeX}
+            y={destNodeY}
+            r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
+          />
+        </svg>
+
+        <br></br>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceNodesToConsole}> nodes </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceWallsToConsole}> walls </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announcePathsToConsole}> paths </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refresh}> new maze </button>
+        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refreshUsingHex}> reconstruct with hex </button>
+      </div>
+    );
+  };
+
+  /**
+   * Functions below this point are for debugging and dev work
+   */
   announceNodesToConsole = () => {
     console.clear();
     console.log("\n [debug] current state's nodes: ", this.state.nodes);
@@ -164,24 +190,28 @@ export default class MazeGraph extends React.Component {
 
   announceWallsToConsole = () => {
     console.clear();
-    console.log("\n [debug] current state's walls: ", this.state.walls);
+    console.log("\n [debug] this.state.walls: ", this.state.walls);
+    console.log("\n [debug] this.state.inactiveWallKeys: ", this.state.inactiveWallKeys);
   }
 
   announcePathsToConsole = () => {
     console.clear();
-    console.log("\n [debug] current state's paths: ", this.state.allPaths);
+    console.log("\n [debug] this.state.allPaths: ", this.state.allPaths);
   }
 
   refresh = () => {
     console.clear();
     window.location.reload();
-
   }
 
+  /**
+   * Currently there is no logic to simply render directly from the URL. 
+   * to see the decoder work, we need to hit the 'refresh from hex' button
+   * in the UI, which kicks off this function / logic
+   */
   refreshUsingHex = () => {
     console.clear();
     console.log(`lets rebuild the maze using hex... ${this.state.hexString}`);
-
 
     // clear state
     this.setState({
@@ -224,70 +254,26 @@ export default class MazeGraph extends React.Component {
       spacing: parseInt(DEFAULTS.desktopSpacing)
     }
 
-    let inactiveWalls = getInactiveWallsFromHex(mazeBundle);
-    this.setState({ nodes: getFreshMazeNodes(mazeBundle) });
-
     this.setState({
       nodes: getFreshMazeNodes(mazeBundle),
       destNodeX: parseInt(destinationX),
       destNodeY: parseInt(destinationY)
     });
 
+
     const getWallProps = {
       rows: mazeBundle.rows,
       cols: mazeBundle.cols,
       spacing: mazeBundle.spacing,
-      inactiveWallKeys: inactiveWalls
+      inactiveWallKeys: getInactiveWallsFromHex(mazeBundle)
     }
 
     const activeWalls = getWallsFromInactiveWallKeys(getWallProps);
 
     this.updateSiblingsUsingPaths();
 
-    this.setState({ walls: activeWalls, level: levelValue, hexString },()=>{
-      
-    });
-    // const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
-    // //const clonedNodes = [...this.state.nodes];
-
-    // clonedNodes.forEach((n) => {
-    //   n.siblingKeys = []; // eslint-disable-line no-param-reassign
-    // });
-
-    // //console.log("this states paths", this.state.allPaths);
-    // this.state.allPaths.forEach((mazePath) => {
-    //   const [node1Key, node2Key] = mazePath.nodeKeys;
-    //   const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
-    //   const nodeRef2 = clonedNodes.find(n => n.key === node2Key);
-    //   nodeRef1.siblingKeys.push(nodeRef2.key);
-    //   nodeRef2.siblingKeys.push(nodeRef1.key);
-    // });
+    this.setState({ walls: activeWalls, level: levelValue, hexString });
   }
 
-  render = () => {
-    const { destNodeX, destNodeY, width, height } = this.state;
-
-    return (
-      <div ref={this.mazeGraphRef}>
-        <svg width={width} height={height} id="mz-svg">
-          {this.getOutterWalls()}
-          {this.getInnerWalls()}
-          {this.getUserControlNode()}
-          <DestinationNode
-            x={destNodeX}
-            y={destNodeY}
-            r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
-          />
-        </svg>
-
-        <br></br>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceNodesToConsole}> nodes </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceWallsToConsole}> walls </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announcePathsToConsole}> paths </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refresh}> new maze </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refreshUsingHex}> reconstruct with hex </button>
-      </div>
-    );
-  };
 }
 
