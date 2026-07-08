@@ -9,7 +9,7 @@ interface MazeWallProps {
   className?:string,
 }
 
-interface MazeWallFactoryProps {
+export interface MazeWallFactoryProps {
   rows: number,
   cols: number,
   spacing: number,
@@ -32,7 +32,7 @@ export const MazeWall = ({ id, x1, y1, x2, y2, className }:MazeWallProps) => {
  * walls, and then filtering out the wallKeys we know shouldn't be their because
  * the of an orthogonal path crossing. 
  */
-export const MazeWallFactory = ({ rows, cols, spacing, inactiveWallKeys }:MazeWallFactoryProps) => {
+export const getWallsFromInactiveWallKeys = ({ rows, cols, spacing, inactiveWallKeys }:MazeWallFactoryProps) => {
   const wallCache = [];
   let x1;
   let y1;

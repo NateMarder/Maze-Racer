@@ -9,6 +9,7 @@ import { MazeWall, MazeWallFactory } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
 import { getHexRepresentationOfNodeArray, hydratePathDirections, binaryFromHex } from './codec/compressionHandler';
 import { getFreshMazeNodes, getInactiveWallsFromHex } from '../maze/codec/decoder';
+import { getWallsFromInactiveWallKeys, MazeWallFactoryProps } from './wall/MazeWall';
 
 
 export default class MazeGraph extends React.Component {
@@ -84,7 +85,7 @@ export default class MazeGraph extends React.Component {
 
     // step 5
     this.setState(prevState => ({
-      walls: MazeWallFactory(prevState),
+      walls: getWallsFromInactiveWallKeys(prevState),
     }), () => {
       this.setState(prevState => ({
         allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
@@ -222,15 +223,24 @@ export default class MazeGraph extends React.Component {
     }
     console.log("mazeBundle ", mazeBundle);
 
-    const moreNodes = getFreshMazeNodes(mazeBundle);
-    const inactiveWalls = getInactiveWallsFromHex(mazeBundle);
+    let inactiveWalls = getInactiveWallsFromHex(mazeBundle);
+    this.setState({nodes: getFreshMazeNodes(mazeBundle)});
 
-    console.log("inactiveWalls: ", inactiveWalls);
-    
-    this.setState({
-      nodes: moreNodes,
-      inactiveWalls
-    });
+    const getWallProps = {
+      rows: mazeBundle.rows,
+      cols: mazeBundle.cols,
+      spacing: mazeBundle.spacing,
+      inactiveWallKeys: inactiveWalls
+    }
+
+    const activeWalls = getWallsFromInactiveWallKeys(getWallProps);
+
+    console.log('state', this.state);
+
+     this.setState({walls: activeWalls});
+
+    // this.updateSiblingsUsingPaths();
+
   }
 
   render = () => {

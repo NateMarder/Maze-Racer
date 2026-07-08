@@ -83,7 +83,7 @@ export const getPathDirections = (node: MazeNode) => {
       if (sibY > cy) {
         result.push(2); // down
       } else if (sibY < cy) {
-        result.push(2); // up
+        result.push(0); // up
       }
     }
   }
@@ -126,7 +126,7 @@ export function getHexRepresentationOfNodeArray(nodes: MazeNode[],rowCount:numbe
   let hexResult = "";
   let clonedNodes = [...nodes];
 
-  for (let row = 0; row < rowCount - 1; row += 1) {
+  for (let row = 0; row < rowCount; row += 1) {
     for (let i = row; i < clonedNodes.length - (colCount - 1); i += 20) {
       let binary = ""; // note this is a string, which we add too, one digit at a time
       let j = i + 10; // right hand node
@@ -171,11 +171,11 @@ export function binaryFromHex (input: string): string {
     case "6": return "0110";
     case "7": return "0111";
     case "8": return "1000"; //8
-    case "9": return "0111"; //9
+    case "9": return "1001"; //9
     case "a": return "1010"; //10
-    case "b": return "0101"; //11
-    case "c": return "0101"; //12
-    case "d": return "0101"; //13
+    case "b": return "1011"; //11
+    case "c": return "1100"; //12
+    case "d": return "1101"; //13
     case "e": return "1110"; //14
     case "f": return "1111"; //15
     default: return "0" // TODO throw err here

@@ -152,26 +152,20 @@ export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }:
     let inactiveKeys: string[] = [];
     let hexCounter = 0;
     let offset = spacing / 2;
-    for (let i = 0; i < rows - 1; i += 1) {
+    for (let i = 0; i < rows; i += 1) {
         for (let j = 0; j < cols - 1; j += 2) {
-
             const nextHexChar = encodedMazeHex.charAt(hexCounter++);
-
             const binaryValue = binaryFromHex(nextHexChar);
-
-            const node1X = i * spacing + offset;
-            const node1Y = j * spacing + offset;
-            const node2X = node1X + spacing;
-            const node2Y = j * spacing + offset;
-
-            const key1 = `${node1X}.${node1Y}`;
-            const key2 = `${node2X}.${node2Y}`;
+            const node1X = offset + (j * spacing);
+            const node1Y = offset + (i * spacing);
+            const node2X = node1X.valueOf() + spacing;
+            const node2Y = offset + (i * spacing);
 
             //console.log(`working on column=${actualRowVal},row=${actualColVal} with binary value: ${binaryValue} (${nextHexChar})`);
             // console.log(`   node1 -->${key1} ::\n   node2 -->${key2}`)
             const groupOfInactiveWallKeys = getInactiveWallFromBinaryString(binaryValue, node1X, node1Y, node2X, node2Y, spacing);
             //const firstNodesInactiveWalls = getWallKeyFromSmallBinaryString(`${parseInt(binaryValue.charAt(0))}`)
-            console.log(`   ${nextHexChar} --> ${binaryValue} --> ${groupOfInactiveWallKeys.toLocaleString()}`);
+            console.log(`   ${nextHexChar} --> ${binaryValue} --> ${groupOfInactiveWallKeys}`);
 
             groupOfInactiveWallKeys.forEach((key) => {
                 inactiveKeys.push(key);

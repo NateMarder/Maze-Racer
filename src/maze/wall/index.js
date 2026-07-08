@@ -1,3 +1,3 @@
-import { MazeWall, MazeWallFactory } from './MazeWall';
+import { MazeWall, getWallsFromInactiveWallKeys } from './MazeWall';
 
-export { MazeWall, MazeWallFactory };
+export { MazeWall, getWallsFromInactiveWallKeys as MazeWallFactory };
