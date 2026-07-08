@@ -52,7 +52,6 @@ export default class MazeGraph extends React.Component {
      *    });
      */
 
-
     // step 1
     this.setState((prevState, props) => ({
       cols: Math.floor((props.width * 0.80) / DEFAULTS.desktopSpacing),
@@ -115,24 +114,18 @@ export default class MazeGraph extends React.Component {
     this.setState((prevState, props) => ({
       nodes: clonedNodes,
     }), (prevState) => {
-      // console.log('this is state after the update siblings method:', this.state);
-      // this.state.hexString = exportNodesAsHex(this.state);
-
-      // console.log(`here are the maze nodes...`)
       let hydratedNodes = hydratePathDirections(clonedNodes);
       let h = getHexRepresentationOfNodeArray(hydratedNodes, defaultRowCount, defaultColumnCount);
       const currentUrl = new URL(window.location.href);
-
-      // 2. Modify the search parameters
       currentUrl.searchParams.set("h", h);
       currentUrl.searchParams.set("c", this.state.cols);
       currentUrl.searchParams.set("r", this.state.rows);
-      currentUrl.searchParams.set("l", this.state.level)
+      currentUrl.searchParams.set("l", this.state.level);
+      currentUrl.searchParams.set("dx", this.state.destNodeX);
+      currentUrl.searchParams.set("dy", this.state.destNodeY);
 
       // 3. Update the browser URL bar without refreshing
       window.history.replaceState(null, '', currentUrl.toString());
-
-      this.setState(prevState => ({ debugStatement: h }));
     });
   };
 
@@ -181,50 +174,64 @@ export default class MazeGraph extends React.Component {
 
   refresh = () => {
     console.clear();
-    this.componentDidMount();
+    window.location.reload();
+
   }
 
   refreshUsingHex = () => {
     console.clear();
     console.log(`lets rebuild the maze using hex... ${this.state.hexString}`);
+
+
+    // clear state
     this.setState({
-      cols: defaultColumnCount,
-      rows: defaultRowCount,
-      level: this.level || 1,
+      cols: null,
+      rows: null,
+      level: null,
       walls: [],
       nodes: [],
       allPaths: [],
       inactiveWallKeys: [],
-      destNodeX: -5,
-      destNodeY: -5,
+      destNodeX: null,
+      destNodeY: null
     })
 
-    // this.render();
+    const urlParams = new URLSearchParams(window.location.search);
+    const hexString = urlParams.get('h');
+    const colsValue = urlParams.get('c');
+    const rowsValue = urlParams.get('r');
+    const levelValue = urlParams.get('l');
+    const destinationX = urlParams.get('dx');
+    const destinationY = urlParams.get('dy');
 
-    // things are cleared. but in order for the wall-factory to work we need to pass the 'inactiveWallKeys', which we need to 
-    // rebuild from hex.
-
-    console.log(`rebuilding inactive wall keys...`);
-    const queryParams = new URLSearchParams(window.location.search);
-    const hexValue = queryParams.get('h');
-    const colsValue = queryParams.get('c');
-    const rowsValue = queryParams.get('r');
-    const levelValue = queryParams.get('l');
-    console.log("just found hex: ", hexValue);
-    console.log("just found colsValue: ", colsValue);
-    console.log("just found rowsValue: ", rowsValue);
-    console.log("just found levelValue: ", levelValue);
+    this.setState({
+      cols: colsValue,
+      rows: rowsValue,
+      level: levelValue,
+      walls: [],
+      nodes: [],
+      allPaths: [],
+      inactiveWallKeys: [],
+      destNodeX: null,
+      destNodeY: null,
+      hexString
+    })
 
     const mazeBundle = {
-      encodedMazeHex: hexValue, 
-      rows: parseInt(rowsValue), 
-      cols: parseInt(colsValue), 
+      encodedMazeHex: hexString,
+      rows: parseInt(rowsValue),
+      cols: parseInt(colsValue),
       spacing: parseInt(DEFAULTS.desktopSpacing)
     }
-    console.log("mazeBundle ", mazeBundle);
 
     let inactiveWalls = getInactiveWallsFromHex(mazeBundle);
-    this.setState({nodes: getFreshMazeNodes(mazeBundle)});
+    this.setState({ nodes: getFreshMazeNodes(mazeBundle) });
+
+    this.setState({
+      nodes: getFreshMazeNodes(mazeBundle),
+      destNodeX: parseInt(destinationX),
+      destNodeY: parseInt(destinationY)
+    });
 
     const getWallProps = {
       rows: mazeBundle.rows,
@@ -235,12 +242,26 @@ export default class MazeGraph extends React.Component {
 
     const activeWalls = getWallsFromInactiveWallKeys(getWallProps);
 
-    console.log('state', this.state);
+    this.updateSiblingsUsingPaths();
 
-     this.setState({walls: activeWalls});
+    this.setState({ walls: activeWalls, level: levelValue, hexString },()=>{
+      
+    });
+    // const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
+    // //const clonedNodes = [...this.state.nodes];
 
-    // this.updateSiblingsUsingPaths();
+    // clonedNodes.forEach((n) => {
+    //   n.siblingKeys = []; // eslint-disable-line no-param-reassign
+    // });
 
+    // //console.log("this states paths", this.state.allPaths);
+    // this.state.allPaths.forEach((mazePath) => {
+    //   const [node1Key, node2Key] = mazePath.nodeKeys;
+    //   const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
+    //   const nodeRef2 = clonedNodes.find(n => n.key === node2Key);
+    //   nodeRef1.siblingKeys.push(nodeRef2.key);
+    //   nodeRef2.siblingKeys.push(nodeRef1.key);
+    // });
   }
 
   render = () => {

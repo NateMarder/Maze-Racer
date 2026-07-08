@@ -1,6 +1,11 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Why This App?
+> I've been modernizing this older personal project by migrating it from Create React App to Next.js while converting the entire codebase to TypeScript. 
+> 
+> Along the way I've been: refactoring the architecture, documenting a custom maze serialization algorithm, and separating the framework-specific UI from the core engine."
+
+## Getting Started With Dev Work On This App
 
 First, run the development server:
 
