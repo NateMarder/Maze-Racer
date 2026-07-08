@@ -8,6 +8,7 @@ import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall, MazeWallFactory } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
 import { getHexRepresentationOfNodeArray, hydratePathDirections, binaryFromHex } from './codec/compressionHandler';
+import { getFreshMazeNodes, getInactiveWallsFromHex } from '../maze/codec/decoder';
 
 
 export default class MazeGraph extends React.Component {
@@ -118,7 +119,7 @@ export default class MazeGraph extends React.Component {
 
       // console.log(`here are the maze nodes...`)
       let hydratedNodes = hydratePathDirections(clonedNodes);
-      let h = getHexRepresentationOfNodeArray(hydratedNodes);
+      let h = getHexRepresentationOfNodeArray(hydratedNodes, defaultRowCount, defaultColumnCount);
       const currentUrl = new URL(window.location.href);
 
       // 2. Modify the search parameters
@@ -183,6 +184,7 @@ export default class MazeGraph extends React.Component {
   }
 
   refreshUsingHex = () => {
+    console.clear();
     console.log(`lets rebuild the maze using hex... ${this.state.hexString}`);
     this.setState({
       cols: defaultColumnCount,
@@ -196,14 +198,13 @@ export default class MazeGraph extends React.Component {
       destNodeY: -5,
     })
 
-    this.render();
+    // this.render();
 
     // things are cleared. but in order for the wall-factory to work we need to pass the 'inactiveWallKeys', which we need to 
     // rebuild from hex.
-    console.clear();
+
     console.log(`rebuilding inactive wall keys...`);
     const queryParams = new URLSearchParams(window.location.search);
-
     const hexValue = queryParams.get('h');
     const colsValue = queryParams.get('c');
     const rowsValue = queryParams.get('r');
@@ -213,41 +214,23 @@ export default class MazeGraph extends React.Component {
     console.log("just found rowsValue: ", rowsValue);
     console.log("just found levelValue: ", levelValue);
 
-    const offset = DEFAULTS.desktopSpacing / 2;
-    const expectedNodeCount = colsValue * rowsValue;
-    let hexCounter = 0;
-
-    for (let i = 0; i < defaultRowCount-1; i += 1) {
-      for (let j = 0; j < defaultColumnCount-1; j += 2) {
-
-        const nextHexChar = hexValue.charAt(hexCounter++);
-
-        const binaryValue = binaryFromHex(nextHexChar);
-        const actualColVal = i === 0 ? 0 : i;
-        const actualRowVal = j === 0 ? 0 : j;
-
-        const node1X = j === 0 ? offset : j * DEFAULTS.desktopSpacing;
-        const node1Y = i === 0 ? offset : i * DEFAULTS.desktopSpacing;
-        const node2X = node1X + DEFAULTS.desktopSpacing;
-        const node2Y = node1Y;
-
-        console.log(`working on column=${actualRowVal},row=${actualColVal} with binary value: ${binaryValue} (${nextHexChar})`);
-        console.log(`   node1 --> cx:${node1X}, cy:${node1Y} ::\n   node2 --> cx:${node2X}, cy:${node2Y}`)
-        // console.log(`${nextHexChar} --> ${binaryValue} --> nodes = (${node1X},${node1Y}) & (${node2X},${node2Y})`);
-      }
+    const mazeBundle = {
+      encodedMazeHex: hexValue, 
+      rows: parseInt(rowsValue), 
+      cols: parseInt(colsValue), 
+      spacing: parseInt(DEFAULTS.desktopSpacing)
     }
+    console.log("mazeBundle ", mazeBundle);
 
-    // 
-    //     this.setState(prevState => ({
-    //   walls: MazeWallFactory(prevState),
-    // }), () => {
-    //   this.setState(prevState => ({
-    //     allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
-    //   }), (prevState) => {
-    //     this.updateSiblingsUsingPaths();
-    //   });
-    // });
+    const moreNodes = getFreshMazeNodes(mazeBundle);
+    const inactiveWalls = getInactiveWallsFromHex(mazeBundle);
 
+    console.log("inactiveWalls: ", inactiveWalls);
+    
+    this.setState({
+      nodes: moreNodes,
+      inactiveWalls
+    });
   }
 
   render = () => {

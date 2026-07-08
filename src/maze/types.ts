@@ -24,7 +24,7 @@ export type MazeWall = {
 export type MazePath = {
   id: string;
   key: string;
-  nodeKeys: [NodeKey, NodeKey];
+  nodeKeys: [NodeKey, NodeKey]
   crossWall: WallKey;
 };
 

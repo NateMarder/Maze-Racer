@@ -1,5 +1,5 @@
 import { MazeNode } from "../types";
-import { mazeGraphDefaults, defaultColumnCount, defaultRowCount, verbosity } from '../../utilities';
+import { verbosity } from '../../utilities';
 
 export enum directions {
   Up = 0,
@@ -112,9 +112,9 @@ export const getPathDirections = (node: MazeNode) => {
 //    d --> right node's bottom-side sibling
 //
 // examples:
-// [0,0,0,0] --> toHex --> 0
-// [0,0,0,1] --> toHex --> 1
-// [1,1,1,1] --> toInt:15 --> toHex:f
+// "0,0,0,0] --> toHex --> 0
+// "0,0,0,1] --> toHex --> 1
+// "1,1,1,1] --> toInt:15 --> toHex:f
 // 
 // a couple things to note:
 //  - this creates some limitations with what kind of mazes work (even number of cols!)
@@ -122,12 +122,12 @@ export const getPathDirections = (node: MazeNode) => {
 //    once by iterating nodes in groups of 2). We're leveraging maze topology.
 //  - if we have a maze with lets say 10 rows x 10 cols, we can represent the maze's 
 //    paths and walls within just 50 hex-characters
-export function getHexRepresentationOfNodeArray(nodes: MazeNode[]) {
+export function getHexRepresentationOfNodeArray(nodes: MazeNode[],rowCount:number,colCount:number ) {
   let hexResult = "";
   let clonedNodes = [...nodes];
 
-  for (let row = 0; row < defaultRowCount - 1; row += 1) {
-    for (let i = row; i < clonedNodes.length - (defaultColumnCount - 1); i += 20) {
+  for (let row = 0; row < rowCount - 1; row += 1) {
+    for (let i = row; i < clonedNodes.length - (colCount - 1); i += 20) {
       let binary = ""; // note this is a string, which we add too, one digit at a time
       let j = i + 10; // right hand node
       let node1Paths = nodes[i].pathDirections ?? [];
@@ -160,25 +160,25 @@ function getHexFromDecimalString(input: number): string {
   }
 }
 
-export function binaryFromHex (input: string): number[] {
+export function binaryFromHex (input: string): string {
   switch (input) {
-    case "0": return [0,0,0,0];
-    case "1": return [0,0,0,1];
-    case "2": return [0,0,1,0];
-    case "3": return [0,0,1,1];
-    case "4": return [0,1,0,0];
-    case "5": return [0,1,0,1];
-    case "6": return [0,1,1,0];
-    case "7": return [0,1,1,1];
-    case "8": return [1,0,0,0]; //8
-    case "9": return [0,1,1,1]; //9
-    case "a": return [1,0,1,0]; //10
-    case "b": return [0,1,0,1]; //11
-    case "c": return [0,1,0,1]; //12
-    case "d": return [0,1,0,1]; //13
-    case "e": return [1,1,1,0]; //14
-    case "f": return [1,1,1,1]; //15
-    default: return [0] // TODO throw err here
+    case "0": return "0000";
+    case "1": return "0001";
+    case "2": return "0010";
+    case "3": return "0011";
+    case "4": return "0100";
+    case "5": return "0101";
+    case "6": return "0110";
+    case "7": return "0111";
+    case "8": return "1000"; //8
+    case "9": return "0111"; //9
+    case "a": return "1010"; //10
+    case "b": return "0101"; //11
+    case "c": return "0101"; //12
+    case "d": return "0101"; //13
+    case "e": return "1110"; //14
+    case "f": return "1111"; //15
+    default: return "0" // TODO throw err here
   }
 }
 
