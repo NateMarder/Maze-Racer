@@ -116,5 +116,6 @@ export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }:
         }
     }
 
+    // const deduplicatedKeys:string[] = [...new Set(inactiveKeys)]
     return inactiveKeys;
 }

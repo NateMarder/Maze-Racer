@@ -12,6 +12,7 @@ import { getFreshMazeNodes, getInactiveWallsFromHex } from '../maze/codec/decode
 import { MazeCodec } from './codec/mazeCodec';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 import { useRouter, usePathname } from 'next/navigation';
+import { throwIfDisallowedDynamic } from 'next/dist/server/app-render/dynamic-rendering';
 
 export default class MazeGraph extends React.Component {
   constructor(props) {
@@ -113,20 +114,7 @@ export default class MazeGraph extends React.Component {
 
     this.setState((prevState, props) => ({
       nodes: clonedNodes,
-    }), (prevState) => {
-      //let hydratedNodes = hydratePathDirections(clonedNodes);
-      // let h = getHexRepresentationOfNodeArray(hydratedNodes, defaultRowCount, defaultColumnCount);
-      // const currentUrl = new URL(window.location.href);
-      // currentUrl.searchParams.set("h", h);
-      // currentUrl.searchParams.set("c", this.state.cols);
-      // currentUrl.searchParams.set("r", this.state.rows);
-      // currentUrl.searchParams.set("l", this.state.level);
-      // currentUrl.searchParams.set("dx", this.state.destNodeX);
-      // currentUrl.searchParams.set("dy", this.state.destNodeY);
-
-      // 3. Update the browser URL bar without refreshing
-      //window.history.replaceState(null, '', currentUrl.toString());
-    });
+    }));
   };
 
   getUserControlNode = () => (
@@ -157,18 +145,6 @@ export default class MazeGraph extends React.Component {
     </>;
   };
 
-  // clearParams() {
-  //   const router = useRouter();
-  //   const pathname = usePathname();
-
-  //   const handleClear = () => {
-  //     // Navigates to the current path without any search params
-  //     router.push(pathname);
-  //   };
-
-  //   return <button onClick={handleClear}>Clear Params & Reload</button>;
-  // }
-
   /**
    * Functions below this point are for debugging and dev work
    */
@@ -188,10 +164,31 @@ export default class MazeGraph extends React.Component {
     console.log("\n [debug] this.state.allPaths: ", this.state.allPaths);
   }
 
-  clearWallsPathsAndPlayers = () => {
-    console.log("\nthis removes existing walls, paths, players, and url params");
+  clearWallsAndPaths = () => {
+    console.clear();
+    console.log("clearing all walls...");
 
     // first
+    this.setState({
+      walls: [],
+      inactiveWallKeys: [],
+      allPaths: []
+    }, () => {
+      console.log("state now: ", this.state);
+    });
+
+  }
+
+  clearNodes = () => {
+    console.clear();
+    console.log("clearing all nodes...");
+
+    this.setState({
+      nodes: []
+    }, () => {
+      console.log("state now: ", this.state);
+    });
+
   }
 
   refresh = () => {
@@ -206,23 +203,21 @@ export default class MazeGraph extends React.Component {
     const encodeResult = MazeCodec.encode(dataForEncoding);
 
 
-
-
     const currentUrl = new URL(window.location.href);
-      currentUrl.searchParams.set("h", encodeResult.serialized);        // serialized hex representation of maze
-      currentUrl.searchParams.set("c", encodeResult.cols);              // col count
-      currentUrl.searchParams.set("r", encodeResult.rows);              // row count
-      currentUrl.searchParams.set("l", encodeResult.level);             // current level
-      currentUrl.searchParams.set("dx", encodeResult.destination.x);    // maze-finish x
-      currentUrl.searchParams.set("dy", encodeResult.destination.y);    // maze-finish y
-      currentUrl.searchParams.set("s", encodeResult.spacing);           // maze spacing (width of the paths, also same as measuring center of mazeNode to center of neighboring mazeNode)
+    currentUrl.searchParams.set("h", encodeResult.serialized);        // serialized hex representation of maze
+    currentUrl.searchParams.set("c", encodeResult.cols);              // col count
+    currentUrl.searchParams.set("r", encodeResult.rows);              // row count
+    currentUrl.searchParams.set("l", encodeResult.level);             // current level
+    currentUrl.searchParams.set("dx", encodeResult.destination.x);    // maze-finish x
+    currentUrl.searchParams.set("dy", encodeResult.destination.y);    // maze-finish y
+    currentUrl.searchParams.set("s", encodeResult.spacing);           // maze spacing (width of the paths, also same as measuring center of mazeNode to center of neighboring mazeNode)
 
-      // 3. Update the browser URL bar without refreshing
-      window.history.replaceState(null, '', currentUrl.toString());     // add the data to the URL, don't reload,
+    // 3. Update the browser URL bar without refreshing
+    window.history.replaceState(null, '', currentUrl.toString());     // add the data to the URL, don't reload,
 
 
-      console.log("what we see in the window.location.href now: ", window.location.href)
-      console.log("Lets look at the encoding result: ", encodeResult);
+    console.log("what we see in the window.location.href now: ", window.location.href)
+    console.log("Lets look at the encoding result: ", encodeResult);
   }
 
   /**
@@ -230,23 +225,13 @@ export default class MazeGraph extends React.Component {
    * to see the decoder work, we need to hit the 'refresh from hex' button
    * in the UI, which kicks off this function / logic
    */
-  refreshUsingHex = () => {
+  originalDecode = () => {
     console.clear();
-    console.log(`lets rebuild the maze using hex... ${this.state.hexString}`);
+    console.log(`clearing walls and nodes for rebuild with... ${this.state.hexString}`);
 
     // clear state
-    this.setState({
-      cols: null,
-      rows: null,
-      level: null,
-      walls: [],
-      nodes: [],
-      allPaths: [],
-      inactiveWallKeys: [],
-      destNodeX: null,
-      destNodeY: null,
-      destination: null
-    })
+    this.clearNodes();
+    this.clearWallsAndPaths();
 
     const urlParams = new URLSearchParams(window.location.search);
     const hexString = urlParams.get('h');
@@ -279,18 +264,18 @@ export default class MazeGraph extends React.Component {
     this.setState({
       nodes: getFreshMazeNodes(mazeBundle),
       destNodeX: parseInt(destinationX),
-      destNodeY: parseInt(destinationY)
+      destNodeY: parseInt(destinationY),
+      destination: { x: parseInt(destinationX), y: parseInt(destinationY) }
     });
 
-
-    const getWallProps = {
+    const wallProps = {
       rows: mazeBundle.rows,
       cols: mazeBundle.cols,
       spacing: mazeBundle.spacing,
       inactiveWallKeys: getInactiveWallsFromHex(mazeBundle)
     }
 
-    const activeWalls = getWallsFromInactiveWallKeys(getWallProps);
+    const activeWalls = getWallsFromInactiveWallKeys(wallProps);
 
     this.updateSiblingsUsingPaths();
 
@@ -300,6 +285,53 @@ export default class MazeGraph extends React.Component {
     console.log("setting small timeout so we can see the maze was actually removed...");
   }
 
+  lightDecode = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hexString = urlParams.get('h');
+    const colsValue = urlParams.get('c');
+    const rowsValue = urlParams.get('r');
+    const levelValue = urlParams.get('l');
+    const destinationX = urlParams.get('dx');
+    const destinationY = urlParams.get('dy');
+    const spacing = urlParams.get('s');
+
+    this.setState({
+      cols: colsValue,
+      rows: rowsValue,
+      level: levelValue,
+      walls: [],
+      nodes: [],
+      allPaths: [],
+      inactiveWallKeys: [],
+      destNodeX: null,
+      destNodeY: null,
+      hexString
+    })
+
+    //.  const { cols, rows, level, destination, spacing, start, serialized } = encoded;
+    const encodedMaze = {
+      cols: colsValue,
+      rows: rowsValue,
+      level: levelValue,
+      destination: { x: destinationX, y: destinationY },
+      spacing: spacing,
+      start: { x: spacing / 2, y: spacing / 2 },
+      serialized: hexString
+    }
+
+    const decodeResult = MazeCodec.decode(encodedMaze);
+    // console.log("sending this data to decode into proper state: ", encodedMaze)
+    // console.log("\ndecode result: ", decodeResult);
+    this.setState({
+      ...decodeResult
+    }, () => {
+      console.log("\ndecode result: ", decodeResult);
+    })
+  }
+
+  seeState = () => {
+    console.log("\nstate:", this.state)
+  }
 
   render = () => {
     const { width, height, destination } = this.state;
@@ -318,11 +350,12 @@ export default class MazeGraph extends React.Component {
         </svg>
 
         <br></br>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceNodesToConsole}> nodes </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.announceWallsToConsole}> walls </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> runEncoder </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refresh}> refresh </button>
-        <button style={{ fontSize: "22px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refreshUsingHex}> reconstruct </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "red" }} onClick={this.clearNodes}> clear nodes </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "red" }} onClick={this.clearWallsAndPaths}> clearWallsAndPaths </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode! </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.originalDecode}>decode!</button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refresh}> refresh </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.seeState}> state </button>
       </div>
     );
   };

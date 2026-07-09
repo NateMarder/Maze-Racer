@@ -6,14 +6,17 @@ export default class NodeFactory {
     const offset = spacing / 2;
     for (let i = 0; i < cols; i += 1) {
       for (let j = 0; j < rows; j += 1) {
+        const x = i * spacing + offset;
+        const y = j * spacing + offset
         arrayOfNodes.push(
           new mazeNode({
-            x: i * spacing + offset,
-            y: j * spacing + offset,
+            x: x,
+            y: y,
             isStart: i + j === 0,
             isDest: i === cols - 1 && j === rows - 1,
             discoveredBy: '',
-            isVisited: false
+            isVisited: false,
+            key: `${x}.${y}`
           }),
         );
       }
@@ -66,5 +69,10 @@ export default class NodeFactory {
       spacing,
       nodeArray,
     });
+  }
+
+  getNodesWithoutSiblings({ rows, cols, spacing }) {
+    const nodeArray = this.buildNodeArray({ rows, cols, spacing });
+    return nodeArray;
   }
 }
