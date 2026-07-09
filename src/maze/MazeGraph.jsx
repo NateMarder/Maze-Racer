@@ -1,18 +1,16 @@
 'use client'
 
 import React from 'react';
-import { defaultColumnCount, defaultRowCount, mazeGraphDefaults as DEFAULTS } from '../utilities';
+import { mazeGraphDefaults as DEFAULTS } from '../utilities';
 import { NodeFactory, PlayerNode } from './node/index';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
-import { getHexRepresentationOfNodeArray, hydratePathDirections } from './codec/compressionHandler';
-import { getFreshMazeNodes, getInactiveWallsFromHex } from '../maze/codec/decoder';
+import { getFreshMazeNodes, getMazeBundleFromUrlParams } from './codec/decodeUtilities';
 import { MazeCodec } from './codec/mazeCodec';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
-import { useRouter, usePathname } from 'next/navigation';
-import { throwIfDisallowedDynamic } from 'next/dist/server/app-render/dynamic-rendering';
+
 
 export default class MazeGraph extends React.Component {
   constructor(props) {
@@ -97,6 +95,27 @@ export default class MazeGraph extends React.Component {
     />
   );
 
+  // getMazeBundleFromUrlParams = () => {
+  //   const urlParams = new URLSearchParams(window.location.search);
+  //   const hexString = urlParams.get('h');
+  //   const colsValue = urlParams.get('c');
+  //   const rowsValue = urlParams.get('r');
+  //   const levelValue = urlParams.get('l');
+  //   const destinationX = urlParams.get('dx');
+  //   const destinationY = urlParams.get('dy');
+
+  //   const mazeBundle = {
+  //     encodedMazeHex: hexString,
+  //     rows: parseInt(rowsValue),
+  //     cols: parseInt(colsValue),
+  //     spacing: parseInt(DEFAULTS.desktopSpacing),
+  //     destination: {x: parseInt(destinationX), y: parseInt(destinationY)},
+  //     level: parseInt(levelValue)
+  //   }
+
+  //   return mazeBundle
+  // }
+
   getInnerWalls = () => this.state.walls.map((wall) => {
     const { id, x1, y1, x2, y2 } = wall;
     return <MazeWall key={id} id={id} x1={x1} y1={y1} x2={x2} y2={y2} className="insidewall" />;
@@ -169,7 +188,6 @@ export default class MazeGraph extends React.Component {
     console.log("data we are seinding to encoder: ", dataForEncoding);
     const encodeResult = MazeCodec.encode(dataForEncoding);
 
-
     const currentUrl = new URL(window.location.href);
     currentUrl.searchParams.set("h", encodeResult.serialized);        // serialized hex representation of maze
     currentUrl.searchParams.set("c", encodeResult.cols);              // col count
@@ -181,118 +199,25 @@ export default class MazeGraph extends React.Component {
 
     // 3. Update the browser URL bar without refreshing
     window.history.replaceState(null, '', currentUrl.toString());     // add the data to the URL, don't reload,
-
-
     console.log("what we see in the window.location.href now: ", window.location.href)
     console.log("Lets look at the encoding result: ", encodeResult);
   }
 
-  /**
-   * Currently there is no logic to simply render directly from the URL. 
-   * to see the decoder work, we need to hit the 'refresh from hex' button
-   * in the UI, which kicks off this function / logic
-   */
-  originalDecode = () => {
-    console.clear();
-    console.log(`clearing walls and nodes for rebuild with... ${this.state.hexString}`);
-
-    // clear state
-    this.clearNodes();
-    this.clearWallsAndPaths();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const hexString = urlParams.get('h');
-    const colsValue = urlParams.get('c');
-    const rowsValue = urlParams.get('r');
-    const levelValue = urlParams.get('l');
-    const destinationX = urlParams.get('dx');
-    const destinationY = urlParams.get('dy');
-
-    this.setState({
-      cols: colsValue,
-      rows: rowsValue,
-      level: levelValue,
-      walls: [],
-      nodes: [],
-      allPaths: [],
-      inactiveWallKeys: [],
-      destNodeX: null,
-      destNodeY: null,
-      hexString
-    })
-
-    const mazeBundle = {
-      encodedMazeHex: hexString,
-      rows: parseInt(rowsValue),
-      cols: parseInt(colsValue),
-      spacing: parseInt(DEFAULTS.desktopSpacing)
+  runDecoder = () => {
+    const dataFromUrlParams = getMazeBundleFromUrlParams();
+    const encoded = {
+      cols: dataFromUrlParams.cols,
+      rows: dataFromUrlParams.rows,
+      level: dataFromUrlParams.level,
+      destination: dataFromUrlParams.destination,
+      spacing: dataFromUrlParams.spacing,
+      start: { x: dataFromUrlParams.spacing / 2, y: dataFromUrlParams.spacing / 2 }, // since we always start in the top left, this one is calculated for now
+      serialized: dataFromUrlParams.encodedMazeHex
     }
-
+    const decodeResult = MazeCodec.decode(encoded);
     this.setState({
-      nodes: getFreshMazeNodes(mazeBundle),
-      destNodeX: parseInt(destinationX),
-      destNodeY: parseInt(destinationY),
-      destination: { x: parseInt(destinationX), y: parseInt(destinationY) }
-    });
-
-    const wallProps = {
-      rows: mazeBundle.rows,
-      cols: mazeBundle.cols,
-      spacing: mazeBundle.spacing,
-      inactiveWallKeys: getInactiveWallsFromHex(mazeBundle)
-    }
-
-    const activeWalls = getWallsFromInactiveWallKeys(wallProps);
-
-    this.updateNodeSiblingPaths();
-
-    this.setState({ walls: activeWalls, level: levelValue, hexString });
-
-    console.log("....done!")
-    console.log("setting small timeout so we can see the maze was actually removed...");
-  }
-
-  lightDecode = () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hexString = urlParams.get('h');
-    const colsValue = urlParams.get('c');
-    const rowsValue = urlParams.get('r');
-    const levelValue = urlParams.get('l');
-    const destinationX = urlParams.get('dx');
-    const destinationY = urlParams.get('dy');
-    const spacing = urlParams.get('s');
-
-    this.setState({
-      cols: colsValue,
-      rows: rowsValue,
-      level: levelValue,
-      walls: [],
-      nodes: [],
-      allPaths: [],
-      inactiveWallKeys: [],
-      destNodeX: null,
-      destNodeY: null,
-      hexString
-    })
-
-    //.  const { cols, rows, level, destination, spacing, start, serialized } = encoded;
-    const encodedMaze = {
-      cols: colsValue,
-      rows: rowsValue,
-      level: levelValue,
-      destination: { x: destinationX, y: destinationY },
-      spacing: spacing,
-      start: { x: spacing / 2, y: spacing / 2 },
-      serialized: hexString
-    }
-
-    const decodeResult = MazeCodec.decode(encodedMaze);
-    // console.log("sending this data to decode into proper state: ", encodedMaze)
-    // console.log("\ndecode result: ", decodeResult);
-    this.setState({
+      nodes: getFreshMazeNodes(encoded),
       ...decodeResult
-    }, () => {
-      console.log("\ndecode result: ", decodeResult);
     })
   }
 
@@ -315,14 +240,11 @@ export default class MazeGraph extends React.Component {
             r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
           />
         </svg>
-
         <br></br>
-        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "red" }} onClick={this.clearNodes}> clear nodes </button>
-        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "red" }} onClick={this.clearWallsAndPaths}> clearWallsAndPaths </button>
-        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode! </button>
-        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.originalDecode}>decode!</button>
-        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.refresh}> refresh </button>
-        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "green" }} onClick={this.seeState}> state </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runDecoder}>decode</button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.refresh}> refresh </button>
+        <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>
       </div>
     );
   };

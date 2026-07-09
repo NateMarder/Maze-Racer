@@ -1,4 +1,5 @@
 import { MazeNode } from "../node";
+import { Coordinate } from "../types";
 import { binaryFromHex } from "./compressionHandler";
 
 interface GetFreshNodesProps {
@@ -12,6 +13,15 @@ interface TranslateHexProps {
     rows: number,
     cols: number,
     spacing: number
+}
+
+interface MazeBundle {
+    encodedMazeHex: string,
+    rows: number,
+    cols: number,
+    spacing: number,
+    destination: Coordinate,
+    level: number
 }
 
 export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) => {
@@ -39,7 +49,6 @@ export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) =
     }
     return arrayOfNodes;
 }
-
 
 export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: number, leftNodeCy: number, rightNodeCx: number, rightNodeCy: number, spacing: number) => {
     // this can be cleaned up and simplified. It's very 'declarative' right now to help with understanding
@@ -94,6 +103,31 @@ export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: n
     }
 
     return inactiveWallKeys;
+}
+
+export const getMazeBundleFromUrlParams = (): any => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const hexString = urlParams.get('h');
+    const colsValue = urlParams.get('c');
+    const rowsValue = urlParams.get('r');
+    const levelValue = urlParams.get('l');
+    const destinationX = urlParams.get('dx');
+    const destinationY = urlParams.get('dy');
+    const spacing = urlParams.get('s');
+
+    let mazeBundle: MazeBundle;
+    if (rowsValue && colsValue && hexString && levelValue && destinationX && destinationY && spacing) {
+        return mazeBundle = {
+            encodedMazeHex: hexString,
+            rows: parseInt(rowsValue),
+            cols: parseInt(colsValue),
+            spacing: parseInt(spacing),
+            destination: { x: parseInt(destinationX), y: parseInt(destinationY) },
+            level: parseInt(levelValue)
+        }
+    }
+
+    return {};
 }
 
 export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }: TranslateHexProps): string[] => {
