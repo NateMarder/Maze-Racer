@@ -38,6 +38,7 @@ export default class MazeGraph extends React.Component {
 
   componentDidMount = () => {
 
+    // 1 --> setup nodes and dimensions
     this.setState((prevState, props) => ({
       currentLevel: this.currentLevel || 1,
       width: DEFAULTS.desktopSpacing * prevState.cols,
@@ -45,7 +46,7 @@ export default class MazeGraph extends React.Component {
       nodes: new NodeFactory().getNodes(prevState),
     }));
 
-    // step 4
+    // 2 --> run the algorithm to create the maze
     this.setState((prevState) => {
       const result = new LevelOne().run(prevState);
       const [x, y] = result.destNodeKey.split('.');
@@ -55,32 +56,32 @@ export default class MazeGraph extends React.Component {
       };
     });
 
-    // step 5
+    // 3 --> get paths and walls for maze rendering
     this.setState(prevState => ({
       walls: getWallsFromInactiveWallKeys(prevState),
       allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
-    }), (prevState) => {
-      this.updateSiblingsUsingPaths();
+    }), () => {
+      this.updateNodeSiblingPaths()
     });
   };
 
-  updateSiblingsUsingPaths = () => {
-    const clonedNodes = JSON.parse(JSON.stringify(this.state.nodes));
-    clonedNodes.forEach((n) => {
-      n.siblingKeys = []; // eslint-disable-line no-param-reassign
-    });
+  updateNodeSiblingPaths = () => {
+    const clonedNodes = [...this.state.nodes];
+    const clonedPaths = [...this.state.allPaths];
+    
+    for(let i = 0; i < clonedNodes.length; i++){
+      clonedNodes[i].siblingKeys = [];
+    }
 
-    this.state.allPaths.forEach((mazePath) => {
-      const [node1Key, node2Key] = mazePath.nodeKeys;
+    for(let p = 0; p < clonedPaths.length; p++) {
+      const [node1Key, node2Key] = clonedPaths[p].nodeKeys;
       const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
       const nodeRef2 = clonedNodes.find(n => n.key === node2Key);
       nodeRef1.siblingKeys.push(nodeRef2.key);
       nodeRef2.siblingKeys.push(nodeRef1.key);
-    });
+    }
 
-    this.setState((prevState, props) => ({
-      nodes: clonedNodes,
-    }));
+    this.setState({nodes: clonedNodes});
   };
 
   getUserControlNode = () => (
@@ -243,7 +244,7 @@ export default class MazeGraph extends React.Component {
 
     const activeWalls = getWallsFromInactiveWallKeys(wallProps);
 
-    this.updateSiblingsUsingPaths();
+    this.updateNodeSiblingPaths();
 
     this.setState({ walls: activeWalls, level: levelValue, hexString });
 
