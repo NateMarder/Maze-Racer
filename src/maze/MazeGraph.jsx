@@ -21,8 +21,8 @@ export default class MazeGraph extends React.Component {
       height: props.height,
       width: props.width,
       spacing: DEFAULTS.desktopSpacing,
-      cols: DEFAULTS.cols,
-      rows: DEFAULTS.rows,
+      cols: Math.floor((props.width * 0.80) / DEFAULTS.desktopSpacing),
+      rows: Math.floor((props.height * 0.80) / DEFAULTS.desktopSpacing),
       nodes: null,
       allPaths: [],
       walls: [],
@@ -37,64 +37,30 @@ export default class MazeGraph extends React.Component {
   }
 
   componentDidMount = () => {
-    /**
-     *  CURRENTLY... this is where we kick off the maze engine. currently we do the following, and the sequence matters...
-     *    step 1: grab the number of cols, rows, and level (level is always 1 for now)
-     *    step 2: calculate the actual size of the maze itself
-     *    step 3: use the rows, cols, and spacing to get the proper number of maze nodes
-     *    step 4: initialize a new mazeEngine (currently being called maze creator) and then call it's 'run' function
-     *            which actually shuffles the node-siblings for each node prior to carving out the paths
-     *    step 5: iterates through all of walls and paths and ensures all node sibling relationships are set appropriately
-     * 
-     *  What we want is somethin more like below...
-     * 
-     *    const maze = generateMaze({
-     *      rows: 25,
-     *      columns: 25,
-     *      algorithm: "dfs",
-     *    });
-     */
 
-    // step 1
     this.setState((prevState, props) => ({
-      cols: Math.floor((props.width * 0.80) / DEFAULTS.desktopSpacing),
-      rows: Math.floor((props.height * 0.80) / DEFAULTS.desktopSpacing),
       currentLevel: this.currentLevel || 1,
-    }));
-
-    // step 2
-    this.setState(prevState => ({
       width: DEFAULTS.desktopSpacing * prevState.cols,
       height: DEFAULTS.desktopSpacing * prevState.rows,
-    }));
-
-    // step 3
-    this.setState(prevState => ({
       nodes: new NodeFactory().getNodes(prevState),
     }));
 
     // step 4
     this.setState((prevState) => {
-      const mazeCreator = new LevelOne();
-      const result = mazeCreator.run(prevState);
+      const result = new LevelOne().run(prevState);
       const [x, y] = result.destNodeKey.split('.');
       return {
         inactiveWallKeys: result.route,
-        destination: { x: x, y: y },
-        destNodeX: x,
-        destNodeY: y,
+        destination: { x, y }
       };
     });
 
     // step 5
     this.setState(prevState => ({
       walls: getWallsFromInactiveWallKeys(prevState),
-    }), () => {
-      this.setState(prevState => ({
-        allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
-      }), (prevState) => {
-        this.updateSiblingsUsingPaths();
-      });
+      allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
+    }), (prevState) => {
+      this.updateSiblingsUsingPaths();
     });
   };
 
