@@ -13,6 +13,21 @@ export type MazeNode = {
   [key: string]: any; // Allows other dynamic properties inside node objects
 };
 
+export type Coordinate = {
+  x: number,
+  y: number
+}
+
+export type EncodedMaze = {
+  serialized: string;
+  rows: number;
+  cols: number;
+  level: number;
+  start: Coordinate;
+  destination: Coordinate;
+  spacing: number;
+};
+
 export type MazeWall = {
   id: WallKey;
   x1: number;
@@ -31,18 +46,21 @@ export type MazePath = {
 export type NodeAdjacencyMap = Record<NodeKey, Record<NodeKey, 1>>;
 
 export type MazeState = {
-  level: number;
-  rows: number;
-  cols: number;
-  width: number;
-  height: number;
-  spacing: number;
-
-  nodes: MazeNode[];
-  walls: MazeWall[];
-  inactiveWallKeys: WallKey[];
   allPaths: MazePath[];
-
+  cols: number;
+  destination: Coordinate;
   destNodeX: string;
   destNodeY: string;
+  height: number;
+  inactiveWallKeys: WallKey[];
+  level: number;
+  nodes: MazeNode[];
+  rows: number;
+  spacing: number;
+  walls: MazeWall[];
+  width: number;
+  serialized?: string;
+  start?: Coordinate;
 };
+
+export type EncoderProps = Omit<MazeState, "serialized, height, width">;
