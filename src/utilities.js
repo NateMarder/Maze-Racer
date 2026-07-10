@@ -12,8 +12,8 @@ export const mazeGraphDefaults = {
   desktopSpacing: 60,
   mobileSpacing: 50,
   level: 1,
-  height: 800,
-  width: 800,
+  height: 400,
+  width: 400,
 };
 
 export const DEVICETYPES = {

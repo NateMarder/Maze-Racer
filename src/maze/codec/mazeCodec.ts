@@ -21,7 +21,7 @@ interface GetWallsFromInactiveKeysProps {
 }
 
 export const MazeCodec = {
-    encode(maze: EncoderProps): EncodedMaze {
+    encode(maze: MazeState): EncodedMaze {
         const { cols, rows, level, destination, spacing, start, nodes } = maze;
         const hydratedNodes = hydratePathDirections(nodes);
         const hexRepresentationOfMaze = getHexRepresentationOfNodeArray(hydratedNodes, rows, cols);

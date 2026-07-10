@@ -12,6 +12,7 @@ export enum directions {
 // the same nodes WITH pathDirections also included. A path direction
 // is basically just the orthogonal equivalent of an open wall
 export const hydratePathDirections = (nodes: MazeNode[]) => {
+  console.log("type of nodes: ", typeof nodes);
   let clones = [...nodes];
 
   for (let j = 0; j <= clones.length - 1; j++) {
@@ -23,7 +24,7 @@ export const hydratePathDirections = (nodes: MazeNode[]) => {
 
 // this is used during the serialization phase, it's a little confusing
 // to read now because it was written as an instance method, but this 
-// method is essentially swapping out the maze-graph's sibling keys for
+// method is essentially swapping out the maze-graph's sibling keys for 
 // path directions, which are enums, and therefore easily converted to 
 // ones and zeros (binary). 
 export const getNodeWithDirections = (node: MazeNode): MazeNode => {

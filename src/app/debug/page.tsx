@@ -10,8 +10,8 @@ export default function Home() {
       <div className="column">
         <MazeGraph
           className="mz-container"
-          height={800}
-          width={800}
+          height={200}
+          width={200}
           level={1}
           spacing={60}
         />
