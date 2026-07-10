@@ -8,14 +8,11 @@ import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
 import LevelOne from './engine/levelOneEngine';
 import { getEncodedMazeDataFromUrlParams, updateWindowUrlWithoutReload } from '../webUtilities';
-import { MazeState  } from './types';
+import { MazeState } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 import { MazeCodec } from './codec/mazeCodec';
 
 
-// ==========================================
-// 1. Interfaces & Types Definition
-// ==========================================
 export interface MazePath {
     nodeKeys: [string, string];
 }
@@ -30,14 +27,8 @@ export interface MazeGraphProps {
     spacing: number;
 }
 
-// ==========================================
-// 2. Strongly-Typed React Class Component
-// ==========================================
-
 export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeState> {
-    // Properly type the React ref container
     private mazeGraphRef: React.RefObject<HTMLDivElement | null>;
-    private currentLevel?: number;
 
     constructor(props: MazeGraphProps) {
         super(props);
@@ -52,7 +43,7 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
             spacing,
             cols,
             rows,
-            nodes: new NodeFactory().getNodes({rows, cols, spacing}),
+            nodes: new NodeFactory().getNodes({ rows, cols, spacing }),
             allPaths: [],
             walls: [],
             inactiveWallKeys: [],
@@ -64,7 +55,6 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
     }
 
     componentDidMount = (): void => {
-
         // 1 --> run the algorithm to create the maze
         const result = new LevelOne().run(this.state);
         const [x, y] = result.destNodeKey.split('.').map(Number);
@@ -78,11 +68,11 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
 
         // 2 --> get paths and walls for maze rendering
         this.setState(prevState => ({
-          walls: getWallsFromInactiveWallKeys(prevState),
-          allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
+            walls: getWallsFromInactiveWallKeys(prevState),
+            allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
         }), () => {
-          // 3 --> even though the maze is already technically visible this step enables player-movement  
-          this.updateNodeSiblingPaths()
+            // 3 --> even though the maze is already technically visible this step enables player-movement  
+            this.updateNodeSiblingPaths()
         });
     };
 
@@ -130,7 +120,7 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
                 y1={y1.toString()}
                 y2={y2.toString()}
                 className={"insidewall"}
-         />;
+            />;
         });
 
     getOutterWalls = (): React.JSX.Element => {
@@ -170,25 +160,25 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
 
     render = () => {
         const { width, height, destination } = this.state;
-    
+
         return (
-          <div ref={this.mazeGraphRef}>
-            <svg width={width} height={height} id="mz-svg">
-              {this.getOutterWalls()}
-              {this.getInnerWalls()}
-              {this.getUserControlNode()}
-              <DestinationNode
-                x={destination.x}
-                y={destination.y}
-                r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
-              />
-            </svg>
-            <br></br>
-            <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode </button>
-            <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runDecoder}>decode</button>
-            <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.refresh}> refresh </button>
-            <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>
-          </div>
+            <div ref={this.mazeGraphRef}>
+                <svg width={width} height={height} id="mz-svg">
+                    {this.getOutterWalls()}
+                    {this.getInnerWalls()}
+                    {this.getUserControlNode()}
+                    <DestinationNode
+                        x={destination.x}
+                        y={destination.y}
+                        r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
+                    />
+                </svg>
+                <br></br>
+                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode </button>
+                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runDecoder}>decode</button>
+                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.refresh}> refresh </button>
+                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>
+            </div>
         );
-      };
+    };
 }
