@@ -1,15 +1,14 @@
 'use client'
 
 import React from 'react';
-import { mazeGraphDefaults as DEFAULTS, defaultColumnCount, defaultRowCount } from '../utilities';
+import { mazeGraphDefaults as DEFAULTS } from '../utilities';
 import { NodeFactory, PlayerNode } from './node/index';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
-import { MazeWallFactory, MazeWall } from './wall/index';
+import { MazeWall } from './wall/index';
 import LevelOne from './engine/levelOneEngine';
 import { getEncodedMazeDataFromUrlParams, updateWindowUrlWithoutReload } from '../webUtilities';
-import { getHexRepresentationOfNodeArray, hydratePathDirections } from './codec/compressionHandler';
-import { MazeNode, WallKey, MazeWall as MazeWallType, Coordinate, MazeState  } from './types';
+import { MazeState  } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 import { MazeCodec } from './codec/mazeCodec';
 
@@ -17,37 +16,6 @@ import { MazeCodec } from './codec/mazeCodec';
 // ==========================================
 // 1. Interfaces & Types Definition
 // ==========================================
-
-// Define the shape of your external DEFAULTS configuration
-interface MazeDefaults {
-    desktopSpacing: number;
-    cols: number;
-    rows: number;
-}
-
-// Declare external globals if they aren't imported explicitly in your file
-// declare const DEFAULTS: MazeDefaults;
-// declare const NodeFactory: any; 
-// declare const LevelOne: any;
-// declare const MazeWallFactory: (state: MazeGraphState) => MazeWall[];
-// declare const createPathsFromInactiveWalls: (keys: string[]) => MazePath[];
-// declare const hydratePathDirections: (nodes: MazeNode[]) => MazeNode[];
-// declare const getHexRepresentationOfNodeArray: (nodes: MazeNode[]) => string;
-
-// Placeholder components (replace imports with your actual component paths)
-// declare const PlayerNode: React.ComponentType<any>;
-// declare const MazeWall: React.ComponentType<any>;
-// declare const DestinationNode: React.ComponentType<any>;
-
-
-// export interface MazeWall {
-//   id: WallKey;
-//   x1: number;
-//   y1: number;
-//   x2: number;
-//   y2: number;
-// }
-
 export interface MazePath {
     nodeKeys: [string, string];
 }
@@ -76,9 +44,11 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
         const rows = Math.floor((props.height * 0.80) / DEFAULTS.desktopSpacing);
         const cols = Math.floor((props.width * 0.80) / DEFAULTS.desktopSpacing);
         const spacing = props.spacing || DEFAULTS.desktopSpacing;
+        const height = spacing * rows;
+        const width = spacing * cols;
         this.state = {
-            height: props.height,
-            width: props.width,
+            height,
+            width,
             spacing,
             cols,
             rows,
@@ -88,21 +58,14 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
             inactiveWallKeys: [],
             destination: { x: 0, y: 0 },
             serialized: '',
-            level: props.level || DEFAULTS.level || 1
+            level: props.level
         };;
         this.mazeGraphRef = React.createRef<HTMLDivElement>();
     }
 
     componentDidMount = (): void => {
-    
-        // 1 --> setup nodes and dimensions
-        this.setState((prevState, props) => ({
-          level: this.currentLevel || 1,
-          width: DEFAULTS.desktopSpacing * prevState.cols,
-          height: DEFAULTS.desktopSpacing * prevState.rows,
-        }));
-    
-        // 2 --> run the algorithm to create the maze
+
+        // 1 --> run the algorithm to create the maze
         const result = new LevelOne().run(this.state);
         const [x, y] = result.destNodeKey.split('.').map(Number);
 
@@ -113,11 +76,12 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
             });
         }
 
-        // 3 --> get paths and walls for maze rendering
+        // 2 --> get paths and walls for maze rendering
         this.setState(prevState => ({
           walls: getWallsFromInactiveWallKeys(prevState),
           allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
         }), () => {
+          // 3 --> even though the maze is already technically visible this step enables player-movement  
           this.updateNodeSiblingPaths()
         });
     };
@@ -140,7 +104,7 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
             }
         }
 
-    this.setState({ nodes: clonedNodes });
+        this.setState({ nodes: clonedNodes });
     };
 
     getUserControlNode = (): React.JSX.Element => (
@@ -159,8 +123,8 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
         this.state.walls.map((wall) => {
             const { id, x1, y1, x2, y2 } = wall;
             return <MazeWall
-                key={id}
                 id={id}
+                key={id}
                 x1={x1.toString()}
                 x2={x2.toString()}
                 y1={y1.toString()}

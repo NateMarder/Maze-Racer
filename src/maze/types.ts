@@ -62,5 +62,3 @@ export type MazeState = {
 };
 
 export type EncoderProps = Omit<MazeState, "serialized" | "height" | "width">;
-
-// export type EncoderProps = Omit<MazeState, "serialized, height, width">;

@@ -1,5 +1,4 @@
 import { MazeNode } from "../node";
-import { Coordinate } from "../types";
 import { binaryFromHex } from "./compressionHandler";
 
 interface GetFreshNodesProps {
@@ -13,16 +12,6 @@ interface TranslateHexProps {
     rows: number,
     cols: number,
     spacing: number
-}
-
-interface MazeBundle {
-    serialized: string,
-    rows: number,
-    cols: number,
-    spacing: number,
-    destination: Coordinate,
-    level: number,
-    start: Coordinate
 }
 
 export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) => {

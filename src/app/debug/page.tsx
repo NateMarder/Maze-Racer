@@ -2,7 +2,6 @@
 
 import styles from "../page.module.css";
 import MazeGraph from '../../maze/MazeGraph';
-import { mazeGraphDefaults } from "@/utilities";
 
 export default function Home() {
 
@@ -14,7 +13,7 @@ export default function Home() {
           height={800}
           width={800}
           level={1}
-          spacing={mazeGraphDefaults.desktopSpacing}
+          spacing={60}
         />
     </div>
     </div>

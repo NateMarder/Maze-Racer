@@ -11,7 +11,9 @@ export const defaultRowCount = 10;
 export const mazeGraphDefaults = {
   desktopSpacing: 60,
   mobileSpacing: 50,
-  level: 1
+  level: 1,
+  height: 800,
+  width: 800,
 };
 
 export const DEVICETYPES = {
