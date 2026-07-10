@@ -1,5 +1,5 @@
 import { MazeNode } from "../types";
-import { verbosity } from '../../utilities';
+import { verbosity } from '../../defaults';
 
 export enum directions {
   Up = 0,

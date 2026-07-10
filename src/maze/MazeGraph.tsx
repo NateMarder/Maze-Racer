@@ -1,8 +1,9 @@
 'use client'
 
 import React from 'react';
-import { mazeGraphDefaults as DEFAULTS } from '../utilities';
+import { mazeGraphDefaults as DEFAULTS } from '../defaults';
 import { NodeFactory, PlayerNode } from './node/index';
+import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
@@ -26,14 +27,14 @@ export interface MazeGraphProps {
 
 export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeState> {
     private mazeGraphRef: React.RefObject<HTMLDivElement | null>;
-
     constructor(props: MazeGraphProps) {
         super(props);
-        const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        // const rows = 4;
-        // const cols = 4;
+        // const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        // const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        const rows = 6;
+        const cols = 6;
         const spacing = props.spacing || DEFAULTS.desktopSpacing;
+        
         const height = spacing * rows;
         const width = spacing * cols;
         this.state = {
@@ -77,31 +78,12 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
         this.setState(prevState => ({
             walls: getWallsFromInactiveWallKeys(prevState),
             allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
-        }), () => {
-            // 3 --> even though the maze is already technically visible this step enables player-movement  
-            this.updateNodeSiblingPaths()
-        });
-    };
+        }));
 
-    updateNodeSiblingPaths = (): void => {
-        const clonedNodes = [...this.state.nodes];
-        const clonedPaths = [...this.state.allPaths];
-
-        for (let i = 0; i < clonedNodes.length; i++) {
-            clonedNodes[i].siblingKeys = [];
-        }
-
-        for (let p = 0; p < clonedPaths.length; p++) {
-            const [node1Key, node2Key] = clonedPaths[p].nodeKeys;
-            const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
-            const nodeRef2 = clonedNodes.find(n => n.key === node2Key);
-            if (nodeRef1 && nodeRef2) {
-                nodeRef1?.siblingKeys.push(nodeRef2.key);
-                nodeRef2?.siblingKeys.push(nodeRef1.key);
-            }
-        }
-
-        this.setState({ nodes: clonedNodes });
+        // 3 --> update nodes with the paths from state
+        this.setState(prevState => ({
+            nodes: getNodesWithConnectedSiblingsBasedOnPath(prevState)
+        }))
     };
 
     getUserControlNode = (): React.JSX.Element => (
