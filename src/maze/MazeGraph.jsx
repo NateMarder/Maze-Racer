@@ -7,10 +7,10 @@ import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
 import LevelOne from '../maze/engine/levelOneEngine';
-import { getFreshMazeNodes, getMazeBundleFromUrlParams } from './codec/decodeUtilities';
+import { getEncodedMazeDataFromUrlParams } from './codec/decodeUtilities';
+import { getFullySerializedMazeForUrl, updateWindowUrlWithoutReload } from './codec/encodeUtilities';
 import { MazeCodec } from './codec/mazeCodec';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
-
 
 export default class MazeGraph extends React.Component {
   constructor(props) {
@@ -29,7 +29,7 @@ export default class MazeGraph extends React.Component {
       destNodeY: "0",
       destination: { x: 0, y: 0 },
       hexString: '',
-      level: props.level || DEFAULTS.level
+      level: props.level || DEFAULTS.level || 1
     };
     this.mazeGraphRef = React.createRef();
   }
@@ -66,12 +66,12 @@ export default class MazeGraph extends React.Component {
   updateNodeSiblingPaths = () => {
     const clonedNodes = [...this.state.nodes];
     const clonedPaths = [...this.state.allPaths];
-    
-    for(let i = 0; i < clonedNodes.length; i++){
+
+    for (let i = 0; i < clonedNodes.length; i++) {
       clonedNodes[i].siblingKeys = [];
     }
 
-    for(let p = 0; p < clonedPaths.length; p++) {
+    for (let p = 0; p < clonedPaths.length; p++) {
       const [node1Key, node2Key] = clonedPaths[p].nodeKeys;
       const nodeRef1 = clonedNodes.find(n => n.key === node1Key);
       const nodeRef2 = clonedNodes.find(n => n.key === node2Key);
@@ -79,7 +79,7 @@ export default class MazeGraph extends React.Component {
       nodeRef2.siblingKeys.push(nodeRef1.key);
     }
 
-    this.setState({nodes: clonedNodes});
+    this.setState({ nodes: clonedNodes });
   };
 
   getUserControlNode = () => (
@@ -95,27 +95,6 @@ export default class MazeGraph extends React.Component {
     />
   );
 
-  // getMazeBundleFromUrlParams = () => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const hexString = urlParams.get('h');
-  //   const colsValue = urlParams.get('c');
-  //   const rowsValue = urlParams.get('r');
-  //   const levelValue = urlParams.get('l');
-  //   const destinationX = urlParams.get('dx');
-  //   const destinationY = urlParams.get('dy');
-
-  //   const mazeBundle = {
-  //     encodedMazeHex: hexString,
-  //     rows: parseInt(rowsValue),
-  //     cols: parseInt(colsValue),
-  //     spacing: parseInt(DEFAULTS.desktopSpacing),
-  //     destination: {x: parseInt(destinationX), y: parseInt(destinationY)},
-  //     level: parseInt(levelValue)
-  //   }
-
-  //   return mazeBundle
-  // }
-
   getInnerWalls = () => this.state.walls.map((wall) => {
     const { id, x1, y1, x2, y2 } = wall;
     return <MazeWall key={id} id={id} x1={x1} y1={y1} x2={x2} y2={y2} className="insidewall" />;
@@ -130,25 +109,6 @@ export default class MazeGraph extends React.Component {
       <MazeWall x1={0} y1={height} x2={width} y2={height} className="outsidewall" />
     </>;
   };
-
-  /**
-   * Functions below this point are for debugging and dev work
-   */
-  announceNodesToConsole = () => {
-    console.clear();
-    console.log("\n [debug] current state's nodes: ", this.state.nodes);
-  }
-
-  announceWallsToConsole = () => {
-    console.clear();
-    console.log("\n [debug] this.state.walls: ", this.state.walls);
-    console.log("\n [debug] this.state.inactiveWallKeys: ", this.state.inactiveWallKeys);
-  }
-
-  announcePathsToConsole = () => {
-    console.clear();
-    console.log("\n [debug] this.state.allPaths: ", this.state.allPaths);
-  }
 
   clearWallsAndPaths = () => {
     console.clear();
@@ -184,39 +144,14 @@ export default class MazeGraph extends React.Component {
   }
 
   runEncoder = () => {
-    const dataForEncoding = { ...this.state, serialized: null, height: null, width: null };
-    console.log("data we are seinding to encoder: ", dataForEncoding);
-    const encodeResult = MazeCodec.encode(dataForEncoding);
-
-    const currentUrl = new URL(window.location.href);
-    currentUrl.searchParams.set("h", encodeResult.serialized);        // serialized hex representation of maze
-    currentUrl.searchParams.set("c", encodeResult.cols);              // col count
-    currentUrl.searchParams.set("r", encodeResult.rows);              // row count
-    currentUrl.searchParams.set("l", encodeResult.level);             // current level
-    currentUrl.searchParams.set("dx", encodeResult.destination.x);    // maze-finish x
-    currentUrl.searchParams.set("dy", encodeResult.destination.y);    // maze-finish y
-    currentUrl.searchParams.set("s", encodeResult.spacing);           // maze spacing (width of the paths, also same as measuring center of mazeNode to center of neighboring mazeNode)
-
-    // 3. Update the browser URL bar without refreshing
-    window.history.replaceState(null, '', currentUrl.toString());     // add the data to the URL, don't reload,
-    console.log("what we see in the window.location.href now: ", window.location.href)
-    console.log("Lets look at the encoding result: ", encodeResult);
+    const encodedMaze = getFullySerializedMazeForUrl(this.state);
+    updateWindowUrlWithoutReload(encodedMaze)
   }
 
   runDecoder = () => {
-    const dataFromUrlParams = getMazeBundleFromUrlParams();
-    const encoded = {
-      cols: dataFromUrlParams.cols,
-      rows: dataFromUrlParams.rows,
-      level: dataFromUrlParams.level,
-      destination: dataFromUrlParams.destination,
-      spacing: dataFromUrlParams.spacing,
-      start: { x: dataFromUrlParams.spacing / 2, y: dataFromUrlParams.spacing / 2 }, // since we always start in the top left, this one is calculated for now
-      serialized: dataFromUrlParams.encodedMazeHex
-    }
+    const encoded = getEncodedMazeDataFromUrlParams();
     const decodeResult = MazeCodec.decode(encoded);
     this.setState({
-      nodes: getFreshMazeNodes(encoded),
       ...decodeResult
     })
   }

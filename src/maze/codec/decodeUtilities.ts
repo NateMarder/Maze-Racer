@@ -16,12 +16,13 @@ interface TranslateHexProps {
 }
 
 interface MazeBundle {
-    encodedMazeHex: string,
+    serialized: string,
     rows: number,
     cols: number,
     spacing: number,
     destination: Coordinate,
-    level: number
+    level: number,
+    start: Coordinate
 }
 
 export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) => {
@@ -105,7 +106,7 @@ export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: n
     return inactiveWallKeys;
 }
 
-export const getMazeBundleFromUrlParams = (): any => {
+export const getEncodedMazeDataFromUrlParams = (): any => {
     const urlParams = new URLSearchParams(window.location.search);
     const hexString = urlParams.get('h');
     const colsValue = urlParams.get('c');
@@ -118,12 +119,13 @@ export const getMazeBundleFromUrlParams = (): any => {
     let mazeBundle: MazeBundle;
     if (rowsValue && colsValue && hexString && levelValue && destinationX && destinationY && spacing) {
         return mazeBundle = {
-            encodedMazeHex: hexString,
+            serialized: hexString,
             rows: parseInt(rowsValue),
             cols: parseInt(colsValue),
             spacing: parseInt(spacing),
             destination: { x: parseInt(destinationX), y: parseInt(destinationY) },
-            level: parseInt(levelValue)
+            level: parseInt(levelValue),
+            start:{ x: parseInt(spacing) / 2, y: parseInt(spacing) / 2 }, // since we always start in the top left, this one is calculated for now
         }
     }
 
