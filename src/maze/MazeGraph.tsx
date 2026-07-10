@@ -7,7 +7,7 @@ import DestinationNode from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
 import LevelOne from './engine/levelOneEngine';
-import { getEncodedMazeDataFromUrlParams, updateWindowUrlWithoutReload } from '../webUtilities';
+import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../webUtilities';
 import { MazeState, MazePath } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 import { MazeCodec } from './codec/mazeCodec';
@@ -29,10 +29,10 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
 
     constructor(props: MazeGraphProps) {
         super(props);
-        // const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing) );
-        // const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing) );
-        const rows = 4;
-        const cols = 4;
+        const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        // const rows = 4;
+        // const cols = 4;
         const spacing = props.spacing || DEFAULTS.desktopSpacing;
         const height = spacing * rows;
         const width = spacing * cols;
@@ -54,15 +54,23 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
     }
 
     componentDidMount = (): void => {
-        // 1 --> run the algorithm to create the maze
-        const result = new LevelOne().run(this.state);
-        const [x, y] = result.destNodeKey.split('.').map(Number);
-
-        if (result?.route) {
+        if (safeToRenderWithUrlParams()) {
+            const encoded = getEncodedMazeDataFromUrlParams();
+            console.log("\n --> deriving state from serialized URL data", encoded);
+            const decodeResult = MazeCodec.decode(encoded);
             this.setState({
-                inactiveWallKeys: result.route,
-                destination: { x, y }
-            });
+                ...decodeResult
+            })
+        } else {
+            console.log("\n --> deriving state from LevelOne().run command (dfs algorithm)")
+            const result = new LevelOne().run(this.state);
+            const [x, y] = result.destNodeKey.split('.').map(Number);
+            if (result?.route) {
+                this.setState({
+                    inactiveWallKeys: result.route,
+                    destination: { x, y }
+                });
+            }
         }
 
         // 2 --> get paths and walls for maze rendering

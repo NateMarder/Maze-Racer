@@ -1,9 +1,8 @@
 
-import { NodeFactory } from "../node";
 import { createPathsFromInactiveWalls } from "../path";
-import { EncodedMaze, MazeState, EncoderProps, MazeNode, MazePath } from "../types";
+import { EncodedMaze, MazeState, MazeNode, MazePath } from "../types";
 import { getHexRepresentationOfNodeArray, hydratePathDirections } from "./compressionHandler";
-import { getFreshMazeNodes, getInactiveWallsFromHex, getInactiveWallFromBinaryString } from "./decodeUtilities";
+import { getFreshMazeNodes, getInactiveWallsFromHex } from "./decodeUtilities";
 
 interface InactiveWallKey {
     id: string,

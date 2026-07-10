@@ -51,3 +51,13 @@ export const updateWindowUrlWithoutReload = (encoded: EncodedMaze) => {
         window.history.replaceState(null, '', currentUrl.toString());     // add the data to the URL, don't reload,
     }
 }
+
+export const safeToRenderWithUrlParams = ():boolean => {
+    if (typeof window === 'object') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const hexString = urlParams.get('h') || "";
+        return hexString.length > 0
+    }
+
+    return false;
+}
