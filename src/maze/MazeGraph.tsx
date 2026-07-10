@@ -8,14 +8,11 @@ import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
 import LevelOne from './engine/levelOneEngine';
 import { getEncodedMazeDataFromUrlParams, updateWindowUrlWithoutReload } from '../webUtilities';
-import { MazeState } from './types';
+import { MazeState, MazePath } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 import { MazeCodec } from './codec/mazeCodec';
 
 
-export interface MazePath {
-    nodeKeys: [string, string];
-}
 
 export interface MazeGraphProps {
     height: number;

@@ -10,7 +10,8 @@ export type MazeNode = {
   distFromStart: number;
   discoveredBy?: string;
   pathDirections?: any[];
-  [key: string]: any; // Allows other dynamic properties inside node objects
+  x: number;
+  y: number;
 };
 
 export type Coordinate = {

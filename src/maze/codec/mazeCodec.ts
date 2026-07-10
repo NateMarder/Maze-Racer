@@ -87,7 +87,7 @@ export const MazeCodec = {
 
         console.log("\nwall count: ", activeWalls.length);
         const paths = [...new Set(createPathsFromInactiveWalls(inactiveWallKeys))];
-        const nodesWithSiblintgs = this.updateNodeSiblings(paths, freshNodes)
+        const nodesWithSiblings = this.updateNodeSiblings(paths, freshNodes)
 
         const decoded: MazeState = {
             rows: rows,
@@ -99,11 +99,9 @@ export const MazeCodec = {
             start: start,
             allPaths: paths, // we need to calculate
             inactiveWallKeys: inactiveWallKeys, // we need to calculate
-            destNodeX: destination.x.toString(),
-            destNodeY: destination.y.toString(),
             height: spacing * rows,
             width: spacing * cols,
-            nodes: nodesWithSiblintgs,
+            nodes: nodesWithSiblings,
             walls: activeWalls // we need to calculate
         }
 

@@ -1,5 +1,6 @@
 import { MazeNode } from "../node";
 import { binaryFromHex } from "./compressionHandler";
+import { MazeNode as MazeNodeType } from "../types";
 
 interface GetFreshNodesProps {
     rows: number,
@@ -15,8 +16,7 @@ interface TranslateHexProps {
 }
 
 export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) => {
-    let arrayOfNodes: MazeNode[] = [];
-    //const nodeMap = new Map<string, MazeNode>();
+    let arrayOfNodes: MazeNodeType[] = [];
 
     const offset = spacing / 2;
     for (let i = 0; i < cols; i += 1) {
@@ -33,7 +33,6 @@ export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) =
                 isVisited: false,
                 distFromStart: 0,
             });
-            //nodeMap.set(key, nextNode);
             arrayOfNodes.push(nextNode);
         }
     }

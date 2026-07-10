@@ -30,6 +30,8 @@ export default class MazeNode {
   discoveredBy
   siblingKeys
   pathDirections
+  x
+  y
 
   constructor({ x, y, isStart, isDest, disoveredBy, siblingKeys, pathDirections }: MazeNodeProps) {
     this.key = `${+x}.${+y}`;
@@ -40,5 +42,7 @@ export default class MazeNode {
     this.discoveredBy = disoveredBy;
     this.siblingKeys = siblingKeys ?? [];
     this.pathDirections = pathDirections ?? [];
+    this.x = x;
+    this.y = y;
   }
 }
