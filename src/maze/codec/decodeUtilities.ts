@@ -106,32 +106,6 @@ export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: n
     return inactiveWallKeys;
 }
 
-export const getEncodedMazeDataFromUrlParams = (): any => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hexString = urlParams.get('h');
-    const colsValue = urlParams.get('c');
-    const rowsValue = urlParams.get('r');
-    const levelValue = urlParams.get('l');
-    const destinationX = urlParams.get('dx');
-    const destinationY = urlParams.get('dy');
-    const spacing = urlParams.get('s');
-
-    let mazeBundle: MazeBundle;
-    if (rowsValue && colsValue && hexString && levelValue && destinationX && destinationY && spacing) {
-        return mazeBundle = {
-            serialized: hexString,
-            rows: parseInt(rowsValue),
-            cols: parseInt(colsValue),
-            spacing: parseInt(spacing),
-            destination: { x: parseInt(destinationX), y: parseInt(destinationY) },
-            level: parseInt(levelValue),
-            start:{ x: parseInt(spacing) / 2, y: parseInt(spacing) / 2 }, // since we always start in the top left, this one is calculated for now
-        }
-    }
-
-    return {};
-}
-
 export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }: TranslateHexProps): string[] => {
     let inactiveKeys: string[] = [];
     let hexCounter = 0;

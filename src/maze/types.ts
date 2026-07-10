@@ -49,8 +49,6 @@ export type MazeState = {
   allPaths: MazePath[];
   cols: number;
   destination: Coordinate;
-  destNodeX: string;
-  destNodeY: string;
   height: number;
   inactiveWallKeys: WallKey[];
   level: number;
@@ -63,4 +61,6 @@ export type MazeState = {
   start?: Coordinate;
 };
 
-export type EncoderProps = Omit<MazeState, "serialized, height, width">;
+export type EncoderProps = Omit<MazeState, "serialized" | "height" | "width">;
+
+// export type EncoderProps = Omit<MazeState, "serialized, height, width">;
