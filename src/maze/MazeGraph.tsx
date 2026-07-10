@@ -29,12 +29,9 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
     private mazeGraphRef: React.RefObject<HTMLDivElement | null>;
     constructor(props: MazeGraphProps) {
         super(props);
-        // const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        // const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        const rows = 6;
-        const cols = 6;
+        const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
         const spacing = props.spacing || DEFAULTS.desktopSpacing;
-        
         const height = spacing * rows;
         const width = spacing * cols;
         this.state = {
