@@ -29,8 +29,10 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
     private mazeGraphRef: React.RefObject<HTMLDivElement | null>;
     constructor(props: MazeGraphProps) {
         super(props);
-        const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        // const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        // const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
+        const rows = 30;
+        const cols = 30;
         const spacing = props.spacing || DEFAULTS.desktopSpacing;
         const height = spacing * rows;
         const width = spacing * cols;
@@ -160,11 +162,12 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
                     />
                 </svg>
                 <br></br>
+                <br></br>
+                <br></br>
                 <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode </button>
                 <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runDecoder}>decode</button>
                 <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.refresh}> refresh </button>
-                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>
-            </div>
+                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>             </div>
         );
     };
 }
