@@ -1,7 +1,7 @@
 
 import { createPathsFromInactiveWalls } from "../path";
 import { EncodedMaze, MazeState, MazeNode, MazePath } from "../types";
-import { getHexRepresentationOfNodeArray, hydratePathDirections } from "./compressionHandler";
+import { getHexFromNodes, getHexRepresentationOfNodeArray, hydratePathDirections } from "./encodeUtilities";
 import { getFreshMazeNodes, getInactiveWallsFromHex } from "./decodeUtilities";
 
 interface InactiveWallKey {
@@ -23,7 +23,10 @@ export const MazeCodec = {
     encode(maze: MazeState): EncodedMaze {
         const { cols, rows, level, destination, spacing, start, nodes } = maze;
         const hydratedNodes = hydratePathDirections(nodes);
-        const hexRepresentationOfMaze = getHexRepresentationOfNodeArray(hydratedNodes, rows, cols);
+        const hexRepresentationOfMaze = getHexFromNodes({
+            ...maze,
+            nodes: hydratedNodes
+        });
         const encoded: EncodedMaze = {
             rows: rows,
             cols: cols,

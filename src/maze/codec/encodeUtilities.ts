@@ -1,4 +1,4 @@
-import { MazeNode } from "../types";
+import { MazeNode, MazeState } from "../types";
 import { verbosity } from '../../defaults';
 
 export enum directions {
@@ -112,6 +112,28 @@ export const getPathDirections = (node: MazeNode) => {
 //    c --> right node's right-side sibling 
 //    d --> right node's bottom-side sibling
 //
+//  From Node Pairs to Hex Serialization/Compression: 
+//  [directions enums] [binary]    [int]  [hex]
+//  0,0,0,0  ---------> 0000 -----> 0  --> 0
+//  0,0,0,1  ---------> 0001 -----> 1  --> 1
+//  1,1,1,1  ---------> 1111 -----> 15 --> toHex:f
+// This is the core of both the serialization and compression. This function iterates
+// through all the nodes, 2 at a time. We should split this out into multiple
+// steps, but essentially, within 1 for-loop, we are analyzing the node's 
+// path-directions (thing of them as the traversable sides that are touching other nodes)
+// and depending on the paths vs. walls, we assign that node a specific binary value.
+// This binary value, which represents all the paths for the bottom and right sides of BOTH
+// the nodes (we are iterating 2 at a time), is then converted into a number value. 
+//
+// the order/sequence of the binary string is important.
+// note that each can be a 1 or 0, 1 means there's a traversable path, 0 means it's a wall)
+// from left to right here's what each number represents:
+//   [a,b,c,d] 
+//    a --> left node's right-side sibling 
+//    b --> left node's bottom-side sibling
+//    c --> right node's right-side sibling 
+//    d --> right node's bottom-side sibling
+//
 // examples:
 // "0,0,0,0] --> toHex --> 0
 // "0,0,0,1] --> toHex --> 1
@@ -123,12 +145,12 @@ export const getPathDirections = (node: MazeNode) => {
 //    once by iterating nodes in groups of 2). We're leveraging maze topology.
 //  - if we have a maze with lets say 10 rows x 10 cols, we can represent the maze's 
 //    paths and walls within just 50 hex-characters
-export function getHexRepresentationOfNodeArray(nodes: MazeNode[],rowCount:number,colCount:number ) {
+export function getHexRepresentationOfNodeArray(nodes: MazeNode[], rowCount: number, colCount: number) {
   let hexResult = "";
-  let clonedNodes = [...nodes];
+  let clonedNodes = [...new Set(nodes)]
 
   for (let row = 0; row < rowCount; row += 1) {
-    for (let nodeIndex = 0; nodeIndex < clonedNodes.length; nodeIndex += (rowCount*2)) {
+    for (let nodeIndex = 0; nodeIndex < clonedNodes.length; nodeIndex += (rowCount * 2)) {
       let binary = ""; // note this is a string, which we add too, one digit at a time
       let node1Paths = nodes[nodeIndex].pathDirections ?? []; // first node
       let node2Paths = nodes[nodeIndex + (rowCount)].pathDirections ?? []; // right-hand neighbor node
@@ -145,6 +167,114 @@ export function getHexRepresentationOfNodeArray(nodes: MazeNode[],rowCount:numbe
   return hexResult;
 }
 
+
+export type GetHexFromNodesProps = Pick<MazeState, "nodes" | "cols" | "rows" | "spacing">;
+
+export function getHexFromNodes({ nodes, rows, cols, spacing }: GetHexFromNodesProps): string {
+  // let tempNodeMap: Map<string, MazeNode> = new Map<string, MazeNode>();
+  let serialized = "";
+  let clonedNodes = [...new Set(nodes)].sort();
+
+  // hydrates the map of nodes which makes it quicker to find each one as we iterate through 
+  // them all
+  // for (let i = 0; i < clonedNodes.length; i++) {
+  //   const nextMazeNode = clonedNodes[i];
+  //   const nextKey = clonedNodes[i].key;
+  //   tempNodeMap.set(nextKey, nextMazeNode); // `${x}.${y}` <--- this is what mazeNode key looks like
+  // }
+
+  const offset = spacing / 2;
+
+  // r === row count; so this should only change as many times as there are rows
+  // c === col count; so if we have 10 nodes in a single row we would need to update 
+  //       this value every-other node or 4 times: 
+  //            starting with c and r at 0,0 (top left maze cell)
+  //            loop-1 (address nodes at indexes 2 and 3)
+  //            loop-2 (address nodes at indexes 4 and 5)
+  //            loop-3 (address nodes at indexes 6 and 7)
+  //            loop-4 (address nodes at indexes 8 and 9) // index 9 is the last index
+
+  let nodeCounter = 0;
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c += 2) {
+      // let leftNode: MazeNode | undefined;
+      // let rightNode: MazeNode | undefined;
+
+      let leftNodeKey = "";
+      let rightNodekey = "";
+
+      // first row, first colum so this happens just once
+      if (c === 0 && r === 0) {
+        let leftX = offset;
+        let leftY = offset;
+        leftNodeKey = `${leftX}.${leftY}`
+
+        let rightX = leftX + spacing;
+        let rightY = leftY;
+        rightNodekey = `${rightX}.${rightY}`
+      }
+
+     // right of the first row
+     if (c > 0 && r === 0) {
+        let leftX = offset + (spacing * c);
+        let leftY = offset;
+        leftNodeKey = `${leftX}.${leftY}`
+
+        let rightX = leftX + spacing;
+        let rightY = leftY;
+        rightNodekey = `${rightX}.${rightY}`
+      }
+
+      if (c === 0 && r > 0) {// first maze-cell in each row hits this case
+        let leftX = offset;
+        let leftY = offset + spacing * r;
+        leftNodeKey = `${leftX}.${leftY}`;
+
+        let rightX = offset + spacing;
+        let rightY = offset + (spacing * r);
+        rightNodekey = `${rightX}.${rightY}`
+      }
+
+      // for maze-cell pairs that are not at index 0
+      if (c > 0 && r > 0) {
+        let leftX = offset + spacing * c;
+        let leftY = offset + spacing * r;
+        leftNodeKey = `${leftX}.${leftY}`
+
+        let rightX = leftX + spacing;
+        let rightY = leftY;
+        rightNodekey = `${rightX}.${rightY}`
+      }
+
+
+      const leftNodePaths = clonedNodes.find((n) => n.key === leftNodeKey)?.pathDirections;
+      const rightNodePaths = clonedNodes.find((n) => n.key === rightNodekey)?.pathDirections;
+
+ 
+      // now that we have our correct nodes...lets figure out the hex character and append it
+      if (leftNodePaths && leftNodePaths.length > 0 && rightNodePaths && rightNodePaths.length > 0) {
+        nodeCounter += 2;
+        console.log(`counter is [${nodeCounter}] :: finding paths for left nodeKey: ${leftNodeKey}, and rightNeighborKey: ${rightNodekey}`)
+        let binary = "";
+
+        binary += leftNodePaths.indexOf(directions.Right.toString()) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
+        binary += leftNodePaths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
+        binary += rightNodePaths.indexOf(directions.Right.toString()) > -1 ? "1" : "0";
+        binary += rightNodePaths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
+
+        let numberVal = parseInt(binary, 2);
+        let hexVal = getHexFromDecimalString(numberVal);
+        serialized += hexVal;
+      }
+    }
+    
+  }
+  console.log(`hex string length: ${serialized.length}`);
+  console.log("last node key is: ", clonedNodes[clonedNodes.length-1].key);
+  console.log("getHexFromNodes serialized, ", serialized);
+  return serialized;
+}
+
 function getHexFromDecimalString(input: number): string {
   switch (input) {
     case 10: return "a";
@@ -157,7 +287,7 @@ function getHexFromDecimalString(input: number): string {
   }
 }
 
-export function binaryFromHex (input: string): string {
+export function binaryFromHex(input: string): string {
   switch (input) {
     case "0": return "0000";
     case "1": return "0001";

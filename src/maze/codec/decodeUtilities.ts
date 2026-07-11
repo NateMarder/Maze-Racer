@@ -1,5 +1,5 @@
 import { MazeNode } from "../node";
-import { binaryFromHex } from "./compressionHandler";
+import { binaryFromHex } from "./encodeUtilities";
 import { MazeNode as MazeNodeType } from "../types";
 
 interface GetFreshNodesProps {
