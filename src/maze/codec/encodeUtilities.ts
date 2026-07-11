@@ -1,5 +1,4 @@
 import { MazeNode, MazeState } from "../types";
-import { verbosity } from '../../defaults';
 
 export enum directions {
   Up = 0,
@@ -13,7 +12,7 @@ export enum directions {
 // is basically just the orthogonal equivalent of an open wall
 export const hydratePathDirections = (nodes: MazeNode[]) => {
   console.log("type of nodes: ", typeof nodes);
-  let clones = [...nodes];
+  const clones = [...nodes];
 
   for (let j = 0; j <= clones.length - 1; j++) {
     clones[j] = getNodeWithDirections(clones[j]);
@@ -33,11 +32,11 @@ export const getNodeWithDirections = (node: MazeNode): MazeNode => {
   const result: MazeNode = { ...node }
   const siblingKeys = [...node.siblingKeys];
 
-  let splitKey = result.key.split('.');
-  let cx = parseInt(splitKey[0]);
-  let cy = parseInt(splitKey[1]);
+  const splitKey = result.key.split('.');
+  const cx = parseInt(splitKey[0]);
+  const cy = parseInt(splitKey[1]);
 
-  for (let sibKey of siblingKeys) {
+  for (const sibKey of siblingKeys) {
     const split = sibKey.split(".");
     const sibX = parseInt(split[0]);
     const sibY = parseInt(split[1]);
@@ -62,14 +61,14 @@ export const getNodeWithDirections = (node: MazeNode): MazeNode => {
 }
 
 export const getPathDirections = (node: MazeNode) => {
-  let result = [];
+  const result = [];
   const clone: MazeNode = { ...node };
   const splitKey = clone.key.split('.');
   const cx = parseInt(splitKey[0]);
   const cy = parseInt(splitKey[1]);
   const siblingKeys = [...clone.siblingKeys];
 
-  for (let sibKey of siblingKeys) {
+  for (const sibKey of siblingKeys) {
     const split = sibKey.split(".");
     const sibX = parseInt(split[0]);
     const sibY = parseInt(split[1]);
@@ -145,35 +144,10 @@ export const getPathDirections = (node: MazeNode) => {
 //    once by iterating nodes in groups of 2). We're leveraging maze topology.
 //  - if we have a maze with lets say 10 rows x 10 cols, we can represent the maze's 
 //    paths and walls within just 50 hex-characters
-export function getHexRepresentationOfNodeArray(nodes: MazeNode[], rowCount: number, colCount: number) {
-  let hexResult = "";
-  let clonedNodes = [...new Set(nodes)]
-
-  for (let row = 0; row < rowCount; row += 1) {
-    for (let nodeIndex = 0; nodeIndex < clonedNodes.length; nodeIndex += (rowCount * 2)) {
-      let binary = ""; // note this is a string, which we add too, one digit at a time
-      let node1Paths = nodes[nodeIndex].pathDirections ?? []; // first node
-      let node2Paths = nodes[nodeIndex + (rowCount)].pathDirections ?? []; // right-hand neighbor node
-      binary += node1Paths.indexOf(directions.Right.toString()) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
-      binary += node1Paths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
-      binary += node2Paths.indexOf(directions.Right.toString()) > -1 ? "1" : "0";
-      binary += node2Paths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
-      let numberVal = parseInt(binary, 2);
-      let hexVal = getHexFromDecimalString(numberVal);
-      hexResult += hexVal;
-    }
-  }
-
-  return hexResult;
-}
-
-
-export type GetHexFromNodesProps = Pick<MazeState, "nodes" | "cols" | "rows" | "spacing">;
-
-export function getHexFromNodes({ nodes, rows, cols, spacing }: GetHexFromNodesProps): string {
+export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): string {
   // let tempNodeMap: Map<string, MazeNode> = new Map<string, MazeNode>();
   let serialized = "";
-  let clonedNodes = [...new Set(nodes)].sort();
+  const clonedNodes = [...new Set(nodes)].sort();
 
   // hydrates the map of nodes which makes it quicker to find each one as we iterate through 
   // them all
@@ -197,52 +171,49 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: GetHexFromNodesP
   let nodeCounter = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c += 2) {
-      // let leftNode: MazeNode | undefined;
-      // let rightNode: MazeNode | undefined;
-
       let leftNodeKey = "";
       let rightNodekey = "";
 
       // first row, first colum so this happens just once
       if (c === 0 && r === 0) {
-        let leftX = offset;
-        let leftY = offset;
+        const leftX = offset;
+        const leftY = offset;
         leftNodeKey = `${leftX}.${leftY}`
 
-        let rightX = leftX + spacing;
-        let rightY = leftY;
+        const rightX = leftX + spacing;
+        const rightY = leftY;
         rightNodekey = `${rightX}.${rightY}`
       }
 
      // right of the first row
      if (c > 0 && r === 0) {
-        let leftX = offset + (spacing * c);
-        let leftY = offset;
+        const leftX = offset + (spacing * c);
+        const leftY = offset;
         leftNodeKey = `${leftX}.${leftY}`
 
-        let rightX = leftX + spacing;
-        let rightY = leftY;
+        const rightX = leftX + spacing;
+        const rightY = leftY;
         rightNodekey = `${rightX}.${rightY}`
       }
 
       if (c === 0 && r > 0) {// first maze-cell in each row hits this case
-        let leftX = offset;
-        let leftY = offset + spacing * r;
+        const leftX = offset;
+        const leftY = offset + spacing * r;
         leftNodeKey = `${leftX}.${leftY}`;
 
-        let rightX = offset + spacing;
-        let rightY = offset + (spacing * r);
+        const rightX = offset + spacing;
+        const rightY = offset + (spacing * r);
         rightNodekey = `${rightX}.${rightY}`
       }
 
       // for maze-cell pairs that are not at index 0
       if (c > 0 && r > 0) {
-        let leftX = offset + spacing * c;
-        let leftY = offset + spacing * r;
+        const leftX = offset + spacing * c;
+        const leftY = offset + spacing * r;
         leftNodeKey = `${leftX}.${leftY}`
 
-        let rightX = leftX + spacing;
-        let rightY = leftY;
+        const rightX = leftX + spacing;
+        const rightY = leftY;
         rightNodekey = `${rightX}.${rightY}`
       }
 
@@ -262,16 +233,16 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: GetHexFromNodesP
         binary += rightNodePaths.indexOf(directions.Right.toString()) > -1 ? "1" : "0";
         binary += rightNodePaths.indexOf(directions.Down.toString()) > -1 ? "1" : "0";
 
-        let numberVal = parseInt(binary, 2);
-        let hexVal = getHexFromDecimalString(numberVal);
+        const numberVal = parseInt(binary, 2);
+        const hexVal = getHexFromDecimalString(numberVal);
         serialized += hexVal;
       }
     }
     
   }
-  console.log(`hex string length: ${serialized.length}`);
-  console.log("last node key is: ", clonedNodes[clonedNodes.length-1].key);
-  console.log("getHexFromNodes serialized, ", serialized);
+  // console.log(`hex string length: ${serialized.length}`);
+  // console.log("last node key is: ", clonedNodes[clonedNodes.length-1].key);
+  // console.log("getHexFromNodes serialized, ", serialized);
   return serialized;
 }
 
@@ -308,186 +279,3 @@ export function binaryFromHex(input: string): string {
     default: return "0" // TODO throw err here
   }
 }
-
-// This function take a look at the window.location.href object and then 
-// uses data from a valid mazegraph (hex, number of columns, number of rows, and level)
-// to update the existing URL so that it includes everything needed to 
-// re-render the exact same maze. We use this after running the codec on an un-flattened maze
-//  export function constructUrlFromCurrentMazeData(mazegraph:MazeGraph) {
-//     return window.location.href.split("?")[0] +
-//       "?" +
-//       ("m=" + mazegraph.hex + "&") +
-//       ("c=" + mazegraph.cols + "&") +
-//       ("r=" + mazegraph.rows + "&") +
-//       ("l=" + mazegraph.currentLevel);
-//   }
-
-
-// this function is sort of the 'inverse' of the constructUrlFromCurrentMazeData function
-// it does thie opposite - meaning that it reads the URL, and parses the query params
-// to to create what is called here a 'maze bundle', which can be used to re-render a maze.
-// on page-load if desired, we can read these params and skip the maze-generation phase alltogether
-// and instead, do sort of a maze-reconstruction for an already-generated maze. this way if we have 12
-// racers on a level, we only need generate once, and then just reconstruct. Since it doesn't require
-// any shuffling, it should be much quicker 
-function getBundleFromUrlData() {
-  let result = {};
-  let hex: string = "";
-  let cols: string = "";
-  let rows: string = "";
-  let level: string = "";
-  let urlParams = "";
-  if (window.location.href.indexOf("?") > -1) {
-    urlParams = window.location.href.split("?")[1];
-  }
-  let data = urlParams.split("&");
-  for (let i = 0; i < data.length; i++) {
-    let dataParts = data[i].split("=");
-    let type = dataParts[0], content = dataParts[1];
-    if (type === "m") {
-      hex = content;
-    }
-    else if (type === "c") {
-      cols = content;
-    }
-    else if (type === "r") {
-      rows = content;
-    }
-    else if (type === "l") {
-      level = content;
-    }
-  }
-  if (level == null) {
-    level = "1";
-  }
-  return {
-    hexstring: hex,
-    cols: cols,
-    rows: rows,
-    level: level
-  };
-}
-// getMazeBundle() {
-//   if (this.bundle == null) {
-//     this.updateBundleWithUrlData();
-//   }
-//   return this.bundle;
-// }
-
-// export class compressionHandler {
-
-
-// }
-
-// here's another 'inverse' function. this function iterates
-// through all the maze-nodes in a mazegraph and replaces the path-directions
-// back to sibling-keys.
-// export const getDirectionsFromSiblingKeys = (mazeNode:MazeNode[]) => {
-//   const resultNodes = [...mazeNode];
-//   for (let i = 0; i < resultNodes.length-1; i++) {
-
-//     let sibX = result.cx;
-//     let sibY = result.cy;
-//     let sibKey = "";
-
-//     const nextDirection = resultNodes[i].pathDirections;
-//     switch (nextDirection) {
-//       case directions.Up:
-//         sibY -= this.spacing;
-//         break;
-//       case directions.Right:
-//         sibX += this.spacing;
-//         break;
-//       case directions.Down:
-//         sibY += this.spacing;
-//         break;
-//       case directions.Left:
-//         sibX -= this.spacing;
-//         break;
-//       default:
-//         break;
-//     }
-
-//     sibKey += sibX + "." + sibY;
-//     this.siblings.push(sibKey);
-//   }
-// }
-
-
-// these functions appear to be part of the codec, but they are currently
-// living in another file. I'm including them here, so we can see visually
-// what all the parts likely required for the codec logic
-
-// function wallKeyToNodeKeys(wallKey: WallKey): [NodeKey, NodeKey] {
-//   const [x1, y1, x2, y2] = wallKey.split(".").map(Number);
-//   const orthogonalKey = getOrthogonalKey(x1, y1, x2, y2);
-//   const [nodeX1, nodeY1, nodeX2, nodeY2] = orthogonalKey.split(".");
-
-//   return [`${nodeX1}.${nodeY1}`, `${nodeX2}.${nodeY2}`];
-// }
-
-// function createPathsFromInactiveWalls(
-//   inactiveWallKeys: WallKey[]
-// ): MazePathType[] {
-//   return inactiveWallKeys.map((wallKey) => {
-//     const [nodeKey1, nodeKey2] = wallKeyToNodeKeys(wallKey);
-//     return new MazePath({ nodeKey1, nodeKey2 });
-//   });
-// }
-
-
-
-
-
-// Everything below this part of the file is just extra utility functions 
-// that may not be needed, but we don't want to throw things away quite yet, 
-// so we will just leave them here..
-// export class utilityDefaults {
-//   constructor() {
-//     this.defaultDesktopSpacing = 80;
-//     this.defaultMobileSpacing = 50;
-//     this.defaultControlSpeed = 50;
-//     this.goHomeSpeed = 500;
-//     this.currentLevel = 1;
-//     this.privateLevel = null;
-//     this.defaultLevelSpeeds = {
-//       One: 400,
-//       Two: 420,
-//       Three: 440,
-//       Four: 450,
-//       Five: 500,
-//       Six: 510,
-//       Seven: 520,
-//       Eight: 600,
-//       Nine: 700,
-//       Ten: 800,
-//     };
-//     this.directions = {
-//       Up: 0,
-//       Right: 1,
-//       Down: 2,
-//       Left: 3,
-//     };
-//     this.deviceTypes = {
-//       Mobile: 0,
-//       Desktop: 1,
-//       Tablet: 2,
-//     };
-//   }
-
-//   getDefaultLineSpacing() {
-//     if ('ontouchstart' in document && 800 < 1500) {
-//       return this.defaultDesktopSpacing; // desktop
-//     }
-
-//     return this.defaultMobileSpacing; // mobile
-//   }
-
-//   controlSpeed() { return this.defaultControlSpeed; }
-
-//   // goHomeSpeed() { return this.defaultGoHomeSpeed; }
-
-//   getdeviceTypes() { return this.deviceTypes; }
-
-//   levelSpeed() { return this.defaultLevelSpeeds; }
-//}

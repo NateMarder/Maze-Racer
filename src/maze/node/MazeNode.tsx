@@ -7,7 +7,7 @@ interface MazeNodeProps {
   y: number;
   isStart: boolean;
   isDest: boolean;
-  disoveredBy: any;
+  disoveredBy?: string;
   destnodekey: string;
   mzgraphref: React.RefObject<SVGSVGElement | HTMLElement | null>;
   siblingKeys?: string[];

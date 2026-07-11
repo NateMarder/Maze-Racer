@@ -1,19 +1,6 @@
 'use client';
-import React from "react";
 import { MazeNode as MazeNodeProps } from '../types'
 
-
-// interface MazeNodeProps {
-//   x: number;
-//   y: number;
-//   isStart: boolean;
-//   isDest: boolean;
-//   disoveredBy?: any;
-//   destnodekey: string;
-//   mzgraphref: React.RefObject<SVGSVGElement | HTMLElement | null>;
-//   siblingKeys?: string[];
-//   pathDirections?: string[];
-// }
 
 export default class MazeNode {
   key

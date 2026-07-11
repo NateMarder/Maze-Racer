@@ -3,10 +3,8 @@
 A modern TypeScript / Next.js implementation of a procedurally generated maze game.
 
 ## Engineering Highlights
-- MazeCodec API with 100% deterministic serialization and compression algorithms made from scratch
-- Random maze generation
-- User-Control via GSAP animations
-- UI supported by React
+- One of the more interesting aspects of this project is the MazeCodec, which serializes an entire randomly generated maze into a compact hexadecimal string suitable for embedding directly in a URL. The decoder reconstructs the original maze from that representation, allowing deterministic sharing of mazes without requiring server-side persistence.
+
 
 ## Features
 

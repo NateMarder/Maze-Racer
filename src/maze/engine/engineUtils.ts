@@ -1,5 +1,5 @@
 export function shuffle<T>(array: T[]): T[] {
-  let result: T[] = [...array] // allocate an array of the correct size first
+  const result: T[] = [...array] // allocate an array of the correct size first
   for (let i = result.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     const temp = result[i];

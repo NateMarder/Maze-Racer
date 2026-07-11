@@ -82,7 +82,7 @@ export default class levelOneEngine {
 
   visit(n) {
     if (n.isVisited === false) {
-      n.isVisited = true; // eslint-disable-line no-param-reassign
+      n.isVisited = true;  
       const [discX, discY] = n.discoveredBy.split('.');
       const [nX, nY] = n.key.split('.');
       const { x1, y1, x2, y2 } = {

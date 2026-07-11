@@ -4,12 +4,12 @@ import React from 'react';
 import { mazeGraphDefaults as DEFAULTS } from '../defaults';
 import { NodeFactory, PlayerNode } from './node/index';
 import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
-import DestinationNode from './DestinationNode';
+import { DestinationNode } from './DestinationNode';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
 import LevelOne from './engine/levelOneEngine';
-import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../webUtilities';
-import { MazeState, MazePath } from './types';
+import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../web-utilities';
+import { MazeState, EncodedMaze } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
 import { MazeCodec } from './codec/mazeCodec';
 
@@ -133,7 +133,7 @@ export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeSta
     }
 
     runDecoder = () => {
-        const encoded = getEncodedMazeDataFromUrlParams();
+        const encoded: EncodedMaze = getEncodedMazeDataFromUrlParams();
         const decodeResult = MazeCodec.decode(encoded);
         this.setState({
             ...decodeResult

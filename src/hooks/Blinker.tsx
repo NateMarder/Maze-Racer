@@ -31,7 +31,7 @@ interface BlinkyProps {
 
 // 3. The Blinky component
 export default function Blinker({ children, interval = 500 }: BlinkyProps) {
-  const [isVisible, setIsVisible] = useState(true);
+  const [, setIsVisible] = useState(true);
 
   // Toggle visibility at the requested interval rate
   useInterval(() => {

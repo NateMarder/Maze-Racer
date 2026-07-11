@@ -9,7 +9,7 @@ export type MazeNode = {
   isVisited: boolean;
   distFromStart: number;
   discoveredBy?: string;
-  pathDirections?: any[];
+  pathDirections?: string[];
   x: number;
   y: number;
 };
@@ -61,5 +61,5 @@ export type MazeState = {
   serialized?: string;
   start?: Coordinate;
 };
-
+export type GetHexFromNodesProps = Pick<MazeState, "nodes" | "cols" | "rows" | "spacing">;
 export type EncoderProps = Omit<MazeState, "serialized" | "height" | "width">;

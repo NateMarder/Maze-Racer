@@ -1,6 +1,6 @@
 import { Coordinate, EncodedMaze } from "./maze/types";
 
-export const getEncodedMazeDataFromUrlParams = (): any => {
+export const getEncodedMazeDataFromUrlParams = (): EncodedMaze => {
     const urlParams = new URLSearchParams(window.location.search);
     const hexString = urlParams.get('h');
     const colsValue = urlParams.get('c');
@@ -19,21 +19,18 @@ export const getEncodedMazeDataFromUrlParams = (): any => {
         level: number,
         start: Coordinate
     }
-    
-    let mazeBundle: MazeBundle;
-    if (rowsValue && colsValue && hexString && levelValue && destinationX && destinationY && spacing) {
-        return mazeBundle = {
-            serialized: hexString,
-            rows: parseInt(rowsValue),
-            cols: parseInt(colsValue),
-            spacing: parseInt(spacing),
-            destination: { x: parseInt(destinationX), y: parseInt(destinationY) },
-            level: parseInt(levelValue),
-            start:{ x: parseInt(spacing) / 2, y: parseInt(spacing) / 2 }, // since we always start in the top left, this one is calculated for now
-        }
+
+    const mazeBundle: MazeBundle = {
+        serialized: hexString || "",
+        rows: parseInt(rowsValue || "0"),
+        cols: parseInt(colsValue || "0"),
+        spacing: parseInt(spacing || "0"),
+        destination: { x: parseInt(destinationX || "0"), y: parseInt(destinationY || "0") },
+        level: parseInt(levelValue || "1"),
+        start: { x: parseInt(spacing || "60") / 2, y: parseInt(spacing || "60") / 2 }, // since we always start in the top left, this one is calculated for now
     }
 
-    return {};
+    return mazeBundle;
 }
 
 export const updateWindowUrlWithoutReload = (encoded: EncodedMaze) => {
@@ -52,7 +49,7 @@ export const updateWindowUrlWithoutReload = (encoded: EncodedMaze) => {
     }
 }
 
-export const safeToRenderWithUrlParams = ():boolean => {
+export const safeToRenderWithUrlParams = (): boolean => {
     if (typeof window === 'object') {
         const urlParams = new URLSearchParams(window.location.search);
         const hexString = urlParams.get('h') || "";

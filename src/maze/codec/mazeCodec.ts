@@ -1,16 +1,8 @@
 
 import { createPathsFromInactiveWalls } from "../path";
 import { EncodedMaze, MazeState, MazeNode, MazePath } from "../types";
-import { getHexFromNodes, getHexRepresentationOfNodeArray, hydratePathDirections } from "./encodeUtilities";
+import { getHexFromNodes, hydratePathDirections } from "./encodeUtilities";
 import { getFreshMazeNodes, getInactiveWallsFromHex } from "./decodeUtilities";
-
-interface InactiveWallKey {
-    id: string,
-    x1: number,
-    y1: number,
-    x2: number,
-    y2: number
-}
 
 interface GetWallsFromInactiveKeysProps {
     rows: number,
@@ -45,7 +37,7 @@ export const MazeCodec = {
         const clonedNodes: MazeNode[] = [...mazeNodes];
 
         clonedNodes.forEach((n: MazeNode) => {
-            n.siblingKeys = []; // eslint-disable-line no-param-reassign
+            n.siblingKeys = [];  
         });
 
         mazePaths.forEach((mazePath: MazePath) => {

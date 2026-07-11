@@ -16,7 +16,7 @@ interface TranslateHexProps {
 }
 
 export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) => {
-    let arrayOfNodes: MazeNodeType[] = [];
+    const arrayOfNodes: MazeNodeType[] = [];
 
     const offset = spacing / 2;
     for (let i = 0; i < cols; i += 1) {
@@ -50,10 +50,10 @@ export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: n
     //    d --> right node's bottom-side sibling
     const inactiveWallKeys: string[] = []
     const offset = spacing / 2;
-    let a = { x1: 0, y1: 0, x2: 0, y2: 0 }
-    let b = { x1: 0, y1: 0, x2: 0, y2: 0 }
-    let c = { x1: 0, y1: 0, x2: 0, y2: 0 }
-    let d = { x1: 0, y1: 0, x2: 0, y2: 0 }
+    const a = { x1: 0, y1: 0, x2: 0, y2: 0 }
+    const b = { x1: 0, y1: 0, x2: 0, y2: 0 }
+    const c = { x1: 0, y1: 0, x2: 0, y2: 0 }
+    const d = { x1: 0, y1: 0, x2: 0, y2: 0 }
 
     // wall 'a'
     if (binString.charAt(0) === "1") {
@@ -95,9 +95,9 @@ export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: n
 }
 
 export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }: TranslateHexProps): string[] => {
-    let inactiveKeys: string[] = [];
+    const inactiveKeys: string[] = [];
     let hexCounter = 0;
-    let offset = spacing / 2;
+    const offset = spacing / 2;
     for (let i = 0; i < rows; i += 1) {
         for (let j = 0; j < cols - 1; j += 2) {
             const nextHexChar = encodedMazeHex.charAt(hexCounter++);
