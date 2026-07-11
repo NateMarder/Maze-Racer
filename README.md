@@ -3,9 +3,9 @@
 A modern TypeScript / Next.js implementation of a procedurally generated maze game.
 
 ## Engineering Highlights
-One of the more interesting aspects of this project is the MazeCodec, which serializes an entire randomly generated maze into a compact hexadecimal string suitable for embedding directly in a URL. The decoder reconstructs the original maze from that representation, allowing deterministic sharing of mazes without requiring server-side persistence.
+*MazeCodec*. One of the more interesting aspects of this project is the MazeCodec, which serializes an entire randomly generated maze into a compact hexadecimal string suitable for embedding directly in a URL. The decoder reconstructs the original maze from that representation, allowing deterministic sharing of mazes without requiring server-side persistence.
 
-### Example
+### MazeCodec Description
 
 ![small maze](./docs/images/small-maze.png)
 
