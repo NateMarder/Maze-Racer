@@ -1,8 +1,8 @@
 
 import { createPathsFromInactiveWalls } from "../path";
 import { EncodedMaze, MazeState, MazeNode, MazePath } from "../types";
-import { getHexFromNodes, hydratePathDirections } from "./encodeUtilities";
-import { getFreshMazeNodes, getInactiveWallsFromHex } from "./decodeUtilities";
+import { getHexFromNodes, hydratePathDirections } from "./encode-utilities";
+import { getFreshMazeNodes, getInactiveWallsFromHex } from "./decode-utilities";
 
 interface GetWallsFromInactiveKeysProps {
     rows: number,

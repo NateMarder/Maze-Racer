@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { MazeCodec } from "./mazeCodec";
+import { MazeCodec } from "./maze-codec";
 import type { MazeState } from "../types";
-import { simpleMaze } from "./fixtures/simpleDfsMaze";
+import { simpleMaze } from "./fixtures/simple-dfs-maze";
 
 describe("MazeCodec", () => {
   it("encodes and decodes a maze without losing its structural identity", () => {

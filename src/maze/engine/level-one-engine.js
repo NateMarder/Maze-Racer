@@ -1,4 +1,4 @@
-import { shuffle, getOrthogonalKey } from './engineUtils';
+import { shuffle, getOrthogonalKey } from './engine-utils';
 
 
 /**

@@ -1,5 +1,5 @@
 import React from 'react';
-import Blinker from '../hooks/Blinker';
+import Blinker from '../hooks/blinker';
 
 interface DestinationProps {
   x: number,

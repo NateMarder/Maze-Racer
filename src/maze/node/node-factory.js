@@ -1,4 +1,4 @@
-import mazeNode from './MazeNode';
+import mazeNode from './maze-node';
 
 export default class NodeFactory {
   buildNodeArray = ({ rows, cols, spacing }) => {

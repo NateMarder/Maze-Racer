@@ -1,5 +1,5 @@
-import MazeNode from './MazeNode';
-import PlayerNode from '../PlayerNode';
-import NodeFactory from './NodeFactory';
+import MazeNode from './maze-node';
+import PlayerNode from '../player-node';
+import NodeFactory from './node-factory';
 
 export { MazeNode, NodeFactory, PlayerNode };

@@ -1,4 +1,4 @@
-import { getOrthogonalKey } from "../engine/engineUtils";
+import { getOrthogonalKey } from "../engine/engine-utils";
 import type { MazePath as MazePathType, NodeKey } from "../types";
 
 type MazePathProps = {

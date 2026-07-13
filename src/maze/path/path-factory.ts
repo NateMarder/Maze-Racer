@@ -1,5 +1,5 @@
-import MazePath from "./MazePath";
-import { getOrthogonalKey } from "../../maze/engine/engineUtils";
+import MazePath from "./maze-path";
+import { getOrthogonalKey } from "../../maze/engine/engine-utils";
 import type { MazePath as MazePathType, NodeKey, WallKey } from "../types";
 
 function wallKeyToNodeKeys(wallKey: WallKey): [NodeKey, NodeKey] {

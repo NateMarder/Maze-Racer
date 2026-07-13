@@ -4,14 +4,14 @@ import React from 'react';
 import { mazeGraphDefaults as DEFAULTS } from '../defaults';
 import { NodeFactory, PlayerNode } from './node/index';
 import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
-import { DestinationNode } from './DestinationNode';
+import { DestinationNode } from './destination-node';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
-import LevelOne from './engine/levelOneEngine';
+import LevelOne from './engine/level-one-engine';
 import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../web-utilities';
 import { MazeState, EncodedMaze } from './types';
-import { getWallsFromInactiveWallKeys } from './wall/MazeWall';
-import { MazeCodec } from './codec/mazeCodec';
+import { getWallsFromInactiveWallKeys } from './wall/maze-wall';
+import { MazeCodec } from './codec/maze-codec';
 
 
 
@@ -25,7 +25,7 @@ export interface MazeGraphProps {
     spacing: number;
 }
 
-export default class MazeGraphV2 extends React.Component<MazeGraphProps, MazeState> {
+export default class MazeGraph extends React.Component<MazeGraphProps, MazeState> {
     private mazeGraphRef: React.RefObject<HTMLDivElement | null>;
     constructor(props: MazeGraphProps) {
         super(props);
