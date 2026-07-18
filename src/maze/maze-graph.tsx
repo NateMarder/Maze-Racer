@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { mazeGraphDefaults as DEFAULTS } from '../defaults';
-import { NodeFactory, PlayerNode } from './node/index';
+import { PlayerNode } from './node/index';
 import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import { DestinationNode } from './destination-node';
 import { createPathsFromInactiveWalls } from './path/index';
@@ -55,13 +55,11 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
     componentDidMount = (): void => {
         if (safeToRenderWithUrlParams()) {
             const encoded = getEncodedMazeDataFromUrlParams();
-            console.log("\n --> deriving state from serialized URL data", encoded);
             const decodeResult = MazeCodec.decode(encoded);
             this.setState({
                 ...decodeResult
             })
         } else {
-            console.log("\n --> deriving state from LevelOne().run command (dfs algorithm)")
             const result = new LevelOne().run(this.state);
             const [x, y] = result.destNodeKey.split('.').map(Number);
             if (result?.route) {

@@ -11,7 +11,6 @@ export enum directions {
 // the same nodes WITH pathDirections also included. A path direction
 // is basically just the orthogonal equivalent of an open wall
 export const hydratePathDirections = (nodes: MazeNode[]) => {
-  console.log("type of nodes: ", typeof nodes);
   const clones = [...nodes];
 
   for (let j = 0; j <= clones.length - 1; j++) {
@@ -225,7 +224,6 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): stri
       // now that we have our correct nodes...lets figure out the hex character and append it
       if (leftNodePaths && leftNodePaths.length > 0 && rightNodePaths && rightNodePaths.length > 0) {
         nodeCounter += 2;
-        console.log(`counter is [${nodeCounter}] :: finding paths for left nodeKey: ${leftNodeKey}, and rightNeighborKey: ${rightNodekey}`)
         let binary = "";
 
         binary += leftNodePaths.indexOf(directions.Right.toString()) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
@@ -240,9 +238,6 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): stri
     }
     
   }
-  // console.log(`hex string length: ${serialized.length}`);
-  // console.log("last node key is: ", clonedNodes[clonedNodes.length-1].key);
-  // console.log("getHexFromNodes serialized, ", serialized);
   return serialized;
 }
 

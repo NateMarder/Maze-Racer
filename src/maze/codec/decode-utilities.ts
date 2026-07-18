@@ -107,7 +107,6 @@ export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }:
             const node2X = node1X.valueOf() + spacing;
             const node2Y = offset + (i * spacing);
             const groupOfInactiveWallKeys = getInactiveWallFromBinaryString(binaryValue, node1X, node1Y, node2X, node2Y, spacing);
-            // careful with this output, it's helpful but massive: console.log(`   ${nextHexChar} --> ${binaryValue} --> ${groupOfInactiveWallKeys}`);
             groupOfInactiveWallKeys.forEach((key) => {
                 inactiveKeys.push(key);
             })

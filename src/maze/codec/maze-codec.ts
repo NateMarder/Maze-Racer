@@ -70,7 +70,6 @@ export const MazeCodec = {
         }
         const freshNodes = getFreshMazeNodes(encoded);
         const inactiveWallKeys = getInactiveWallsFromHex(props)
-        console.log("\inactiveWallKeys count: ", inactiveWallKeys.length);
 
         const activeWalls = this.getWallsFromInactiveWallKeys({
             rows,
@@ -79,7 +78,6 @@ export const MazeCodec = {
             inactiveWallKeys: inactiveWallKeys
         });
 
-        console.log("\nwall count: ", activeWalls.length);
         const paths = [...new Set(createPathsFromInactiveWalls(inactiveWallKeys))];
         const nodesWithSiblings = this.updateNodeSiblings(paths, freshNodes)
 
