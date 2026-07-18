@@ -14,7 +14,7 @@ export type MazeNode = {
   y: number;
 };
 
-export type EngineNode = Pick<MazeNode, "discoveredBy"|"siblingKeys"|"isStart"|"isDest"|"distFromStart">;
+export type EngineNode = Pick<MazeNode, 'discoveredBy' | 'siblingKeys' | 'isStart' | 'isDest' | 'distFromStart' | 'key' | 'isVisited' | 'x' | 'y'>;
 
 export type Coordinate = {
   x: number,
@@ -63,5 +63,5 @@ export type MazeState = {
   serialized?: string;
   start?: Coordinate;
 };
-export type GetHexFromNodesProps = Pick<MazeState, "nodes" | "cols" | "rows" | "spacing">;
-export type EncoderProps = Omit<MazeState, "serialized" | "height" | "width">;
+export type GetHexFromNodesProps = Pick<MazeState, 'nodes' | 'cols' | 'rows' | 'spacing'>;
+export type EncoderProps = Omit<MazeState, 'serialized' | 'height' | 'width'>;

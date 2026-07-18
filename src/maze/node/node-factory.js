@@ -30,20 +30,17 @@ export default class NodeFactory {
     let y2;
 
     const offset = Math.round(spacing / 2);
-    for (let i = 0; i < cols; i += 1) {
-      for (let j = 0; j < rows - 1; j += 1) {
-        const x = i * spacing + offset;
-        y1 = j * spacing + offset;
-        y2 = y1 + spacing;
-        this.bindNodes([`${x}.${y1}`, `${x}.${y2}`], nodeArray);
-      }
-    }
+
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols - 1; j += 1) {
+        const x = i * spacing + offset;
         const y = i * spacing + offset;
         x1 = j * spacing + offset;
         x2 = x1 + spacing;
-        this.bindNodes([`${x1}.${y}`, `${x2}.${y}`], nodeArray);
+        y1 = j * spacing + offset;
+        y2 = y1 + spacing;
+        this.bindNodes([`${x1}.${y}`, `${x2}.${y}`], nodeArray); // bind nodes should take two 'unbound' nodes and return updated nodes that are bound (pure function)
+        this.bindNodes([`${x}.${y1}`, `${x}.${y2}`], nodeArray);
       }
     }
 

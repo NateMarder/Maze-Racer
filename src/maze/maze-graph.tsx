@@ -12,6 +12,7 @@ import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindo
 import { MazeState, EncodedMaze } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/maze-wall';
 import { MazeCodec } from './codec/maze-codec';
+import { getBlankNodesForEngine } from './node/node-factory-v2';
 
 
 
@@ -40,7 +41,7 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
             spacing,
             cols,
             rows,
-            nodes: new NodeFactory().getNodes({ rows, cols, spacing }),
+            nodes: getBlankNodesForEngine({ rows, cols, spacing }),
             allPaths: [],
             walls: [],
             inactiveWallKeys: [],
