@@ -54,7 +54,7 @@ function addSiblings({ rows, cols, spacing, nodeArray }: addSiblingProps) {
     for (let i = 0; i < rows; i += 1) {
         for (let j = 0; j < cols - 1; j += 1) {
             const x = i * spacing + offset;
-            const y = i * spacing + offset;
+            const y = j * spacing + offset;
             x1 = j * spacing + offset;
             x2 = x1 + spacing;
             y1 = j * spacing + offset;
