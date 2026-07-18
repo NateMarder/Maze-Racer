@@ -14,6 +14,8 @@ export type MazeNode = {
   y: number;
 };
 
+export type EngineNode = Pick<MazeNode, "discoveredBy"|"siblingKeys"|"isStart"|"isDest"|"distFromStart">;
+
 export type Coordinate = {
   x: number,
   y: number

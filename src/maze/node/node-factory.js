@@ -13,8 +13,7 @@ export default class NodeFactory {
             x: x,
             y: y,
             isStart: i + j === 0,
-            isDest: i === cols - 1 && j === rows - 1,
-            discoveredBy: '',
+            isDest: false,
             isVisited: false,
             key: `${x}.${y}`
           }),
@@ -29,21 +28,21 @@ export default class NodeFactory {
     let x2;
     let y1;
     let y2;
-    const r = spacing;
-    const r2 = Math.round(r / 2);
+
+    const offset = Math.round(spacing / 2);
     for (let i = 0; i < cols; i += 1) {
       for (let j = 0; j < rows - 1; j += 1) {
-        const x = i * r + r2;
-        y1 = j * r + r2;
-        y2 = y1 + r;
+        const x = i * spacing + offset;
+        y1 = j * spacing + offset;
+        y2 = y1 + spacing;
         this.bindNodes([`${x}.${y1}`, `${x}.${y2}`], nodeArray);
       }
     }
     for (let i = 0; i < rows; i += 1) {
       for (let j = 0; j < cols - 1; j += 1) {
-        const y = i * r + r2;
-        x1 = j * r + r2;
-        x2 = x1 + r;
+        const y = i * spacing + offset;
+        x1 = j * spacing + offset;
+        x2 = x1 + spacing;
         this.bindNodes([`${x1}.${y}`, `${x2}.${y}`], nodeArray);
       }
     }
@@ -62,7 +61,8 @@ export default class NodeFactory {
   };
 
   getNodes({ rows, cols, spacing }) {
-    const nodeArray = this.buildNodeArray({ rows, cols, spacing });
+    let nodeArray = this.buildNodeArray({ rows, cols, spacing });
+
     return this.addSiblings({
       rows,
       cols,
