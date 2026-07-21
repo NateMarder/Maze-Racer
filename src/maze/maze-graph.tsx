@@ -7,8 +7,8 @@ import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import { DestinationNode } from './destination-node';
 import { createPathsFromInactiveWalls } from './path/index';
 import { MazeWall } from './wall/index';
-import LevelOne from './engine/level-one-engine';
-//import  LevelOne from './engine/level-one-v2';
+//import LevelOne from './engine/level-one-engine';
+import  LevelOne from './engine/level-one-v2';
 import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../web-utilities';
 import { MazeState, EncodedMaze } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/maze-wall';
@@ -61,8 +61,8 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
                 ...decodeResult
             })
         } else {
-            const result = new LevelOne().run(this.state);
-            //const result = new LevelOne(this.state).run();
+            //const result = new LevelOne().run(this.state);
+            const result = new LevelOne(this.state).run();
             const [x, y] = result.destNodeKey.split('.').map(Number);
             if (result?.route) {
                 this.setState({

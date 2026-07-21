@@ -34,6 +34,7 @@ export default class LevelOne {
 
         if (this.startNode) {
             this.startNode.isVisited = true;
+            this.nodeMap[this.startNode.key].isVisited = true;
         } else {
             throw new Error('unable to identify start-node');
         }
