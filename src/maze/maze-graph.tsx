@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { mazeGraphDefaults as DEFAULTS } from '../defaults';
-import { PlayerNode } from './node/index';
+import PlayerNode from '../maze/player-node';
 import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import { DestinationNode } from './destination-node';
 import { createPathsFromInactiveWalls } from './path/index';
@@ -12,7 +12,7 @@ import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindo
 import { MazeState, EncodedMaze } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/maze-wall';
 import { MazeCodec } from './codec/maze-codec';
-import { getBlankNodesForEngine } from './node/node-factory-v2';
+import { getBlankNodesForEngine } from './node/maze-node-factory';
 
 
 

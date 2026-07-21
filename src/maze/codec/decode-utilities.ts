@@ -1,4 +1,4 @@
-import { MazeNode } from "../node";
+import MazeNode from "../node/maze-node";
 import { binaryFromHex } from "./encode-utilities";
 import { MazeNode as MazeNodeType } from "../types";
 
