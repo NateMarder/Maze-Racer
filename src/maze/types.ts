@@ -45,7 +45,7 @@ export type MazePath = {
   nodeKeys: [NodeKey, NodeKey]
   crossWall: WallKey;
 };
-
+export type MazeNodeMap = Record<string,MazeNode>;
 export type NodeAdjacencyMap = Record<NodeKey, Record<NodeKey, 1>>;
 
 export type MazeState = {
