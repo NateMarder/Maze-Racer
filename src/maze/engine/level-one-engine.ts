@@ -42,7 +42,6 @@ export default class LevelOne {
 
 
     run() {
-        //this.prepareLocalDataStore(mazeData);
         this.generateMazeWithDfs();
         return {
             route: this.route,
