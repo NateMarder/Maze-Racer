@@ -3,7 +3,7 @@ import mazeNode from "./maze-node";
 
 type BuildNodeArrayProps = Pick<MazeState, 'rows' | 'cols' | 'spacing'>;
 type addSiblingProps = BuildNodeArrayProps & {
-  nodeArray: any[]
+  nodeArray: MazeNode[]
 }
 
 function buildNodeArray({ rows, cols, spacing }: BuildNodeArrayProps) {
@@ -64,7 +64,7 @@ function connectSiblings({ rows, cols, spacing, nodeArray }: addSiblingProps) {
  * with zero-walls, just paths.
  */
 export function getBlankNodesForEngine({ rows, cols, spacing }: BuildNodeArrayProps): EngineNode[] {
-  let nodeArray = buildNodeArray({ rows, cols, spacing });
+  const nodeArray = buildNodeArray({ rows, cols, spacing });
   return connectSiblings({
     rows,
     cols,

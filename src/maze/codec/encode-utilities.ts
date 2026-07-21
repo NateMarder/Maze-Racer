@@ -167,7 +167,6 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): stri
   //            loop-3 (address nodes at indexes 6 and 7)
   //            loop-4 (address nodes at indexes 8 and 9) // index 9 is the last index
 
-  let nodeCounter = 0;
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c += 2) {
       let leftNodeKey = "";
@@ -223,7 +222,6 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): stri
  
       // now that we have our correct nodes...lets figure out the hex character and append it
       if (leftNodePaths && leftNodePaths.length > 0 && rightNodePaths && rightNodePaths.length > 0) {
-        nodeCounter += 2;
         let binary = "";
 
         binary += leftNodePaths.indexOf(directions.Right.toString()) > -1 ? "1" : "0"; // this needs to be adjusted, it's not currently working right
