@@ -5,7 +5,7 @@ import { mazeGraphDefaults as DEFAULTS } from '../defaults';
 import PlayerNode from '../maze/player-node';
 import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import { DestinationNode } from './destination-node';
-import { createPathsFromInactiveWalls } from './path/index';
+import { createPathsFromInactiveWalls } from './path/path-factory';
 import { MazeWall } from './wall/maze-wall'
 import  LevelOne from './engine/level-one-engine';
 import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../web-utilities';

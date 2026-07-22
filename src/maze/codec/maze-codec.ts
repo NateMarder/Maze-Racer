@@ -1,5 +1,5 @@
 
-import { createPathsFromInactiveWalls } from "../path";
+import { createPathsFromInactiveWalls } from "../path/path-factory";
 import { EncodedMaze, MazeState, MazeNode, MazePath } from "../types";
 import { getHexFromNodes, hydratePathDirections } from "./encode-utilities";
 import { getFreshMazeNodes, getInactiveWallsFromHex } from "./decode-utilities";
