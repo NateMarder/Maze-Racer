@@ -218,7 +218,6 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): stri
 
       const leftNodePaths = clonedNodes.find((n) => n.key === leftNodeKey)?.pathDirections;
       const rightNodePaths = clonedNodes.find((n) => n.key === rightNodekey)?.pathDirections;
-
  
       // now that we have our correct nodes...lets figure out the hex character and append it
       if (leftNodePaths && leftNodePaths.length > 0 && rightNodePaths && rightNodePaths.length > 0) {
@@ -234,7 +233,6 @@ export function getHexFromNodes({ nodes, rows, cols, spacing }: MazeState): stri
         serialized += hexVal;
       }
     }
-    
   }
   return serialized;
 }

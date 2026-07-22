@@ -1,9 +1,9 @@
-import EventEmitter2 from 'eventemitter2';
+import { ConstructorOptions, EventEmitter2 } from 'eventemitter2';
 
-let eventServer;
+let eventServer: EventEmitter2;
 function getInstance(options = {}) {
   if (!eventServer) {
-    const initParams = {
+    const initParams: ConstructorOptions = {
       wildcard: true,
       delimiter: '::',
       newListener: false,

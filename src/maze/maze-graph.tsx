@@ -6,15 +6,13 @@ import PlayerNode from '../maze/player-node';
 import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import { DestinationNode } from './destination-node';
 import { createPathsFromInactiveWalls } from './path/index';
-import { MazeWall } from './wall/index';
+import { MazeWall } from './wall/maze-wall'
 import  LevelOne from './engine/level-one-engine';
 import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../web-utilities';
 import { MazeState, EncodedMaze } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/maze-wall';
 import { MazeCodec } from './codec/maze-codec';
 import { getBlankNodesForEngine } from './node/maze-node-factory';
-
-
 
 export interface MazeGraphProps {
     height: number;
