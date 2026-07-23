@@ -13,6 +13,21 @@ The community competition and backend are still in development. The repository
 currently contains the maze generator, player controls, animation, codec, and a
 developer debug page.
 
+## Engineering Highlights
+
+- **Canonical MazeCodec** — serializes an entire generated maze into a compact,
+  versioned hexadecimal identity suitable for URLs and database keys.
+- **Presentation-independent coordinates** — maze identity uses zero-based grid
+  coordinates rather than SVG pixels, so changing visual spacing does not
+  change the maze.
+- **Deterministic round trips** — encoded mazes reconstruct the same topology,
+  start, and destination, with tests protecting codec invariants.
+- **Multiple generation algorithms** — depth-first search, randomized Prim, and
+  Eller engines share the same inputs and outputs.
+- **Interactive SVG gameplay** — keyboard controls, wall collision detection,
+  and GSAP-powered player and completion animations.
+- **Modern TypeScript stack** — Next.js App Router, Turbopack, and Vitest.
+
 ## Run the debug page locally
 
 The debug page is the fastest way for contributors to generate mazes, exercise
