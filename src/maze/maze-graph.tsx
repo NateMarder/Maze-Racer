@@ -7,9 +7,11 @@ import { getNodesWithConnectedSiblingsBasedOnPath } from './node/utilities';
 import { DestinationNode } from './destination-node';
 import { createPathsFromInactiveWalls } from './path/path-factory';
 import { MazeWall } from './wall/maze-wall'
-import  LevelOne from './engine/level-one-engine';
-import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload } from '../web-utilities';
-import { MazeState, EncodedMaze } from './types';
+import LevelOne from './engine/dfs-engine';
+import PrimEngine from './engine/prim-engine';
+import EllerEngine from './engine/eller-engine';
+import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload, getRandomEngine } from '../web-utilities';
+import { MazeState, EncodedMaze, AlgorithmKey } from './types';
 import { getWallsFromInactiveWallKeys } from './wall/maze-wall';
 import { MazeCodec } from './codec/maze-codec';
 import { getBlankNodesForEngine } from './node/maze-node-factory';
@@ -30,7 +32,7 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
         super(props);
         const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
         const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        const spacing = props.spacing || DEFAULTS.desktopSpacing;
+        const spacing = props.spacing;
         const height = spacing * rows;
         const width = spacing * cols;
         this.state = {
@@ -58,12 +60,26 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
                 ...decodeResult
             })
         } else {
-            const result = new LevelOne(this.state).run();
-            const [x, y] = result.destNodeKey.split('.').map(Number);
-            if (result?.route) {
+            const algorithm: AlgorithmKey = getRandomEngine();
+            let result;
+            let x, y;
+            if (algorithm === 'dfs') {
+                result = new LevelOne(this.state).run();
+
+            }
+            if (algorithm === 'prim') {
+                result = new PrimEngine(this.state).run();
+            }
+            if (algorithm === 'eller') {
+                result = new EllerEngine(this.state).run();
+            }
+
+            if (result && result?.route) {
+                [x, y] = result.destNodeKey.split('.').map(Number);
                 this.setState({
                     inactiveWallKeys: result.route,
-                    destination: { x, y }
+                    destination: { x, y },
+                    algorithm
                 });
             }
         }
@@ -82,12 +98,12 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
 
     getUserControlNode = (): React.JSX.Element => (
         <PlayerNode
-            cx={Math.round(DEFAULTS.desktopSpacing / 2)}
-            cy={Math.round(DEFAULTS.desktopSpacing / 2)}
-            r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
+            cx={Math.round(this.state.spacing / 2)}
+            cy={Math.round(this.state.spacing  / 2)}
+            r={Math.round(this.state.spacing  * 0.10)}
             map={this.state.nodes || []}
             destnodekey={`${this.state.destination.x}.${this.state.destination.y}`}
-            offset={DEFAULTS.desktopSpacing}
+            offset={this.state.spacing}
             mzgraphref={this.mazeGraphRef}
         />
     );
@@ -162,7 +178,11 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
                 <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode </button>
                 <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runDecoder}>decode</button>
                 <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.refresh}> refresh </button>
-                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>             </div>
+                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>             
+                <span style={{ fontSize: "18px",  float: "right", padding: "5px", color: "#fff" }}>
+                    {this.state.algorithm ? `maze algorithm: ${this.state.algorithm}` : ``}
+                    </span>
+                </div>
         );
     };
 }

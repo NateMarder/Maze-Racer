@@ -62,6 +62,8 @@ export type MazeState = {
   width: number;
   serialized?: string;
   start?: Coordinate;
+  algorithm?: AlgorithmKey;
 };
 export type GetHexFromNodesProps = Pick<MazeState, 'nodes' | 'cols' | 'rows' | 'spacing'>;
 export type EncoderProps = Omit<MazeState, 'serialized' | 'height' | 'width'>;
+export type AlgorithmKey = 'dfs' | 'prim' | 'eller';

@@ -1,4 +1,4 @@
-import { Coordinate, EncodedMaze } from "./maze/types";
+import { Coordinate, EncodedMaze,AlgorithmKey } from "./maze/types";
 
 export const getEncodedMazeDataFromUrlParams = (): EncodedMaze => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -57,4 +57,10 @@ export const safeToRenderWithUrlParams = (): boolean => {
     }
 
     return false;
+}
+
+export const getRandomEngine = (): AlgorithmKey => {
+    const possibleAlgorithm:AlgorithmKey[] = ['dfs','prim','eller'];
+    const randomNumber: number = Math.floor(Math.random() * possibleAlgorithm.length);
+    return possibleAlgorithm[randomNumber];
 }
