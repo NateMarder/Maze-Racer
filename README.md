@@ -16,7 +16,9 @@ developer debug page.
 ## Engineering Highlights
 
 - **Canonical MazeCodec** — serializes an entire generated maze into a compact,
-  versioned hexadecimal identity suitable for URLs and database keys.
+  versioned hexadecimal identity suitable for URLs and database keys. The real
+  innovation here is a defined a stable, deterministic representation for an
+  entire procedural puzzle.
 - **Presentation-independent coordinates** — maze identity uses zero-based grid
   coordinates rather than SVG pixels, so changing visual spacing does not
   change the maze.
