@@ -5,7 +5,9 @@ import {
 
 /**
  * This file helps us de-couple the canonical representation of a maze from the 
- * presentation details.
+ * presentation details. Serialization uses zero-based grid cells. Presentation logic
+ * take the maze-spacing into account while creating the coordinates needed by the SVG 
+ * elements. 
  */
 
 function assertValidSpacing(spacing: number): void {
