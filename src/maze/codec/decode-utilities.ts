@@ -1,21 +1,42 @@
 import MazeNode from "../node/maze-node";
 import { binaryFromHex } from "./encode-utilities";
-import { MazeNode as MazeNodeType } from "../types";
+import {
+    GridCoordinate,
+    MazeNode as MazeNodeType,
+    SvgCoordinate,
+    WallKey,
+} from "../types";
 
 interface GetFreshNodesProps {
     rows: number,
     cols: number,
-    spacing: number
+    spacing: number,
+    start: SvgCoordinate,
+    destination: SvgCoordinate,
 }
 
-interface TranslateHexProps {
+interface DecodeTopologyProps {
     encodedMazeHex: string,
     rows: number,
     cols: number,
+}
+
+interface TranslateHexProps extends DecodeTopologyProps {
     spacing: number
 }
 
-export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) => {
+export type GridPassage = {
+    from: GridCoordinate;
+    to: GridCoordinate;
+};
+
+export const getFreshMazeNodes = ({
+    rows,
+    cols,
+    spacing,
+    start,
+    destination,
+}: GetFreshNodesProps) => {
     const arrayOfNodes: MazeNodeType[] = [];
 
     const offset = spacing / 2;
@@ -27,8 +48,8 @@ export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) =
                 y: j * spacing + offset,
                 key: key,
                 siblingKeys: [],
-                isStart: i + j === 0,
-                isDest: i === cols - 1 && j === rows - 1,
+                isStart: key === `${start.x}.${start.y}`,
+                isDest: key === `${destination.x}.${destination.y}`,
                 discoveredBy: '',
                 isVisited: false,
                 distFromStart: 0,
@@ -39,80 +60,96 @@ export const getFreshMazeNodes = ({ rows, cols, spacing }: GetFreshNodesProps) =
     return arrayOfNodes;
 }
 
-export const getInactiveWallFromBinaryString = (binString: string, leftNodeCx: number, leftNodeCy: number, rightNodeCx: number, rightNodeCy: number, spacing: number) => {
-    // this can be cleaned up and simplified. It's very 'declarative' right now to help with understanding
-    // what's happening and why. each binary string needs to handle four possible inactive walls represented
-    // by the objects a,b,c,d below
-    //   [a,b,c,d] 
-    //    a --> left node's right-side sibling 
-    //    b --> left node's bottom-side sibling
-    //    c --> right node's right-side sibling 
-    //    d --> right node's bottom-side sibling
-    const inactiveWallKeys: string[] = []
-    const offset = spacing / 2;
-    const a = { x1: 0, y1: 0, x2: 0, y2: 0 }
-    const b = { x1: 0, y1: 0, x2: 0, y2: 0 }
-    const c = { x1: 0, y1: 0, x2: 0, y2: 0 }
-    const d = { x1: 0, y1: 0, x2: 0, y2: 0 }
-
-    // wall 'a'
-    if (binString.charAt(0) === "1") {
-        a.x1 = leftNodeCx + offset;
-        a.y1 = leftNodeCy - offset;
-        a.x2 = leftNodeCx + offset;
-        a.y2 = leftNodeCy + offset;
-        inactiveWallKeys.push(`${a.x1}.${a.y1}.${a.x2}.${a.y2}`);
-    }
-
-    // wall 'b'
-    if (binString.charAt(1) === "1") {
-        b.x1 = leftNodeCx - offset;
-        b.y1 = leftNodeCy + offset;
-        b.x2 = leftNodeCx + offset;
-        b.y2 = leftNodeCy + offset;
-        inactiveWallKeys.push(`${b.x1}.${b.y1}.${b.x2}.${b.y2}`);
-    }
-
-    // wall 'c'
-    if (binString.charAt(2) === "1") {
-        c.x1 = rightNodeCx + offset;
-        c.y1 = rightNodeCy - offset;
-        c.x2 = rightNodeCx + offset;
-        c.y2 = rightNodeCy + offset;
-        inactiveWallKeys.push(`${c.x1}.${c.y1}.${c.x2}.${c.y2}`);
-    }
-
-    // wall 'd'
-    if (binString.charAt(3) === "1") {
-        d.x1 = rightNodeCx - offset;
-        d.y1 = rightNodeCy + offset;
-        d.x2 = rightNodeCx + offset;
-        d.y2 = rightNodeCy + offset;
-        inactiveWallKeys.push(`${d.x1}.${d.y1}.${d.x2}.${d.y2}`);
-    }
-
-    return inactiveWallKeys;
+function isInBounds(
+    coordinate: GridCoordinate,
+    cols: number,
+    rows: number,
+): boolean {
+    return coordinate.x >= 0
+        && coordinate.x < cols
+        && coordinate.y >= 0
+        && coordinate.y < rows;
 }
 
-export const getInactiveWallsFromHex = ({ encodedMazeHex, rows, cols, spacing }: TranslateHexProps): string[] => {
-    const inactiveKeys: string[] = [];
+export const getGridPassagesFromHex = ({
+    encodedMazeHex,
+    rows,
+    cols,
+}: DecodeTopologyProps): GridPassage[] => {
+    const passages: GridPassage[] = [];
     let hexCounter = 0;
-    const offset = spacing / 2;
-    for (let i = 0; i < rows; i += 1) {
-        for (let j = 0; j < cols - 1; j += 2) {
+
+    for (let y = 0; y < rows; y += 1) {
+        for (let x = 0; x < cols; x += 2) {
             const nextHexChar = encodedMazeHex.charAt(hexCounter++);
             const binaryValue = binaryFromHex(nextHexChar);
-            const node1X = offset + (j * spacing);
-            const node1Y = offset + (i * spacing);
-            const node2X = node1X.valueOf() + spacing;
-            const node2Y = offset + (i * spacing);
-            const groupOfInactiveWallKeys = getInactiveWallFromBinaryString(binaryValue, node1X, node1Y, node2X, node2Y, spacing);
-            groupOfInactiveWallKeys.forEach((key) => {
-                inactiveKeys.push(key);
-            })
+            const candidates: Array<GridPassage & { bit: number }> = [
+                {
+                    bit: 0,
+                    from: { x, y },
+                    to: { x: x + 1, y },
+                },
+                {
+                    bit: 1,
+                    from: { x, y },
+                    to: { x, y: y + 1 },
+                },
+                {
+                    bit: 2,
+                    from: { x: x + 1, y },
+                    to: { x: x + 2, y },
+                },
+                {
+                    bit: 3,
+                    from: { x: x + 1, y },
+                    to: { x: x + 1, y: y + 1 },
+                },
+            ];
+
+            candidates.forEach(({ bit, from, to }) => {
+                if (
+                    binaryValue.charAt(bit) === "1"
+                    && isInBounds(from, cols, rows)
+                    && isInBounds(to, cols, rows)
+                ) {
+                    passages.push({ from, to });
+                }
+            });
         }
     }
 
-    // const deduplicatedKeys:string[] = [...new Set(inactiveKeys)]
-    return inactiveKeys;
+    return passages;
+};
+
+function getWallKeyFromGridPassage(
+    passage: GridPassage,
+    spacing: number,
+): WallKey {
+    const { from, to } = passage;
+
+    if (from.y === to.y) {
+        const wallX = Math.max(from.x, to.x) * spacing;
+        const wallY1 = from.y * spacing;
+        const wallY2 = wallY1 + spacing;
+
+        return `${wallX}.${wallY1}.${wallX}.${wallY2}`;
+    }
+
+    const wallY = Math.max(from.y, to.y) * spacing;
+    const wallX1 = from.x * spacing;
+    const wallX2 = wallX1 + spacing;
+
+    return `${wallX1}.${wallY}.${wallX2}.${wallY}`;
 }
+
+export const getInactiveWallsFromHex = ({
+    encodedMazeHex,
+    rows,
+    cols,
+    spacing,
+}: TranslateHexProps): WallKey[] =>
+    getGridPassagesFromHex({
+        encodedMazeHex,
+        rows,
+        cols,
+    }).map((passage) => getWallKeyFromGridPassage(passage, spacing));

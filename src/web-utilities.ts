@@ -1,66 +1,127 @@
-import { Coordinate, EncodedMaze,AlgorithmKey } from "./maze/types";
+import { MazeCodec } from "./maze/codec/maze-codec";
+import {
+    AlgorithmKey,
+    EncodedMaze,
+    LegacyEncodedMaze,
+} from "./maze/types";
 
-export const getEncodedMazeDataFromUrlParams = (): EncodedMaze => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const hexString = urlParams.get('h');
-    const colsValue = urlParams.get('c');
-    const rowsValue = urlParams.get('r');
-    const levelValue = urlParams.get('l');
-    const destinationX = urlParams.get('dx');
-    const destinationY = urlParams.get('dy');
-    const spacing = urlParams.get('s');
+const DEFAULT_MAZE_LEVEL = 1;
+const DEFAULT_MAZE_SPACING = 60;
 
-    interface MazeBundle {
-        serialized: string,
-        rows: number,
-        cols: number,
-        spacing: number,
-        destination: Coordinate,
-        level: number,
-        start: Coordinate
+function getNumberParam(
+    urlParams: URLSearchParams,
+    key: string,
+    fallback: number,
+): number {
+    const value = urlParams.get(key);
+
+    if (value === null || value.trim() === "") {
+        return fallback;
     }
 
-    const mazeBundle: MazeBundle = {
-        serialized: hexString || "",
-        rows: parseInt(rowsValue || "0"),
-        cols: parseInt(colsValue || "0"),
-        spacing: parseInt(spacing || "0"),
-        destination: { x: parseInt(destinationX || "0"), y: parseInt(destinationY || "0") },
-        level: parseInt(levelValue || "1"),
-        start: { x: parseInt(spacing || "60") / 2, y: parseInt(spacing || "60") / 2 }, // since we always start in the top left, this one is calculated for now
-    }
-
-    return mazeBundle;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-export const updateWindowUrlWithoutReload = (encoded: EncodedMaze) => {
-    if (typeof window === 'object') {
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set("h", encoded.serialized);        // serialized hex representation of maze
-        currentUrl.searchParams.set("c", encoded.cols.toString());              // col count
-        currentUrl.searchParams.set("r", encoded.rows.toString());              // row count
-        currentUrl.searchParams.set("l", encoded.level.toString());             // current level
-        currentUrl.searchParams.set("dx", encoded.destination.x.toString());    // maze-finish x
-        currentUrl.searchParams.set("dy", encoded.destination.y.toString());    // maze-finish y
-        currentUrl.searchParams.set("s", encoded.spacing.toString());           // maze spacing (width of the paths, also same as measuring center of mazeNode to center of neighboring mazeNode)
+export const getEncodedMazeDataFromSearchParams = (
+    urlParams: URLSearchParams,
+): EncodedMaze => {
+    const canonicalId = urlParams.get("maze");
+    const spacing = getNumberParam(
+        urlParams,
+        "s",
+        DEFAULT_MAZE_SPACING,
+    );
+    const level = getNumberParam(
+        urlParams,
+        "l",
+        DEFAULT_MAZE_LEVEL,
+    );
 
-        // 3. Update the browser URL bar without refreshing
-        window.history.replaceState(null, '', currentUrl.toString());     // add the data to the URL, don't reload,
+    if (canonicalId) {
+        return MazeCodec.parseCanonicalId(canonicalId, {
+            spacing,
+            level,
+        });
     }
-}
+
+    const legacy: LegacyEncodedMaze = {
+        version: 0,
+        serialized: urlParams.get("h") ?? "",
+        rows: getNumberParam(urlParams, "r", 0),
+        cols: getNumberParam(urlParams, "c", 0),
+        spacing,
+        destination: {
+            x: getNumberParam(urlParams, "dx", 0),
+            y: getNumberParam(urlParams, "dy", 0),
+        },
+        level,
+        start: {
+            x: getNumberParam(urlParams, "sx", spacing / 2),
+            y: getNumberParam(urlParams, "sy", spacing / 2),
+        },
+    };
+
+    return legacy;
+};
+
+export const getEncodedMazeDataFromUrlParams = (): EncodedMaze =>
+    getEncodedMazeDataFromSearchParams(
+        new URLSearchParams(window.location.search),
+    );
+
+export const getSearchParamsFromEncodedMaze = (
+    encoded: EncodedMaze,
+): URLSearchParams => {
+    const urlParams = new URLSearchParams();
+
+    if (encoded.version === 1) {
+        urlParams.set("maze", MazeCodec.getCanonicalId(encoded));
+    } else {
+        urlParams.set("h", encoded.serialized);
+        urlParams.set("c", encoded.cols.toString());
+        urlParams.set("r", encoded.rows.toString());
+        urlParams.set("sx", encoded.start.x.toString());
+        urlParams.set("sy", encoded.start.y.toString());
+        urlParams.set("dx", encoded.destination.x.toString());
+        urlParams.set("dy", encoded.destination.y.toString());
+    }
+
+    urlParams.set("l", encoded.level.toString());
+    urlParams.set("s", encoded.spacing.toString());
+
+    return urlParams;
+};
+
+export const updateWindowUrlWithoutReload = (encoded: EncodedMaze): void => {
+    if (typeof window !== "object") {
+        return;
+    }
+
+    const currentUrl = new URL(window.location.href);
+    currentUrl.search = getSearchParamsFromEncodedMaze(encoded).toString();
+    window.history.replaceState(null, "", currentUrl.toString());
+};
 
 export const safeToRenderWithUrlParams = (): boolean => {
-    if (typeof window === 'object') {
-        const urlParams = new URLSearchParams(window.location.search);
-        const hexString = urlParams.get('h') || "";
-        return hexString.length > 0
+    if (typeof window !== "object") {
+        return false;
     }
 
-    return false;
-}
+    const urlParams = new URLSearchParams(window.location.search);
+    const canonicalId = urlParams.get("maze") ?? "";
+    const legacyHex = urlParams.get("h") ?? "";
+
+    return canonicalId.length > 0 || legacyHex.length > 0;
+};
 
 export const getRandomEngine = (): AlgorithmKey => {
-    const possibleAlgorithm:AlgorithmKey[] = ['dfs','prim','eller'];
-    const randomNumber: number = Math.floor(Math.random() * possibleAlgorithm.length);
-    return possibleAlgorithm[randomNumber];
-}
+    const possibleAlgorithms: AlgorithmKey[] = [
+        "dfs",
+        "prim",
+        "eller",
+    ];
+    const randomIndex = Math.floor(Math.random() * possibleAlgorithms.length);
+
+    return possibleAlgorithms[randomIndex];
+};

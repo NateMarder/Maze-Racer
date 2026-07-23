@@ -7,7 +7,7 @@ The long-term goal is a shared **Maze of the Day**: one maze, available to
 everyone in the world, with players competing to earn the title of Maze Master
 for that challenge. A backend will store the maze catalog and competition
 results, using each maze's compact hexadecimal representation as its canonical
-identifier.
+identity.
 
 The community competition and backend are still in development. The repository
 currently contains the maze generator, player controls, animation, codec, and a
@@ -92,7 +92,7 @@ remove plus the destination node farthest from the start.
 
 ## MazeCodec
 
-MazeCodec serializes a generated maze into a compact hexadecimal representation
+MazeCodec serializes a generated maze into a versioned canonical identifier
 that can be embedded in a URL. The decoder reconstructs the same maze from that
 data, allowing deterministic sharing without requiring server-side persistence.
 This representation is also the foundation for the planned Maze of the Day
@@ -100,21 +100,25 @@ catalog.
 
 ![Small maze example](./docs/images/small-maze.png)
 
-The encoded URL data for this maze is:
+The canonical identifier for this maze is:
 
 ```text
-h=69a9dc28&c=4&r=4&l=1&dx=30&dy=210&s=60
+v1:4x4:69a9dc28:start=0,0:end=0,3
 ```
 
-| Parameter | Meaning |
+| Segment | Meaning |
 | --- | --- |
-| `h` | Hexadecimal maze path data |
-| `c` | Column count |
-| `r` | Row count |
-| `l` | Maze level |
-| `dx` | Destination node x-coordinate |
-| `dy` | Destination node y-coordinate |
-| `s` | Spacing between neighboring maze nodes |
+| `v1` | Canonical format version |
+| `4x4` | Column and row count |
+| `69a9dc28` | Hexadecimal maze topology |
+| `start=0,0` | Zero-based logical start coordinate |
+| `end=0,3` | Zero-based logical destination coordinate |
+
+Logical coordinates make maze identity independent of SVG dimensions and node
+spacing. Presentation settings such as `spacing`, along with game metadata such
+as `level`, travel separately in the URL and are not part of the canonical
+identifier. Existing unversioned maze URLs remain readable and are migrated to
+v1 the next time they are encoded.
 
 ## Current features
 

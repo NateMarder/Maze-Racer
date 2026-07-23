@@ -21,15 +21,31 @@ export type Coordinate = {
   y: number
 }
 
-export type EncodedMaze = {
+export type GridCoordinate = Coordinate;
+export type SvgCoordinate = Coordinate;
+export type MazeCodecVersion = 0 | 1;
+
+type EncodedMazeBase = {
   serialized: string;
   rows: number;
   cols: number;
   level: number;
-  start: Coordinate;
-  destination: Coordinate;
   spacing: number;
 };
+
+export type LegacyEncodedMaze = EncodedMazeBase & {
+  version: 0;
+  start: SvgCoordinate;
+  destination: SvgCoordinate;
+};
+
+export type EncodedMazeV1 = EncodedMazeBase & {
+  version: 1;
+  start: GridCoordinate;
+  destination: GridCoordinate;
+};
+
+export type EncodedMaze = LegacyEncodedMaze | EncodedMazeV1;
 
 export type MazeWall = {
   id: WallKey;
@@ -61,8 +77,10 @@ export type MazeState = {
   walls: MazeWall[];
   width: number;
   serialized?: string;
-  start?: Coordinate;
+  start?: SvgCoordinate;
   algorithm?: AlgorithmKey;
+  codecVersion?: MazeCodecVersion;
+  canonicalId?: string;
 };
 export type GetHexFromNodesProps = Pick<MazeState, 'nodes' | 'cols' | 'rows' | 'spacing'>;
 export type EncoderProps = Omit<MazeState, 'serialized' | 'height' | 'width'>;
