@@ -18,7 +18,8 @@ developer debug page.
 - **Canonical MazeCodec** — serializes an entire generated maze into a compact,
   versioned hexadecimal identity suitable for URLs and database keys. The real
   innovation here is a defined a stable, deterministic representation for an
-  entire procedural puzzle.
+  entire procedural puzzle. See the [codec's readme](./src/maze/codec/codec.md) 
+  for more detailed information regarding it's architecture and purpose.
 - **Presentation-independent coordinates** — maze identity uses zero-based grid
   coordinates rather than SVG pixels, so changing visual spacing does not
   change the maze.
