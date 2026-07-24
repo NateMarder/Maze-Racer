@@ -31,6 +31,14 @@
 - Likewise, the Canonical Maze must be able to be encoded fully, and then decoded in a lossless way.
 - This invariant is protected by automated tests. Currently they are kicked off through a husky pre-push task.
 
+## Invariants - MazeCodec must always satisfy the following:
+
+- Encoding followed by decoding produces an equivalent canonical maze.
+- Decoding followed by encoding produces an equivalent serialized representation.
+- Canonical maze data is independent of rendering concerns.
+- Encoded mazes remain deterministic.
+- Previously supported codec versions remain decodable whenever practical.
+
 ## Stable URLs
 
 - Every encoded maze represents a permanent identifier.

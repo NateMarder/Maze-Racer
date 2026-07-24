@@ -1,5 +1,12 @@
 # MazeCodec Changelog
 
+## Compatibility Table 
+
+| Version | Status | Can Decode | Can Encode |
+|---------|--------|----------|------------|
+| v1 | Current | ✅ | ✅ |
+| v2 | Planned | — | — |
+
 ## v1.1.0
 
 ### Added
@@ -7,7 +14,7 @@
 - Canonical maze representation.
 
 ### Changed
-- Removed presentation-specific spacing from serialization.
+- Removed presentation-specific details from serialization.
 - Coordinate conversion moved to coordinateUtils.ts.
 
 ### Fixed
