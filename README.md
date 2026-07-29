@@ -11,7 +11,7 @@ identity.
 
 The community competition and backend are still in development. The repository
 currently contains the maze generator, player controls, animation, codec, and a
-developer debug page.
+developer sandbox page.
 
 ## Engineering Highlights
 
@@ -31,9 +31,9 @@ developer debug page.
   and GSAP-powered player and completion animations.
 - **Modern TypeScript stack** — Next.js App Router, Turbopack, and Vitest.
 
-## Run the debug page locally
+## Run the sandbox page locally
 
-The debug page is the fastest way for contributors to generate mazes, exercise
+The sandbox page is the fastest way for contributors to generate mazes, exercise
 the different algorithms, and inspect encoded maze data.
 
 ### Requirements
@@ -68,13 +68,13 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000/debug](http://localhost:3000/debug) in a browser. If
+Open [http://localhost:3000/sandbox](http://localhost:3000/sandbox) in a browser. If
 port 3000 is unavailable, use the local URL printed by Next.js and append
-`/debug`.
+`/sandbox`.
 
 Stop the development server with <kbd>Ctrl</kbd>+<kbd>C</kbd>.
 
-### Using the debug page
+### Using the sandbox page
 
 - Move the player with the arrow keys or <kbd>W</kbd>, <kbd>A</kbd>,
   <kbd>S</kbd>, and <kbd>D</kbd>.

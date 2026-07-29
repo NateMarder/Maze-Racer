@@ -1,7 +1,7 @@
 'use client';
 
 import styles from "../page.module.css";
-import MazeGraph from '../../maze/maze-graph';
+import MazeGraph from '../../maze/maze-graphs/primary-maze-graph';
 
 export default function Home() {
 
