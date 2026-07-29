@@ -30,7 +30,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "^4.1.10",
-    "eslint": "^9",
+    "eslint": "^9.39.5",
     "eslint-config-next": "^16.2.12",
     "husky": "^9.1.7",
     "typescript": "^5",
