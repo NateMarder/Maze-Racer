@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getBlankNodesForEngine } from "../node/maze-node-factory";
+import { getBlankNodesForEngine } from "./maze-node-factory";
 import { MazeNode, MazeState, NodeKey } from "../types";
 import PrimEngine from "./prim-engine";
 import { getOrthogonalKey } from "./utils";

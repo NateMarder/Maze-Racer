@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { getBlankNodesForEngine } from "../node/maze-node-factory";
+import { getBlankNodesForEngine } from "./maze-node-factory";
 import { MazeNode, MazeState, NodeKey, WallKey } from "../types";
 import EllerEngine from "./eller-engine";
 import { getOrthogonalKey } from "./utils";

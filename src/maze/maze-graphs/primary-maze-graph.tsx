@@ -5,7 +5,7 @@ import { mazeGraphDefaults as DEFAULTS } from '../../defaults';
 import PlayerNode from '../player-node';
 import { getNodesWithConnectedSiblingsBasedOnPath } from '../node/utilities';
 import { DestinationNode } from '../destination-node';
-import { createPathsFromInactiveWalls } from '../path/path-factory';
+import { createPathsFromInactiveWalls } from '../engine/path/path-utils';
 import { MazeWall } from '../wall/maze-wall'
 import LevelOne from '../engine/dfs-engine';
 import PrimEngine from '../engine/prim-engine';
@@ -14,7 +14,7 @@ import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindo
 import { MazeState, EncodedMaze, AlgorithmKey } from '../types';
 import { getWallsFromInactiveWallKeys } from '../wall/maze-wall';
 import { MazeCodec } from '../codec/maze-codec';
-import { getBlankNodesForEngine } from '../node/maze-node-factory';
+import { getBlankNodesForEngine } from '../engine/maze-node-factory';
 
 export interface MazeGraphProps {
     height: number;
@@ -48,7 +48,7 @@ export default class MazeGraph extends React.Component<MazeGraphProps, MazeState
             destination: { x: 0, y: 0 },
             serialized: '',
             level: props.level
-        };;
+        };
         this.mazeGraphRef = React.createRef<HTMLDivElement>();
     }
 

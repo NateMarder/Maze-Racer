@@ -1,6 +1,10 @@
-import { MazeNode, MazeState, NodeKey } from "../types";
+import { MazeNode, MazePath, MazeState, NodeKey } from "../types";
 
-export const getNodesWithConnectedSiblingsBasedOnPath = ({ nodes, allPaths }: MazeState): MazeNode[] => {
+type GetNodesWithConnectionsProps = Partial<MazeState> & {
+    allPaths: MazePath[]
+}
+
+export const getNodesWithConnectedSiblingsBasedOnPath = ({ nodes, allPaths }: GetNodesWithConnectionsProps): MazeNode[] => {
 
     const clonedNodes: MazeNode[] = [...new Set(nodes)].map(mazeNode => {
         return { ...mazeNode, siblingKeys: [] };

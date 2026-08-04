@@ -1,6 +1,6 @@
 import MazePath from "./maze-path";
-import { getOrthogonalKey } from "../engine/utils";
-import type { MazePath as MazePathType, NodeKey, WallKey } from "../types";
+import { getOrthogonalKey } from "../utils";
+import type { MazePath as MazePathType, NodeKey, WallKey } from "../../types";
 
 function wallKeyToNodeKeys(wallKey: WallKey): [NodeKey, NodeKey] {
   const [x1, y1, x2, y2] = wallKey.split(".").map(Number);

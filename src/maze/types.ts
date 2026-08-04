@@ -85,3 +85,21 @@ export type MazeState = {
 export type GetHexFromNodesProps = Pick<MazeState, 'nodes' | 'cols' | 'rows' | 'spacing'>;
 export type EncoderProps = Omit<MazeState, 'serialized' | 'height' | 'width'>;
 export type AlgorithmKey = 'dfs' | 'prim' | 'eller';
+
+
+export type MazeAlgorithm = "DFS" | "ELLER" | "PRIM";
+
+export type GenerateMazeWithoutSpacingInput = {
+  algorithm: MazeAlgorithm;
+  rows: number;
+  cols: number;
+};
+
+export type GenerateSandboxMazeArgs = {
+  input: GenerateMazeWithoutSpacingInput;
+};
+
+export type BuildNodeArrayWithoutSpacingProps = {
+  rows: number;
+  cols: number;
+}

@@ -1,20 +1,19 @@
-import { EngineNode, MazeNode, MazeState } from "../types";
-import mazeNode from "./maze-node";
+import { BuildNodeArrayWithoutSpacingProps, EngineNode, MazeState } from "../types";
 
 type BuildNodeArrayProps = Pick<MazeState, 'rows' | 'cols' | 'spacing'>;
 type addSiblingProps = BuildNodeArrayProps & {
-  nodeArray: MazeNode[]
+  nodeArray: EngineNode[]
 }
 
 function buildNodeArray({ rows, cols, spacing }: BuildNodeArrayProps) {
-  const arrayOfNodes = [];
+  const arrayOfNodes:EngineNode[] = [];
   const offset = spacing / 2;
   for (let i = 0; i < cols; i += 1) {
     for (let j = 0; j < rows; j += 1) {
       const x = i * spacing + offset;
       const y = j * spacing + offset
       arrayOfNodes.push(
-        new mazeNode({
+        ({
           x: x,
           y: y,
           isStart: i + j === 0,
@@ -64,6 +63,22 @@ function connectSiblings({ rows, cols, spacing, nodeArray }: addSiblingProps) {
  * with zero-walls, just paths.
  */
 export function getBlankNodesForEngine({ rows, cols, spacing }: BuildNodeArrayProps): EngineNode[] {
+  const nodeArray = buildNodeArray({ rows, cols, spacing });
+  return connectSiblings({
+    rows,
+    cols,
+    spacing,
+    nodeArray,
+  });
+}
+
+/**
+ * This returns an array of nodes, with all the possible siblings addeed - like a maze
+ * with zero-walls, just paths.
+ */
+export function getBlankNodesForEngineWithoutSpacing({ rows, cols }: BuildNodeArrayWithoutSpacingProps): EngineNode[] {
+  // we will let the spacing be '2', as this will cause the offset to be '1', so the initial coordinates will retain simple integer math
+  const spacing = 2;
   const nodeArray = buildNodeArray({ rows, cols, spacing });
   return connectSiblings({
     rows,

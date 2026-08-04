@@ -5,7 +5,7 @@ import type {
   MazeState,
   SvgCoordinate,
 } from "../types";
-import { getBlankNodesForEngine } from "../node/maze-node-factory";
+import { getBlankNodesForEngine } from "../engine/maze-node-factory";
 import { simpleMaze } from "./fixtures/simple-dfs-maze";
 import { MazeCodec } from "./maze-codec";
 

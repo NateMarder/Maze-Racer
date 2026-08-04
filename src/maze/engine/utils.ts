@@ -1,3 +1,12 @@
+import { getHexFromNodes } from "../codec/encode-utilities";
+import { getNodesWithConnectedSiblingsBasedOnPath } from "../node/utilities";
+import { createPathsFromInactiveWalls } from "./path/path-utils"
+import { GenerateMazeWithoutSpacingInput, MazePath, MazeState, WallKey } from "../types";
+import LevelOne from "./dfs-engine";
+import EllerEngine from "./eller-engine";
+import { getBlankNodesForEngineWithoutSpacing } from "./maze-node-factory";
+import PrimEngine from "./prim-engine";
+
 export function shuffle<T>(array: T[]): T[] {
   const result: T[] = [...array] // allocate an array of the correct size first
   for (let i = result.length - 1; i > 0; i -= 1) {
@@ -31,3 +40,56 @@ export function getOrthogonalKey(
 
   return `${wallX}.${y1 - distance}.${wallX}.${y1 + distance}`;
 }
+
+export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMazeWithoutSpacingInput) {
+
+        // by leaving spacing as '2', the offset will be '1', which means we can rely on integer math and keep the keys simple for encoding
+        let spacing = 2;
+
+        let dataForMazeEngine:MazeState = {
+          allPaths: [],
+          destination: {
+              x:0,
+              y:0
+          },
+          inactiveWallKeys: [],
+          level: 1,
+          spacing,
+          walls: [],
+          height: 1,
+          width: 1, 
+          cols,
+          rows,
+          nodes: getBlankNodesForEngineWithoutSpacing({ rows, cols })
+        }
+  
+        let engineResult;
+        
+        switch(algorithm) {
+          case "DFS":
+              engineResult =  new LevelOne(dataForMazeEngine).run();;
+          case "ELLER":
+              engineResult = new PrimEngine(dataForMazeEngine).run();
+          case "PRIM":
+              engineResult = new EllerEngine(dataForMazeEngine).run();
+        }
+  
+        let { destNodeKey, route } = engineResult;
+        const allPaths = createPathsFromInactiveWalls(route);
+        const nodes = getNodesWithConnectedSiblingsBasedOnPath({nodes: dataForMazeEngine.nodes, allPaths:allPaths });
+        const hex = getHexFromNodes({nodes, rows, cols, spacing})
+  
+        // for now..
+        return {
+          destNodeKey,
+          encodedMaze:hex,
+          route,
+          algorithm,
+          rows,
+          cols,
+        };
+}
+function wallKeyToNodeKeys(wallKey: string): [any, any] {
+  throw new Error("Function not implemented.");
+}
+

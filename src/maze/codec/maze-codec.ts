@@ -1,4 +1,4 @@
-import { createPathsFromInactiveWalls } from "../path/path-factory";
+import { createPathsFromInactiveWalls } from "../engine/path/path-utils";
 import {
     EncodedMaze,
     EncodedMazeV1,
@@ -43,13 +43,13 @@ function assertValidDimensions(cols: number, rows: number): void {
     }
 }
 
-function assertValidTopology(serialized: string): void {
+export function assertValidTopology(serialized: string): void {
     if (!/^[0-9a-f]*$/i.test(serialized)) {
         throw new Error("maze topology must contain only hexadecimal characters");
     }
 }
 
-function assertCanonicalTopology(
+export function assertCanonicalTopology(
     serialized: string,
     cols: number,
     rows: number,
