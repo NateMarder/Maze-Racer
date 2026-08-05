@@ -5,7 +5,7 @@ import {
     NodeKey,
     WallKey,
 } from "../types";
-import { getOrthogonalKey, shuffle } from "./utils";
+import { getOrthogonalKey, shuffle } from "./engine-utils";
 
 type EllerResult = {
     route: WallKey[];

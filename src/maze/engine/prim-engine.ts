@@ -5,7 +5,7 @@ import {
     NodeKey,
     WallKey,
 } from "../types";
-import { getOrthogonalKey } from "./utils";
+import { getOrthogonalKey } from "./engine-utils";
 
 type FrontierEdge = {
     fromKey: NodeKey;

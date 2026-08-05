@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { getBlankNodesForEngine } from "./maze-node-factory";
 import { MazeNode, MazeState, NodeKey, WallKey } from "../types";
 import EllerEngine from "./eller-engine";
-import { getOrthogonalKey } from "./utils";
+import { getOrthogonalKey } from "./engine-utils";
 
 function createMazeState(rows = 4, cols = 4, spacing = 20): MazeState {
     return {

@@ -1,7 +1,7 @@
 
 import { GraphQLError } from "graphql";
 import { GenerateSandboxMazeArgs } from '@/maze/types';
-import { getSolvableMazeWithoutSpacing } from '@/maze/engine/utils';
+import { getSolvableMazeWithoutSpacing } from '@/maze/engine/engine-utils';
 import { assertCanonicalTopology } from '@/maze/codec/maze-codec';
 
 
@@ -48,25 +48,25 @@ export const resolvers = {
        */
 
       let result;
-     try {
-       result =  getSolvableMazeWithoutSpacing({rows: input.rows, cols: input.cols, algorithm: input.algorithm});
-       assertCanonicalTopology(result.encodedMaze,result.cols,result.rows);
-     } catch (e) {
-       result = {
-         "generateSandboxMaze": {
-           "algorithm": input.algorithm,
-           "rows": input.cols,
-           "cols": input.rows,
-           "encodedMaze": e?.toString(),
-         }
-       }
-     }
+      try {
+        result = getSolvableMazeWithoutSpacing({ rows: input.rows, cols: input.cols, algorithm: input.algorithm });
+        assertCanonicalTopology(result.encodedMaze, result.cols, result.rows);
+      } catch (e) {
+        result = {
+          "generateSandboxMaze": {
+            "algorithm": input.algorithm,
+            "rows": input.cols,
+            "cols": input.rows,
+            "encodedMaze": e?.toString(),
+          }
+        }
+      }
 
-     return result;
+      return result;
 
-    //   throw new Error(
-    //     `generateSandboxMaze is not implemented: ${JSON.stringify(input)}`,
-    //   );
+      //   throw new Error(
+      //     `generateSandboxMaze is not implemented: ${JSON.stringify(input)}`,
+      //   );
     },
   },
 };

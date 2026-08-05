@@ -6,7 +6,7 @@
  */
 
 import { MazeNode, MazeState, WallKey, MazeNodeMap } from "../types";
-import { getOrthogonalKey, shuffle } from "./utils";
+import { getOrthogonalKey, shuffle } from "./engine-utils";
 
 export default class LevelOne {
 

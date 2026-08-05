@@ -46,6 +46,7 @@ export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMa
         // by leaving spacing as '2', the offset will be '1', which means we can rely on integer math and keep the keys simple for encoding
         let spacing = 2;
 
+        // empty state
         let dataForMazeEngine:MazeState = {
           allPaths: [],
           destination: {
