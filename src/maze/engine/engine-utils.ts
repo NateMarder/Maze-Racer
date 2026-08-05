@@ -8,7 +8,7 @@ import {
   NodeKey,
   WallKey,
 } from "../types";
-import LevelOne from "./dfs-engine";
+import DfsEngine from "./dfs-engine";
 import EllerEngine from "./eller-engine";
 import { getBlankNodesForEngineWithoutSpacing } from "./maze-node-factory";
 import PrimEngine from "./prim-engine";
@@ -67,16 +67,13 @@ export function getSolvableMazeWithoutSpacing({
   cols,
   algorithm,
 }: GenerateMazeWithoutSpacingInput):GeneratedSandboxMaze {
+  
   // With spacing 2, the offset is 1, so node keys use simple integers.
-  const spacing = 2;
   const dataForMazeEngine: MazeState = {
     allPaths: [],
-    destination: {
-      x: 0,
-      y: 0,
-    },
+    destination: { x: 0, y: 0 },
     inactiveWallKeys: [],
-    spacing,
+    spacing:2,
     walls: [],
     height: 600,
     width: 600,
@@ -88,7 +85,7 @@ export function getSolvableMazeWithoutSpacing({
 
   switch (algorithm) {
     case "DFS":
-      engineResult = new LevelOne(dataForMazeEngine).run();
+      engineResult = new DfsEngine(dataForMazeEngine).run();
       break;
     case "ELLER":
       engineResult = new EllerEngine(dataForMazeEngine).run();

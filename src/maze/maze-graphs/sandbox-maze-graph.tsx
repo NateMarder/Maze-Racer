@@ -7,7 +7,7 @@ import { getNodesWithConnectedSiblingsBasedOnPath } from '../node/utilities';
 import { DestinationNode } from '../destination-node';
 import { createPathsFromInactiveWalls } from '../engine/path/path-utils';
 import { getWallsFromInactiveWallKeys, MazeWall } from '../wall/maze-wall';
-import LevelOne from '../engine/dfs-engine';
+import DfsEngine from '../engine/dfs-engine';
 import PrimEngine from '../engine/prim-engine';
 import EllerEngine from '../engine/eller-engine';
 import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload, getRandomEngine } from '../../web-utilities';
@@ -59,7 +59,7 @@ export default class SandBoxMazeGraph extends React.Component<MazeGraphProps, Ma
             let result;
             let x, y;
             if (algorithm === 'dfs') {
-                result = new LevelOne(this.state).run();
+                result = new DfsEngine(this.state).run();
             }
             if (algorithm === 'prim') {
                 result = new PrimEngine(this.state).run();

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MazeCodec } from "../codec/maze-codec";
-import LevelOne from "./dfs-engine";
+import DfsEngine from "./dfs-engine";
 import EllerEngine from "./eller-engine";
 import { getSolvableMazeWithoutSpacing } from "./engine-utils";
 import PrimEngine from "./prim-engine";
@@ -16,7 +16,7 @@ describe("getSolvableMazeWithoutSpacing", () => {
       destNodeKey: "1.1",
     };
     const dfsRun = vi
-      .spyOn(LevelOne.prototype, "run")
+      .spyOn(DfsEngine.prototype, "run")
       .mockReturnValue(engineResult);
     const ellerRun = vi
       .spyOn(EllerEngine.prototype, "run")

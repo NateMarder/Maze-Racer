@@ -2,8 +2,6 @@
 import { GraphQLError } from "graphql";
 import { GenerateSandboxMazeArgs } from '@/maze/types';
 import { getSolvableMazeWithoutSpacing, GeneratedSandboxMaze } from '@/maze/engine/engine-utils';
-import { assertCanonicalTopology } from '@/maze/codec/maze-codec';
-
 
 
 function validateMazeDimensions(rows: number, cols: number): void {

@@ -1,13 +1,7 @@
-/**
- * Functionally equivalent to the original level one algorithm. This
- * TypeScript version uses engine-specific nodes and does not require the full
- * presentation state.
- */
-
 import { MazeNode, MazeState, WallKey, MazeNodeMap } from "../types";
 import { getOrthogonalKey, shuffle } from "./engine-utils";
 
-export default class LevelOne {
+export default class DfsEngine {
 
     private route: WallKey[] = [];
     private destNodeKey = '';
@@ -67,7 +61,6 @@ export default class LevelOne {
             if (w) {
                 this.visit(w);
                 this.updateCount(w);
-
                 w.siblingKeys.forEach((sibKey) => {
                     if (!this.nodeMap[sibKey].isVisited) {
                         this.nodeMap[sibKey].discoveredBy = w.key;
