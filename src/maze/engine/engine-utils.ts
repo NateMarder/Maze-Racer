@@ -54,7 +54,6 @@ export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMa
               y:0
           },
           inactiveWallKeys: [],
-          level: 1,
           spacing,
           walls: [],
           height: 1,
@@ -93,4 +92,3 @@ export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMa
 function wallKeyToNodeKeys(wallKey: string): [any, any] {
   throw new Error("Function not implemented.");
 }
-

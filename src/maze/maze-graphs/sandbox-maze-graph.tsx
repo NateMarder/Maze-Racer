@@ -22,7 +22,6 @@ export interface MazeGraphProps {
     className?: string;
     cols?: number;
     rows?: number;
-    level: number;
     spacing: number;
 }
 
@@ -46,8 +45,7 @@ export default class SandBoxMazeGraph extends React.Component<MazeGraphProps, Ma
             walls: [],
             inactiveWallKeys: [],
             destination: { x: 0, y: 0 },
-            serialized: '',
-            level: props.level
+            serialized: ''
         };;
         this.mazeGraphRef = React.createRef<HTMLDivElement>();
     }

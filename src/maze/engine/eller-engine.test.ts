@@ -11,7 +11,6 @@ function createMazeState(rows = 4, cols = 4, spacing = 20): MazeState {
         destination: { x: 0, y: 0 },
         height: rows * spacing,
         inactiveWallKeys: [],
-        level: 3,
         nodes: getBlankNodesForEngine({ rows, cols, spacing }),
         rows,
         spacing,

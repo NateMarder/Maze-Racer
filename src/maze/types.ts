@@ -29,7 +29,6 @@ type EncodedMazeBase = {
   serialized: string;
   rows: number;
   cols: number;
-  level: number;
   spacing: number;
 };
 
@@ -70,7 +69,6 @@ export type MazeState = {
   destination: Coordinate;
   height: number;
   inactiveWallKeys: WallKey[];
-  level: number;
   nodes: MazeNode[];
   rows: number;
   spacing: number;

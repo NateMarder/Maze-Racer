@@ -94,7 +94,6 @@ function createOpenMaze(
     },
     height: rows * spacing,
     inactiveWallKeys: [],
-    level: 1,
     nodes,
     rows,
     spacing,
@@ -116,7 +115,6 @@ describe("MazeCodec", () => {
     expect(decoded.destination).toEqual(maze.destination);
     expect(decoded.rows).toBe(maze.rows);
     expect(decoded.cols).toBe(maze.cols);
-    expect(decoded.level).toBe(maze.level);
     expect(decoded.nodes.map(getNodeIdentity)).toEqual(
       maze.nodes.map(getNodeIdentity),
     );
@@ -195,12 +193,10 @@ describe("MazeCodec", () => {
     const canonicalId = MazeCodec.getCanonicalId(encoded);
     const parsed = MazeCodec.parseCanonicalId(canonicalId, {
       spacing: 40,
-      level: 7,
     });
     const decoded = MazeCodec.decode(parsed);
 
     expect(parsed.spacing).toBe(40);
-    expect(parsed.level).toBe(7);
     expect(parsed.start).toEqual({ x: 0, y: 0 });
     expect(parsed.destination).toEqual({ x: 2, y: 5 });
     expect(decoded.start).toEqual({ x: 20, y: 20 });
@@ -216,7 +212,6 @@ describe("MazeCodec", () => {
       serialized: legacyParams.get("h") ?? "",
       cols: Number(legacyParams.get("c")),
       rows: Number(legacyParams.get("r")),
-      level: Number(legacyParams.get("l")),
       destination: {
         x: Number(legacyParams.get("dx")),
         y: Number(legacyParams.get("dy")),
@@ -239,22 +234,22 @@ describe("MazeCodec", () => {
   it("rejects malformed or out-of-bounds canonical identifiers", () => {
     expect(() => MazeCodec.parseCanonicalId(
       "v2:4x4:69a9dc28:start=0,0:end=0,3",
-      { spacing: 40, level: 1 },
+      { spacing: 40 },
     )).toThrow("unsupported maze codec version: 2");
 
     expect(() => MazeCodec.parseCanonicalId(
       "v1:4x4:69a9dc28:start=0,0:end=4,3",
-      { spacing: 40, level: 1 },
+      { spacing: 40 },
     )).toThrow("end coordinate 4,3 is outside the 4x4 maze");
 
     expect(() => MazeCodec.parseCanonicalId(
       "v1:4x4:69a9dc280:start=0,0:end=0,3",
-      { spacing: 40, level: 1 },
+      { spacing: 40 },
     )).toThrow("exactly 8 hexadecimal characters");
 
     expect(() => MazeCodec.parseCanonicalId(
       "v1:4x4:69a9dc29:start=0,0:end=0,3",
-      { spacing: 40, level: 1 },
+      { spacing: 40 },
     )).toThrow("passage outside the logical grid");
   });
 });

@@ -133,10 +133,9 @@ v1:4x4:69a9dc28:start=0,0:end=0,3
 | `end=0,3` | Zero-based logical destination coordinate |
 
 Logical coordinates make maze identity independent of SVG dimensions and node
-spacing. Presentation settings such as `spacing`, along with game metadata such
-as `level`, travel separately in the URL and are not part of the canonical
-identifier. Existing unversioned maze URLs remain readable and are migrated to
-v1 the next time they are encoded.
+spacing. Presentation settings such as `spacing` travel separately in the URL
+and are not part of the canonical identifier. Existing unversioned maze URLs
+remain readable and are migrated to v1 the next time they are encoded.
 
 ## Current features
 

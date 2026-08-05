@@ -12,7 +12,6 @@ export default function Home() {
           className="mz-container"
           height={600}
           width={600}
-          level={1}
           spacing={40}
         />
     </div>

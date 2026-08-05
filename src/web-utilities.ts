@@ -5,7 +5,6 @@ import {
     LegacyEncodedMaze,
 } from "./maze/types";
 
-const DEFAULT_MAZE_LEVEL = 1;
 const DEFAULT_MAZE_SPACING = 60;
 
 function getNumberParam(
@@ -32,16 +31,9 @@ export const getEncodedMazeDataFromSearchParams = (
         "s",
         DEFAULT_MAZE_SPACING,
     );
-    const level = getNumberParam(
-        urlParams,
-        "l",
-        DEFAULT_MAZE_LEVEL,
-    );
-
     if (canonicalId) {
         return MazeCodec.parseCanonicalId(canonicalId, {
             spacing,
-            level,
         });
     }
 
@@ -55,7 +47,6 @@ export const getEncodedMazeDataFromSearchParams = (
             x: getNumberParam(urlParams, "dx", 0),
             y: getNumberParam(urlParams, "dy", 0),
         },
-        level,
         start: {
             x: getNumberParam(urlParams, "sx", spacing / 2),
             y: getNumberParam(urlParams, "sy", spacing / 2),
@@ -87,7 +78,6 @@ export const getSearchParamsFromEncodedMaze = (
         urlParams.set("dy", encoded.destination.y.toString());
     }
 
-    urlParams.set("l", encoded.level.toString());
     urlParams.set("s", encoded.spacing.toString());
 
     return urlParams;

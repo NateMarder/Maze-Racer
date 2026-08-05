@@ -24,7 +24,6 @@ interface GetWallsFromInactiveKeysProps {
 
 interface MazePresentation {
     spacing: number;
-    level: number;
 }
 
 export const CURRENT_MAZE_CODEC_VERSION = 1 as const;
@@ -100,7 +99,6 @@ export const MazeCodec = {
         const {
             cols,
             rows,
-            level,
             destination,
             spacing,
             nodes,
@@ -128,7 +126,6 @@ export const MazeCodec = {
             rows,
             cols,
             destination: logicalDestination,
-            level,
             serialized,
             spacing,
             start,
@@ -204,7 +201,6 @@ export const MazeCodec = {
                 y: Number(endYValue),
             },
             spacing: presentation.spacing,
-            level: presentation.level,
         };
 
         // Reuse the canonical writer's validation so parsing and writing cannot
@@ -242,7 +238,6 @@ export const MazeCodec = {
         const {
             cols,
             rows,
-            level,
             spacing,
             serialized,
         } = encoded;
@@ -287,7 +282,6 @@ export const MazeCodec = {
             rows,
             cols,
             destination,
-            level,
             serialized,
             spacing,
             start,

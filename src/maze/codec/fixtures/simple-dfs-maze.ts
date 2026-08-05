@@ -2975,9 +2975,7 @@ export function simpleMaze(): MazeState {
             "x": 150,
             "y": 330
         },
-        "serialized": "h=79db95624c8b999dc55c61c5dd97516586555d55962898aaa8&c=10&r=10&l=1&dx=150&dy=330&s=60",
-        "level": 1
+        "serialized": "h=79db95624c8b999dc55c61c5dd97516586555d55962898aaa8&c=10&r=10&dx=150&dy=330&s=60"
     }
 }
-
 
