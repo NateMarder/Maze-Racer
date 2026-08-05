@@ -16,7 +16,7 @@
 
 ### Canonical Representation
 
-> The codec operates on a canonical maze representation. This representation contains only information required to reconstruct the maze. Rendering information such as spacing, animation state, colors, zoom level, or viewport position are intentionally excluded. As these could vary in the future depending on format of play. 
+> The codec operates on a canonical maze representation. This representation contains only information required to reconstruct the maze. Rendering information such as spacing, animation state, colors, zoom level, or viewport position is intentionally excluded because it may vary by format of play.
 
 ### Purpose of the separation:
 

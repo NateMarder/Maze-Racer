@@ -46,7 +46,6 @@ export const resolvers = {
        * 3. Assert that it is playable.
        * 4. Encode it.
        */
-
       let result;
       try {
         result = getSolvableMazeWithoutSpacing({ rows: input.rows, cols: input.cols, algorithm: input.algorithm });

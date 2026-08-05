@@ -38,9 +38,9 @@ function connectSiblings({ rows, cols, spacing, nodeArray }: addSiblingProps) {
       const x = col * spacing + offset;
       const y = row * spacing + offset;
 
-      const primaryNodeRef = nodeArray.find(n => n.key === `${x}.${y}`);          // primary maze-node we are binding
-      const rightSibRef = nodeArray.find(n => n.key === `${x + spacing}.${y}`);   // sibling on the right of primary
-      const bottomSibRef = nodeArray.find(n => n.key === `${x}.${y + spacing}`);  // sibling on left of primary
+      const primaryNodeRef = nodeArray.find(n => n.key === `${x}.${y}`);
+      const rightSibRef = nodeArray.find(n => n.key === `${x + spacing}.${y}`);
+      const bottomSibRef = nodeArray.find(n => n.key === `${x}.${y + spacing}`);
 
       if (primaryNodeRef && rightSibRef) {
         primaryNodeRef.siblingKeys.push(rightSibRef.key);

@@ -4,7 +4,7 @@ interface MazeWallProps {
   id: string,
   x1: string,
   y1: string,
-  x2: string, 
+  x2: string,
   y2: string,
   className?:string,
 }
@@ -16,21 +16,17 @@ export interface MazeWallFactoryProps {
   inactiveWallKeys: string[]
 }
 
-
 export const MazeWall = ({ id, x1, y1, x2, y2, className }:MazeWallProps) => {
   let specialClass = "mz-wall";
   if (className) {
     specialClass = `${specialClass} ${className}`;
   }
-  
+
   return <line id={id} className={specialClass} x1={x1} y1={y1} x2={x2} y2={y2} />;
 }
 
 /**
- * 
- * @desription we use this to create a new maze - by creating all the possible
- * walls, and then filtering out the wallKeys we know shouldn't be their because
- * the of an orthogonal path crossing. 
+ * Creates every possible wall, then filters out walls crossed by passages.
  */
 export const getWallsFromInactiveWallKeys = ({ rows, cols, spacing, inactiveWallKeys }:MazeWallFactoryProps) => {
   const wallCache = [];

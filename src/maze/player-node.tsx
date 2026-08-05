@@ -82,7 +82,7 @@ const PlayerNode: React.FC<PlayerNodeProps> = (props) => {
 
   const determineNextMove = (current: string, backwardsKey: string) => {
     const siblingKeys = Object.keys(nodeMap.current[current] || {});
-    
+
     if (siblingKeys.length !== 2) {
       cooldown.current = false;
       return;

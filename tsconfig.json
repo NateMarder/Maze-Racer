@@ -28,7 +28,7 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts",
-    "src/components/containers/MazeContainer.jsx", "src/maze/engine/level-one-engine.js", "next.config.js"  ],
+    "**/*.mts"
+  ],
   "exclude": ["node_modules"]
 }

@@ -1,8 +1,7 @@
 /**
- * Functionally equivalent to the original level one algorithm
- * however the typescript version relies on nodes crafted intentionally 
- * for use with the engine, so they don't need all the properties that 
- * are needed by the
+ * Functionally equivalent to the original level one algorithm. This
+ * TypeScript version uses engine-specific nodes and does not require the full
+ * presentation state.
  */
 
 import { MazeNode, MazeState, WallKey, MazeNodeMap } from "../types";

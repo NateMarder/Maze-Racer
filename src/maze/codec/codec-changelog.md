@@ -1,6 +1,6 @@
 # MazeCodec Changelog
 
-## Compatibility Table 
+## Compatibility Table
 
 | Version | Status | Can Decode | Can Encode |
 |---------|--------|----------|------------|

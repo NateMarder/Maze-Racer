@@ -9,7 +9,6 @@ interface DestinationProps {
   r: number
 }
 
-
 export function DestinationNode({ x, y, r }: DestinationProps) {
 
   const svgRef = useRef<SVGCircleElement>(null);
@@ -18,7 +17,7 @@ export function DestinationNode({ x, y, r }: DestinationProps) {
     const circle = svgRef.current;
 
     if (!circle) return;
-    
+
     const context = gsap.context(() => {
       gsap.to(circle, {
         opacity: 0,

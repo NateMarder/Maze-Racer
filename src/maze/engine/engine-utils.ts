@@ -1,14 +1,25 @@
 import { getHexFromNodes } from "../codec/encode-utilities";
 import { getNodesWithConnectedSiblingsBasedOnPath } from "../node/utilities";
-import { createPathsFromInactiveWalls } from "./path/path-utils"
-import { GenerateMazeWithoutSpacingInput, MazePath, MazeState, WallKey } from "../types";
+import { createPathsFromInactiveWalls } from "./path/path-utils";
+import {
+  GenerateMazeWithoutSpacingInput,
+  MazeState,
+  NodeKey,
+  WallKey,
+} from "../types";
 import LevelOne from "./dfs-engine";
 import EllerEngine from "./eller-engine";
 import { getBlankNodesForEngineWithoutSpacing } from "./maze-node-factory";
 import PrimEngine from "./prim-engine";
 
+type MazeEngineResult = {
+  destNodeKey: NodeKey;
+  route: WallKey[];
+};
+
 export function shuffle<T>(array: T[]): T[] {
-  const result: T[] = [...array] // allocate an array of the correct size first
+  // Allocate a new array so shuffling never mutates the caller's input.
+  const result: T[] = [...array];
   for (let i = result.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
     const temp = result[i];
@@ -41,52 +52,56 @@ export function getOrthogonalKey(
   return `${wallX}.${y1 - distance}.${wallX}.${y1 + distance}`;
 }
 
-export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMazeWithoutSpacingInput) {
+export function getSolvableMazeWithoutSpacing({
+  rows,
+  cols,
+  algorithm,
+}: GenerateMazeWithoutSpacingInput) {
+  // With spacing 2, the offset is 1, so node keys use simple integers.
+  const spacing = 2;
+  const dataForMazeEngine: MazeState = {
+    allPaths: [],
+    destination: {
+      x: 0,
+      y: 0,
+    },
+    inactiveWallKeys: [],
+    spacing,
+    walls: [],
+    height: 1,
+    width: 1,
+    cols,
+    rows,
+    nodes: getBlankNodesForEngineWithoutSpacing({ rows, cols }),
+  };
+  let engineResult: MazeEngineResult;
 
-        // by leaving spacing as '2', the offset will be '1', which means we can rely on integer math and keep the keys simple for encoding
-        const spacing = 2;
+  switch (algorithm) {
+    case "DFS":
+      engineResult = new LevelOne(dataForMazeEngine).run();
+      break;
+    case "ELLER":
+      engineResult = new EllerEngine(dataForMazeEngine).run();
+      break;
+    case "PRIM":
+      engineResult = new PrimEngine(dataForMazeEngine).run();
+      break;
+  }
 
-        // empty state
-        const dataForMazeEngine:MazeState = {
-          allPaths: [],
-          destination: {
-              x:0,
-              y:0
-          },
-          inactiveWallKeys: [],
-          spacing,
-          walls: [],
-          height: 1,
-          width: 1, 
-          cols,
-          rows,
-          nodes: getBlankNodesForEngineWithoutSpacing({ rows, cols })
-        }
-  
-        let engineResult;
-        
-        switch(algorithm) {
-          case "DFS":
-              engineResult =  new LevelOne(dataForMazeEngine).run();;
-          case "ELLER":
-              engineResult = new PrimEngine(dataForMazeEngine).run();
-          case "PRIM":
-              engineResult = new EllerEngine(dataForMazeEngine).run();
-        }
-  
-        const { destNodeKey, route } = engineResult;
-        const allPaths = createPathsFromInactiveWalls(route);
-        const nodes = getNodesWithConnectedSiblingsBasedOnPath({nodes: dataForMazeEngine.nodes, allPaths:allPaths });
-        const hex = getHexFromNodes({nodes, rows, cols, spacing})
-  
-        // for now..
-        return {
-          destNodeKey,
-          encodedMaze:hex,
-          route,
-          algorithm,
-          rows,
-          cols,
-        };
+  const { destNodeKey, route } = engineResult;
+  const allPaths = createPathsFromInactiveWalls(route);
+  const nodes = getNodesWithConnectedSiblingsBasedOnPath({
+    nodes: dataForMazeEngine.nodes,
+    allPaths,
+  });
+  const encodedMaze = getHexFromNodes({ nodes, rows, cols, spacing });
+
+  return {
+    destNodeKey,
+    encodedMaze,
+    route,
+    algorithm,
+    rows,
+    cols,
+  };
 }
-
