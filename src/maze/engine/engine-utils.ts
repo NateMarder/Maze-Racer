@@ -94,11 +94,11 @@ export function getSolvableMazeWithoutSpacing({
     nodes: dataForMazeEngine.nodes,
     allPaths,
   });
-  const encodedMaze = getHexFromNodes({ nodes, rows, cols, spacing });
+  const serialized = getHexFromNodes({ nodes, rows, cols, spacing });
 
   return {
     destNodeKey,
-    encodedMaze,
+    serialized,
     route,
     algorithm,
     rows,

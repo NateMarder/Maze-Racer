@@ -14,7 +14,7 @@ export const typeDefs = `#graphql
   }
 
   type GeneratedSandboxMaze {
-    encodedMaze: String!
+    serialized: String!
     algorithm: MazeAlgorithm!
     rows: Int!
     cols: Int!
