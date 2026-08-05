@@ -3,6 +3,7 @@ import { createPathsFromInactiveWalls } from "./path/path-utils";
 import {
   EncodedMazeV1,
   GenerateMazeWithoutSpacingInput,
+  MazeAlgorithm,
   MazeState,
   NodeKey,
   WallKey,
@@ -54,11 +55,18 @@ export function getOrthogonalKey(
   return `${wallX}.${y1 - distance}.${wallX}.${y1 + distance}`;
 }
 
+ export type GeneratedSandboxMaze = {
+    canonicalId: string,
+    algorithm: MazeAlgorithm,
+    rows: number,
+    cols: number
+  }
+
 export function getSolvableMazeWithoutSpacing({
   rows,
   cols,
   algorithm,
-}: GenerateMazeWithoutSpacingInput) {
+}: GenerateMazeWithoutSpacingInput):GeneratedSandboxMaze {
   // With spacing 2, the offset is 1, so node keys use simple integers.
   const spacing = 2;
   const dataForMazeEngine: MazeState = {
@@ -103,7 +111,7 @@ export function getSolvableMazeWithoutSpacing({
   const searchParamRepresentation = encodeCanonicalIdForUrlParams(canonicalId);
 
   return {
-    canonicalId: searchParamRepresentation,
+    canonicalId:searchParamRepresentation,
     algorithm,
     rows,
     cols,

@@ -1,7 +1,7 @@
 
 import { GraphQLError } from "graphql";
 import { GenerateSandboxMazeArgs } from '@/maze/types';
-import { getSolvableMazeWithoutSpacing } from '@/maze/engine/engine-utils';
+import { getSolvableMazeWithoutSpacing, GeneratedSandboxMaze } from '@/maze/engine/engine-utils';
 import { assertCanonicalTopology } from '@/maze/codec/maze-codec';
 
 
@@ -46,21 +46,8 @@ export const resolvers = {
        * 3. Assert that it is playable.
        * 4. Encode it.
        */
-      let result;
-      try {
-        result = getSolvableMazeWithoutSpacing({ rows: input.rows, cols: input.cols, algorithm: input.algorithm });
-        assertCanonicalTopology(result.canonicalId, result.cols, result.rows);
-      } catch (e) {
-        result = {
-          "generateSandboxMaze": {
-            "algorithm": input.algorithm,
-            "rows": input.cols,
-            "cols": input.rows,
-            "encodedMaze": e?.toString(),
-          }
-        }
-      }
-
+      const result:GeneratedSandboxMaze = getSolvableMazeWithoutSpacing({ rows: input.rows, cols: input.cols, algorithm: input.algorithm });
+      //assertCanonicalTopology(result.canonicalId, result.cols, result.rows);
       return result;
 
       //   throw new Error(
