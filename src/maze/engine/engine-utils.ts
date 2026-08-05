@@ -1,7 +1,7 @@
-import { getHexFromNodes } from "../codec/encode-utilities";
 import { getNodesWithConnectedSiblingsBasedOnPath } from "../node/utilities";
 import { createPathsFromInactiveWalls } from "./path/path-utils";
 import {
+  EncodedMazeV1,
   GenerateMazeWithoutSpacingInput,
   MazeState,
   NodeKey,
@@ -11,6 +11,8 @@ import LevelOne from "./dfs-engine";
 import EllerEngine from "./eller-engine";
 import { getBlankNodesForEngineWithoutSpacing } from "./maze-node-factory";
 import PrimEngine from "./prim-engine";
+import { MazeCodec } from "../codec/maze-codec";
+import { encodeCanonicalIdForUrlParams } from "../../web-utilities";
 
 type MazeEngineResult = {
   destNodeKey: NodeKey;
@@ -68,8 +70,8 @@ export function getSolvableMazeWithoutSpacing({
     inactiveWallKeys: [],
     spacing,
     walls: [],
-    height: 1,
-    width: 1,
+    height: 600,
+    width: 600,
     cols,
     rows,
     nodes: getBlankNodesForEngineWithoutSpacing({ rows, cols }),
@@ -94,12 +96,14 @@ export function getSolvableMazeWithoutSpacing({
     nodes: dataForMazeEngine.nodes,
     allPaths,
   });
-  const serialized = getHexFromNodes({ nodes, rows, cols, spacing });
+  const [x, y] = destNodeKey.split('.').map(Number);
+  const updatedState: MazeState = { ...dataForMazeEngine, nodes, allPaths, destination: { x, y } };
+  const encodedMaze: EncodedMazeV1 = MazeCodec.encode(updatedState);
+  const canonicalId = MazeCodec.getCanonicalId(encodedMaze);
+  const searchParamRepresentation = encodeCanonicalIdForUrlParams(canonicalId);
 
   return {
-    destNodeKey,
-    serialized,
-    route,
+    canonicalId: searchParamRepresentation,
     algorithm,
     rows,
     cols,

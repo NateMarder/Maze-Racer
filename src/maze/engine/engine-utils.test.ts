@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { assertCanonicalTopology } from "../codec/maze-codec";
+import { MazeCodec } from "../codec/maze-codec";
 import LevelOne from "./dfs-engine";
 import EllerEngine from "./eller-engine";
 import { getSolvableMazeWithoutSpacing } from "./engine-utils";
@@ -63,13 +63,20 @@ describe("getSolvableMazeWithoutSpacing", () => {
         cols: 4,
         algorithm,
       });
+      const urlParams = new URLSearchParams(result.canonicalId);
+      const canonicalId = urlParams.get("maze");
 
-      expect(() => assertCanonicalTopology(
-        result.serialized,
-        result.cols,
-        result.rows,
-      )).not.toThrow();
-      expect(result.route).toHaveLength(15);
+      expect(canonicalId).not.toBeNull();
+      expect([...urlParams.keys()]).toEqual(["maze"]);
+
+      const encoded = MazeCodec.parseCanonicalId(canonicalId ?? "", {
+        spacing: 2,
+      });
+      const decoded = MazeCodec.decode(encoded);
+
+      expect(encoded.cols).toBe(result.cols);
+      expect(encoded.rows).toBe(result.rows);
+      expect(decoded.allPaths).toHaveLength(15);
     },
   );
 });

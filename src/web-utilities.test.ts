@@ -2,11 +2,31 @@ import { describe, expect, it } from "vitest";
 import { MazeCodec } from "./maze/codec/maze-codec";
 import { simpleMaze } from "./maze/codec/fixtures/simple-dfs-maze";
 import {
+    encodeCanonicalIdForUrlParams,
     getEncodedMazeDataFromSearchParams,
     getSearchParamsFromEncodedMaze,
 } from "./web-utilities";
 
 describe("maze URL utilities", () => {
+    it("encodes a canonical ID as an appendable maze query string", () => {
+        const canonicalId =
+            "v1:4x4:e8e1cda0:start=0,0:end=3,3";
+        const queryString = encodeCanonicalIdForUrlParams(canonicalId);
+        const url = new URL(`https://maze.test/sandbox?${queryString}`);
+
+        expect(queryString).toBe(
+            "maze=v1%3A4x4%3Ae8e1cda0%3Astart%3D0%2C0%3Aend%3D3%2C3",
+        );
+        expect(url.searchParams.get("maze")).toBe(canonicalId);
+        expect([...url.searchParams.keys()]).toEqual(["maze"]);
+    });
+
+    it("rejects an invalid canonical ID when creating URL params", () => {
+        expect(() => encodeCanonicalIdForUrlParams(
+            "v1:4x4:not-hex:start=0,0:end=3,3",
+        )).toThrow("invalid canonical maze identifier");
+    });
+
     it("writes and reads a v1 canonical maze URL", () => {
         const encoded = MazeCodec.encode(simpleMaze());
         const canonicalId = MazeCodec.getCanonicalId(encoded);

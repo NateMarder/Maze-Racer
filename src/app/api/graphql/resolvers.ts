@@ -49,7 +49,7 @@ export const resolvers = {
       let result;
       try {
         result = getSolvableMazeWithoutSpacing({ rows: input.rows, cols: input.cols, algorithm: input.algorithm });
-        assertCanonicalTopology(result.serialized, result.cols, result.rows);
+        assertCanonicalTopology(result.canonicalId, result.cols, result.rows);
       } catch (e) {
         result = {
           "generateSandboxMaze": {

@@ -61,6 +61,19 @@ export const getEncodedMazeDataFromUrlParams = (): EncodedMaze =>
         new URLSearchParams(window.location.search),
     );
 
+export const encodeCanonicalIdForUrlParams = (
+    canonicalId: string,
+): string => {
+    const encoded = MazeCodec.parseCanonicalId(canonicalId, {
+        spacing: DEFAULT_MAZE_SPACING,
+    });
+    const urlParams = new URLSearchParams();
+
+    urlParams.set("maze", MazeCodec.getCanonicalId(encoded));
+
+    return urlParams.toString();
+};
+
 export const getSearchParamsFromEncodedMaze = (
     encoded: EncodedMaze,
 ): URLSearchParams => {
