@@ -44,10 +44,10 @@ export function getOrthogonalKey(
 export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMazeWithoutSpacingInput) {
 
         // by leaving spacing as '2', the offset will be '1', which means we can rely on integer math and keep the keys simple for encoding
-        let spacing = 2;
+        const spacing = 2;
 
         // empty state
-        let dataForMazeEngine:MazeState = {
+        const dataForMazeEngine:MazeState = {
           allPaths: [],
           destination: {
               x:0,
@@ -74,7 +74,7 @@ export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMa
               engineResult = new EllerEngine(dataForMazeEngine).run();
         }
   
-        let { destNodeKey, route } = engineResult;
+        const { destNodeKey, route } = engineResult;
         const allPaths = createPathsFromInactiveWalls(route);
         const nodes = getNodesWithConnectedSiblingsBasedOnPath({nodes: dataForMazeEngine.nodes, allPaths:allPaths });
         const hex = getHexFromNodes({nodes, rows, cols, spacing})
@@ -89,6 +89,4 @@ export function getSolvableMazeWithoutSpacing({rows, cols, algorithm}:GenerateMa
           cols,
         };
 }
-function wallKeyToNodeKeys(wallKey: string): [any, any] {
-  throw new Error("Function not implemented.");
-}
+
