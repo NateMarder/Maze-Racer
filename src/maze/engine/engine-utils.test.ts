@@ -65,7 +65,7 @@ describe("getSolvableMazeWithoutSpacing", () => {
       });
 
       expect(() => assertCanonicalTopology(
-        result.encodedMaze,
+        result.serialized,
         result.cols,
         result.rows,
       )).not.toThrow();
