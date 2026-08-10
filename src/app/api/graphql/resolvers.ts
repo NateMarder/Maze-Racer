@@ -1,7 +1,7 @@
 
 import { GraphQLError } from "graphql";
 import { GenerateSandboxMazeArgs } from '@/maze/types';
-import { getSolvableMazeWithoutSpacing, GeneratedSandboxMaze } from '@/maze/engine/engine-utils';
+import { generateCanonicalMaze } from '@/maze/engine/engine-utils';
 
 
 function validateMazeDimensions(rows: number, cols: number): void {
@@ -36,21 +36,7 @@ export const resolvers = {
     ) => {
       validateMazeDimensions(input.rows, input.cols);
 
-      /*
-       * Next:
-       *
-       * 1. Map input.algorithm to the maze-engine algorithm.
-       * 2. Generate the maze.
-       * 3. Assert that it is playable.
-       * 4. Encode it.
-       */
-      const result:GeneratedSandboxMaze = getSolvableMazeWithoutSpacing({ rows: input.rows, cols: input.cols, algorithm: input.algorithm });
-      //assertCanonicalTopology(result.canonicalId, result.cols, result.rows);
-      return result;
-
-      //   throw new Error(
-      //     `generateSandboxMaze is not implemented: ${JSON.stringify(input)}`,
-      //   );
+      return generateCanonicalMaze(input);
     },
   },
 };

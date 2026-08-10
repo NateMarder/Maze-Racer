@@ -13,16 +13,9 @@ export const typeDefs = `#graphql
     cols: Int!
   }
 
-  type GeneratedSandboxMaze {
-    canonicalId: String!
-    algorithm: MazeAlgorithm!
-    rows: Int!
-    cols: Int!
-  }
-
   type Query {
     generateSandboxMaze(
       input: GenerateSandboxMazeInput!
-    ): GeneratedSandboxMaze!
+    ): String!
   }
 `;

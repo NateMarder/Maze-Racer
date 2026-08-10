@@ -1,181 +1,157 @@
-'use client'
+"use client";
 
-import React from 'react';
-import { mazeGraphDefaults as DEFAULTS } from '../../defaults';
-import PlayerNode from '../player-node';
-import { getNodesWithConnectedSiblingsBasedOnPath } from '../node/utilities';
-import { DestinationNode } from '../destination-node';
-import { createPathsFromInactiveWalls } from '../engine/path/path-utils';
-import { getWallsFromInactiveWallKeys, MazeWall } from '../wall/maze-wall';
-import DfsEngine from '../engine/dfs-engine';
-import PrimEngine from '../engine/prim-engine';
-import EllerEngine from '../engine/eller-engine';
-import { getEncodedMazeDataFromUrlParams, safeToRenderWithUrlParams, updateWindowUrlWithoutReload, getRandomEngine } from '../../web-utilities';
-import { MazeState, EncodedMaze, AlgorithmKey } from '../types';
-import { MazeCodec } from '../codec/maze-codec';
-import { getBlankNodesForEngine } from '../engine/maze-node-factory';
+import React from "react";
+import PlayerNode from "../player-node";
+import { DestinationNode } from "../destination-node";
+import { MazeWall } from "../wall/maze-wall";
+import type { AlgorithmKey, MazeState } from "../types";
+import { MazeCodec } from "../codec/maze-codec";
+import { updateWindowUrlWithoutReload } from "../../web-utilities";
 
-export interface MazeGraphProps {
-    height: number;
-    width: number;
-    className?: string;
-    spacing: number;
+export interface SandboxMazeGraphProps {
+  algorithm?: AlgorithmKey;
+  className?: string;
+  isGenerating: boolean;
+  maze: MazeState;
+  onDecode: () => void;
+  onRefresh: () => void;
 }
 
-export default class SandBoxMazeGraph extends React.Component<MazeGraphProps, MazeState> {
-    private mazeGraphRef: React.RefObject<HTMLDivElement | null>;
-    constructor(props: MazeGraphProps) {
-        super(props);
-        const rows = Math.floor((props.height * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        const cols = Math.floor((props.width * 0.80) / (props.spacing || DEFAULTS.desktopSpacing));
-        const spacing = props.spacing;
-        const height = spacing * rows;
-        const width = spacing * cols;
-        this.state = {
-            height,
-            width,
-            spacing,
-            cols,
-            rows,
-            nodes: getBlankNodesForEngine({ rows, cols, spacing }),
-            allPaths: [],
-            walls: [],
-            inactiveWallKeys: [],
-            destination: { x: 0, y: 0 },
-            serialized: ''
-        };
-        this.mazeGraphRef = React.createRef<HTMLDivElement>();
-    }
+const controlStyle: React.CSSProperties = {
+  cursor: "pointer",
+  float: "left",
+  fontSize: "18px",
+  marginRight: "10px",
+  padding: "5px",
+};
 
-    componentDidMount = (): void => {
-        if (safeToRenderWithUrlParams()) {
-            const encoded = getEncodedMazeDataFromUrlParams();
-            const decodeResult = MazeCodec.decode(encoded);
-            this.setState({
-                ...decodeResult
-            })
-        } else {
-            const algorithm: AlgorithmKey = getRandomEngine();
-            let result;
-            let x, y;
-            if (algorithm === 'dfs') {
-                result = new DfsEngine(this.state).run();
-            }
-            if (algorithm === 'prim') {
-                result = new PrimEngine(this.state).run();
-            }
-            if (algorithm === 'eller') {
-                result = new EllerEngine(this.state).run();
-            }
-            if (result && result?.route) {
-                [x, y] = result.destNodeKey.split('.').map(Number);
-                this.setState({
-                    inactiveWallKeys: result.route,
-                    destination: { x, y },
-                    algorithm
-                });
-            }
-        }
+export default function SandBoxMazeGraph({
+  algorithm,
+  className,
+  isGenerating,
+  maze,
+  onDecode,
+  onRefresh,
+}: SandboxMazeGraphProps) {
+  const mazeGraphRef = React.useRef<HTMLDivElement | null>(null);
+  const { destination, height, spacing, start, width } = maze;
+  const playerStart = start ?? {
+    x: Math.round(spacing / 2),
+    y: Math.round(spacing / 2),
+  };
+  const playerKey = [
+    maze.codecVersion ?? "legacy",
+    maze.serialized ?? maze.canonicalId ?? "maze",
+    spacing,
+  ].join(":");
 
-        // 2 --> get paths and walls for maze rendering
-        this.setState(prevState => ({
-            walls: getWallsFromInactiveWallKeys(prevState),
-            allPaths: createPathsFromInactiveWalls(prevState.inactiveWallKeys),
-        }));
+  const runEncoder = (): void => {
+    updateWindowUrlWithoutReload(MazeCodec.encode(maze));
+  };
 
-        // 3 --> update nodes with the paths from state
-        this.setState(prevState => ({
-            nodes: getNodesWithConnectedSiblingsBasedOnPath(prevState)
-        }))
-    };
+  const seeState = (): void => {
+    console.log("\nstate:", maze);
+  };
 
-    getUserControlNode = (): React.JSX.Element => (
-        <PlayerNode
-            cx={Math.round(this.state.spacing / 2)}
-            cy={Math.round(this.state.spacing / 2)}
-            r={Math.round(this.state.spacing * 0.10)}
-            map={this.state.nodes || []}
-            destnodekey={`${this.state.destination.x}.${this.state.destination.y}`}
-            offset={this.state.spacing}
-            mzgraphref={this.mazeGraphRef}
+  return (
+    <div className={className} ref={mazeGraphRef}>
+      <svg width={width} height={height} id="mz-svg">
+        <MazeWall
+          id="left-edge"
+          x1="0"
+          y1="0"
+          x2="0"
+          y2={height.toString()}
+          className="outsidewall"
         />
-    );
-
-    getInnerWalls = (): React.JSX.Element[] =>
-        this.state.walls.map((wall) => {
-            const { id, x1, y1, x2, y2 } = wall;
-            return <MazeWall
-                id={id}
-                key={id}
-                x1={x1.toString()}
-                x2={x2.toString()}
-                y1={y1.toString()}
-                y2={y2.toString()}
-                className={"insidewall"}
-            />;
-        });
-
-    getOuterWalls = (): React.JSX.Element => {
-        const { height, width } = this.state;
-        return (
-            <>
-                <MazeWall id={"left-edge"} x1={"0"} y1={"0"} x2={"0"} y2={height.toString()} className="outsidewall" />
-                <MazeWall id={"top-edge"} x1={"0"} y1={"0"} x2={width.toString()} y2={"0"} className="outsidewall" />
-                <MazeWall id={"right-edge"} x1={width.toString()} y1={"0"} x2={width.toString()} y2={height.toString()} className="outsidewall" />
-                <MazeWall id={"bottom-edge"} x1={"0"} y1={height.toString()} x2={width.toString()} y2={height.toString()} className="outsidewall" />
-            </>
-        );
-    };
-
-    refresh = () => {
-        console.clear();
-        console.log("clearing params from URL and reloading");
-        window.location.href = window.location.pathname;
-    }
-
-    runEncoder = () => {
-        const encodedMaze = MazeCodec.encode(this.state);
-        updateWindowUrlWithoutReload(encodedMaze)
-    }
-
-    runDecoder = () => {
-        const encoded: EncodedMaze = getEncodedMazeDataFromUrlParams();
-        const decodeResult = MazeCodec.decode(encoded);
-        this.setState({
-            ...decodeResult
-        })
-    }
-
-    seeState = () => {
-        console.log("\nstate:", this.state)
-    }
-
-    render = () => {
-        const { width, height, destination } = this.state;
-
-        return (
-            <div className={this.props.className} ref={this.mazeGraphRef}>
-                <svg width={width} height={height} id="mz-svg">
-                    {this.getOuterWalls()}
-                    {this.getInnerWalls()}
-                    {this.getUserControlNode()}
-                    <DestinationNode
-                        x={destination.x}
-                        y={destination.y}
-                        r={Math.round(DEFAULTS.desktopSpacing * 0.10)}
-                    />
-                </svg>
-                <br />
-                <br />
-                <br />
-                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runEncoder}> encode </button>
-                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.runDecoder}>decode</button>
-                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px" }} onClick={this.refresh}> refresh </button>
-                <button style={{ fontSize: "18px", cursor: "pointer", float: "left", marginRight: "10px", padding: "5px", color: "magenta" }} onClick={this.seeState}> print state </button>
-                <span style={{ fontSize: "18px", float: "right", padding: "5px", color: "#fff" }}>
-                    {this.state.algorithm ? `maze algorithm: ${this.state.algorithm}` : ``}
-                    </span>
-                </div>
-        );
-    };
+        <MazeWall
+          id="top-edge"
+          x1="0"
+          y1="0"
+          x2={width.toString()}
+          y2="0"
+          className="outsidewall"
+        />
+        <MazeWall
+          id="right-edge"
+          x1={width.toString()}
+          y1="0"
+          x2={width.toString()}
+          y2={height.toString()}
+          className="outsidewall"
+        />
+        <MazeWall
+          id="bottom-edge"
+          x1="0"
+          y1={height.toString()}
+          x2={width.toString()}
+          y2={height.toString()}
+          className="outsidewall"
+        />
+        {maze.walls.map((wall) => (
+          <MazeWall
+            id={wall.id}
+            key={wall.id}
+            x1={wall.x1.toString()}
+            x2={wall.x2.toString()}
+            y1={wall.y1.toString()}
+            y2={wall.y2.toString()}
+            className="insidewall"
+          />
+        ))}
+        <PlayerNode
+          key={playerKey}
+          cx={playerStart.x}
+          cy={playerStart.y}
+          r={Math.round(spacing * 0.1)}
+          map={maze.nodes}
+          destnodekey={`${destination.x}.${destination.y}`}
+          offset={spacing}
+          mzgraphref={mazeGraphRef}
+        />
+        <DestinationNode
+          x={destination.x}
+          y={destination.y}
+          r={Math.round(spacing * 0.1)}
+        />
+      </svg>
+      <br />
+      <br />
+      <br />
+      <button style={controlStyle} onClick={runEncoder} type="button">
+        encode
+      </button>
+      <button style={controlStyle} onClick={onDecode} type="button">
+        decode
+      </button>
+      <button
+        disabled={isGenerating}
+        style={{
+          ...controlStyle,
+          cursor: isGenerating ? "wait" : "pointer",
+        }}
+        onClick={onRefresh}
+        type="button"
+      >
+        {isGenerating ? "refreshing..." : "refresh"}
+      </button>
+      <button
+        style={{ ...controlStyle, color: "magenta" }}
+        onClick={seeState}
+        type="button"
+      >
+        print state
+      </button>
+      <span
+        style={{
+          color: "#fff",
+          float: "right",
+          fontSize: "18px",
+          padding: "5px",
+        }}
+      >
+        {algorithm ? `maze algorithm: ${algorithm}` : ""}
+      </span>
+    </div>
+  );
 }

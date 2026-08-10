@@ -87,14 +87,22 @@ export type AlgorithmKey = 'dfs' | 'prim' | 'eller';
 
 export type MazeAlgorithm = "DFS" | "ELLER" | "PRIM";
 
-export type GenerateMazeWithoutSpacingInput = {
+export type GenerateSandboxMazeInput = {
   algorithm: MazeAlgorithm;
   rows: number;
   cols: number;
 };
 
 export type GenerateSandboxMazeArgs = {
-  input: GenerateMazeWithoutSpacingInput;
+  input: GenerateSandboxMazeInput;
+};
+
+export type GenerateSandboxMazeData = {
+  generateSandboxMaze: string;
+};
+
+export type GenerateSandboxMazeVariables = {
+  input: GenerateSandboxMazeInput;
 };
 
 export type BuildNodeArrayWithoutSpacingProps = {

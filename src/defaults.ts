@@ -9,7 +9,7 @@ export const defaultColumnCount = 10;
 export const defaultRowCount = 10;
 
 export const mazeGraphDefaults = {
-  desktopSpacing: 20,
+  desktopSpacing: 40,
   mobileSpacing: 50,
   height: 400,
   width: 400,

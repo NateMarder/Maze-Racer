@@ -2,8 +2,7 @@ import { getNodesWithConnectedSiblingsBasedOnPath } from "../node/utilities";
 import { createPathsFromInactiveWalls } from "./path/path-utils";
 import {
   EncodedMazeV1,
-  GenerateMazeWithoutSpacingInput,
-  MazeAlgorithm,
+  GenerateSandboxMazeInput,
   MazeState,
   NodeKey,
   WallKey,
@@ -13,7 +12,6 @@ import EllerEngine from "./eller-engine";
 import { getBlankNodesForEngineWithoutSpacing } from "./maze-node-factory";
 import PrimEngine from "./prim-engine";
 import { MazeCodec } from "../codec/maze-codec";
-import { encodeCanonicalIdForUrlParams } from "../../web-utilities";
 
 type MazeEngineResult = {
   destNodeKey: NodeKey;
@@ -21,7 +19,6 @@ type MazeEngineResult = {
 };
 
 export function shuffle<T>(array: T[]): T[] {
-  // Allocate a new array so shuffling never mutates the caller's input.
   const result: T[] = [...array];
   for (let i = result.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -55,28 +52,20 @@ export function getOrthogonalKey(
   return `${wallX}.${y1 - distance}.${wallX}.${y1 + distance}`;
 }
 
- export type GeneratedSandboxMaze = {
-    canonicalId: string,
-    algorithm: MazeAlgorithm,
-    rows: number,
-    cols: number
-  }
-
-export function getSolvableMazeWithoutSpacing({
+export function generateCanonicalMaze({
   rows,
   cols,
   algorithm,
-}: GenerateMazeWithoutSpacingInput):GeneratedSandboxMaze {
-  
-  // With spacing 2, the offset is 1, so node keys use simple integers.
+}: GenerateSandboxMazeInput): string {
+  const engineSpacing = 2;
   const dataForMazeEngine: MazeState = {
     allPaths: [],
     destination: { x: 0, y: 0 },
     inactiveWallKeys: [],
-    spacing:2,
+    spacing: engineSpacing,
     walls: [],
-    height: 600,
-    width: 600,
+    height: rows * engineSpacing,
+    width: cols * engineSpacing,
     cols,
     rows,
     nodes: getBlankNodesForEngineWithoutSpacing({ rows, cols }),
@@ -104,13 +93,6 @@ export function getSolvableMazeWithoutSpacing({
   const [x, y] = destNodeKey.split('.').map(Number);
   const updatedState: MazeState = { ...dataForMazeEngine, nodes, allPaths, destination: { x, y } };
   const encodedMaze: EncodedMazeV1 = MazeCodec.encode(updatedState);
-  const canonicalId = MazeCodec.getCanonicalId(encodedMaze);
-  const searchParamRepresentation = encodeCanonicalIdForUrlParams(canonicalId);
 
-  return {
-    canonicalId:searchParamRepresentation,
-    algorithm,
-    rows,
-    cols,
-  };
+  return MazeCodec.getCanonicalId(encodedMaze);
 }

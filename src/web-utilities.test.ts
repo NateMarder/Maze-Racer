@@ -41,6 +41,31 @@ describe("maze URL utilities", () => {
         expect(parsed).toEqual(encoded);
     });
 
+    it("keeps canonical identity stable across presentation spacings", () => {
+        const canonicalId = MazeCodec.getCanonicalId(
+            MazeCodec.encode(simpleMaze()),
+        );
+        const compactPresentation = MazeCodec.parseCanonicalId(
+            canonicalId,
+            { spacing: 40 },
+        );
+        const largePresentation = MazeCodec.parseCanonicalId(
+            canonicalId,
+            { spacing: 80 },
+        );
+        const compactParams = getSearchParamsFromEncodedMaze(
+            compactPresentation,
+        );
+        const largeParams = getSearchParamsFromEncodedMaze(
+            largePresentation,
+        );
+
+        expect(compactParams.get("maze")).toBe(canonicalId);
+        expect(largeParams.get("maze")).toBe(canonicalId);
+        expect(compactParams.get("s")).toBe("40");
+        expect(largeParams.get("s")).toBe("80");
+    });
+
     it("continues to read unversioned legacy maze URLs and ignores retired level data", () => {
         const searchParams = new URLSearchParams(
             "h=69a9dc28&c=4&r=4&l=7&dx=30&dy=210&s=60",

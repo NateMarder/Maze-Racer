@@ -2,10 +2,10 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { MazeCodec } from "../codec/maze-codec";
 import DfsEngine from "./dfs-engine";
 import EllerEngine from "./eller-engine";
-import { getSolvableMazeWithoutSpacing } from "./engine-utils";
+import { generateCanonicalMaze } from "./engine-utils";
 import PrimEngine from "./prim-engine";
 
-describe("getSolvableMazeWithoutSpacing", () => {
+describe("generateCanonicalMaze", () => {
   afterEach(() => {
     vi.restoreAllMocks();
   });
@@ -25,7 +25,7 @@ describe("getSolvableMazeWithoutSpacing", () => {
       .spyOn(PrimEngine.prototype, "run")
       .mockReturnValue(engineResult);
 
-    getSolvableMazeWithoutSpacing({
+    generateCanonicalMaze({
       rows: 2,
       cols: 2,
       algorithm: "DFS",
@@ -35,7 +35,7 @@ describe("getSolvableMazeWithoutSpacing", () => {
     expect(primRun).not.toHaveBeenCalled();
 
     vi.clearAllMocks();
-    getSolvableMazeWithoutSpacing({
+    generateCanonicalMaze({
       rows: 2,
       cols: 2,
       algorithm: "ELLER",
@@ -45,7 +45,7 @@ describe("getSolvableMazeWithoutSpacing", () => {
     expect(primRun).not.toHaveBeenCalled();
 
     vi.clearAllMocks();
-    getSolvableMazeWithoutSpacing({
+    generateCanonicalMaze({
       rows: 2,
       cols: 2,
       algorithm: "PRIM",
@@ -58,24 +58,21 @@ describe("getSolvableMazeWithoutSpacing", () => {
   it.each(["DFS", "ELLER", "PRIM"] as const)(
     "generates a canonical maze with %s",
     (algorithm) => {
-      const result = getSolvableMazeWithoutSpacing({
+      const canonicalId = generateCanonicalMaze({
         rows: 4,
         cols: 4,
         algorithm,
       });
-      const urlParams = new URLSearchParams(result.canonicalId);
-      const canonicalId = urlParams.get("maze");
+      expect(canonicalId.startsWith("v1:")).toBe(true);
+      expect(canonicalId.startsWith("maze=")).toBe(false);
 
-      expect(canonicalId).not.toBeNull();
-      expect([...urlParams.keys()]).toEqual(["maze"]);
-
-      const encoded = MazeCodec.parseCanonicalId(canonicalId ?? "", {
+      const encoded = MazeCodec.parseCanonicalId(canonicalId, {
         spacing: 2,
       });
       const decoded = MazeCodec.decode(encoded);
 
-      expect(encoded.cols).toBe(result.cols);
-      expect(encoded.rows).toBe(result.rows);
+      expect(encoded.cols).toBe(4);
+      expect(encoded.rows).toBe(4);
       expect(decoded.allPaths).toHaveLength(15);
     },
   );
