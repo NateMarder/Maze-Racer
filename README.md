@@ -27,6 +27,12 @@ developer sandbox page.
   start, and destination, with tests protecting codec invariants.
 - **Multiple generation algorithms** — depth-first search, randomized Prim, and
   Eller engines share the same inputs and outputs.
+- **GraphQL generation boundary** — browser clients request mazes by algorithm
+  and dimensions without importing or coordinating the generation engines.
+  Generation happens behind the GraphQL API, which returns a canonical maze ID
+  for the client to decode and render with its own presentation settings. See the
+  [GraphQL specification](./GraphQL-SPEC.md) for the query contract and sandbox
+  integration lifecycle.
 - **Interactive SVG gameplay** — keyboard controls, wall collision detection,
   and GSAP-powered player and completion animations.
 - **Modern TypeScript stack** — Next.js App Router, Turbopack, and Vitest.
@@ -78,11 +84,19 @@ Stop the development server with <kbd>Ctrl</kbd>+<kbd>C</kbd>.
 
 - Move the player with the arrow keys or <kbd>W</kbd>, <kbd>A</kbd>,
   <kbd>S</kbd>, and <kbd>D</kbd>.
-- Refresh the page to generate another maze. The page randomly selects DFS,
-  Prim, or Eller generation and displays the selected algorithm.
-- Select **encode** to place the current maze data in the browser URL.
-- Select **decode** to reconstruct a maze from the encoded URL parameters.
-- Select **refresh** to clear encoded parameters and generate a fresh maze.
+- On an initial visit without maze data in the URL, the sandbox requests a
+  randomly selected DFS, Prim, or Eller maze using the default 12×12 dimensions.
+- Use the form to select an algorithm and choose between 3 and 20 rows and
+  columns. Changing a field does not generate anything; select **refresh** to
+  request and render a new maze.
+- After a maze renders successfully, the sandbox updates the browser URL with
+  its canonical maze ID and presentation spacing. Reloading or sharing that URL
+  reconstructs the same maze locally without another GraphQL request.
+- When opening maze data from a URL, the form reflects its row and column counts
+  and leaves the algorithm at **Select algorithm**, because the canonical ID
+  describes the maze rather than the algorithm that generated it.
+- If generation fails, the existing maze and shareable URL remain unchanged and
+  the sandbox displays an alert.
 - Select **print state** and open the browser developer console to inspect the
   current `MazeState`.
 

@@ -5,9 +5,9 @@ import { generateCanonicalMaze } from '@/maze/engine/engine-utils';
 
 
 function validateMazeDimensions(rows: number, cols: number): void {
-  if (rows < 2 || cols < 2) {
+  if (rows < 3 || cols < 3) {
     throw new GraphQLError(
-      "Maze rows and columns must both be at least 2.",
+      "Maze rows and columns must both be at least 3.",
       {
         extensions: {
           code: "BAD_USER_INPUT",

@@ -75,7 +75,9 @@ describe("generateSandboxMaze GraphQL query", () => {
   );
 
   it.each([
-    { rows: 1, cols: 4, message: "at least 2" },
+    { rows: 2, cols: 4, message: "at least 3" },
+    { rows: 4, cols: 2, message: "at least 3" },
+    { rows: 21, cols: 4, message: "cannot exceed 20" },
     { rows: 4, cols: 21, message: "cannot exceed 20" },
   ])("rejects invalid dimensions: $rows x $cols", async (input) => {
     const result = await executeGeneration({

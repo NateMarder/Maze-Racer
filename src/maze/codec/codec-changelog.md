@@ -1,22 +1,28 @@
 # MazeCodec Changelog
 
-## Compatibility Table
+## Format compatibility
 
-| Version | Status | Can Decode | Can Encode |
-|---------|--------|----------|------------|
-| v1 | Current | ✅ | ✅ |
-| v2 | Planned | — | — |
+| Format | Status | Can decode | Can encode |
+| --- | --- | --- | --- |
+| Legacy unversioned URLs (v0 internally) | Compatibility only | Yes | No |
+| Canonical v1 | Current | Yes | Yes |
 
-## v1.1.0
+## Canonical format v1
 
 ### Added
-- Versioned codec header.
-- Canonical maze representation.
+
+- A versioned canonical ID header.
+- Logical grid coordinates for the start and destination.
+- A presentation-independent maze identity.
 
 ### Changed
-- Removed presentation-specific details from serialization.
-- Coordinate conversion moved to coordinateUtils.ts.
+
+- Removed spacing and other presentation details from the canonical ID.
+- Moved SVG/grid conversion into
+  [coordinate-utilities.ts](./coordinate-utilities.ts).
+- New encodings emit v1; decoded legacy URLs migrate to v1 when re-encoded.
 
 ### Fixed
-- Small-maze encoding bug.
-- Support for arbitrary rectangular mazes.
+
+- Small-maze encoding.
+- Rectangular and odd-width maze encoding.
