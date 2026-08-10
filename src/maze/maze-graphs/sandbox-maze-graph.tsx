@@ -4,34 +4,16 @@ import React from "react";
 import PlayerNode from "../player-node";
 import { DestinationNode } from "../destination-node";
 import { MazeWall } from "../wall/maze-wall";
-import type { AlgorithmKey, MazeState } from "../types";
-import { MazeCodec } from "../codec/maze-codec";
-import { updateWindowUrlWithoutReload } from "../../web-utilities";
+import type { MazeState } from "../types";
 
 export interface SandboxMazeGraphProps {
-  algorithm?: AlgorithmKey;
   className?: string;
-  isGenerating: boolean;
   maze: MazeState;
-  onDecode: () => void;
-  onRefresh: () => void;
 }
 
-const controlStyle: React.CSSProperties = {
-  cursor: "pointer",
-  float: "left",
-  fontSize: "18px",
-  marginRight: "10px",
-  padding: "5px",
-};
-
 export default function SandBoxMazeGraph({
-  algorithm,
   className,
-  isGenerating,
   maze,
-  onDecode,
-  onRefresh,
 }: SandboxMazeGraphProps) {
   const mazeGraphRef = React.useRef<HTMLDivElement | null>(null);
   const { destination, height, spacing, start, width } = maze;
@@ -44,14 +26,6 @@ export default function SandBoxMazeGraph({
     maze.serialized ?? maze.canonicalId ?? "maze",
     spacing,
   ].join(":");
-
-  const runEncoder = (): void => {
-    updateWindowUrlWithoutReload(MazeCodec.encode(maze));
-  };
-
-  const seeState = (): void => {
-    console.log("\nstate:", maze);
-  };
 
   return (
     <div className={className} ref={mazeGraphRef}>
@@ -115,43 +89,6 @@ export default function SandBoxMazeGraph({
           r={Math.round(spacing * 0.1)}
         />
       </svg>
-      <br />
-      <br />
-      <br />
-      <button style={controlStyle} onClick={runEncoder} type="button">
-        encode
-      </button>
-      <button style={controlStyle} onClick={onDecode} type="button">
-        decode
-      </button>
-      <button
-        disabled={isGenerating}
-        style={{
-          ...controlStyle,
-          cursor: isGenerating ? "wait" : "pointer",
-        }}
-        onClick={onRefresh}
-        type="button"
-      >
-        {isGenerating ? "refreshing..." : "refresh"}
-      </button>
-      <button
-        style={{ ...controlStyle, color: "magenta" }}
-        onClick={seeState}
-        type="button"
-      >
-        print state
-      </button>
-      <span
-        style={{
-          color: "#fff",
-          float: "right",
-          fontSize: "18px",
-          padding: "5px",
-        }}
-      >
-        {algorithm ? `maze algorithm: ${algorithm}` : ""}
-      </span>
     </div>
   );
 }

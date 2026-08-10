@@ -7,6 +7,9 @@ import { GraphQLProvider } from "@/graphql/GraphQLProvider";
 import { GENERATE_SANDBOX_MAZE } from "@/graphql/operations/generateSandboxMaze";
 import { MazeCodec } from "@/maze/codec/maze-codec";
 import SandBoxMazeGraph from "@/maze/maze-graphs/sandbox-maze-graph";
+import SandboxMazeForm, {
+  type AlgorithmSelection,
+} from "./sandbox-maze-form";
 import type {
   AlgorithmKey,
   MazeAlgorithm,
@@ -16,6 +19,7 @@ import {
   getEncodedMazeDataFromUrlParams,
   getRandomEngine,
   safeToRenderWithUrlParams,
+  updateWindowUrlWithoutReload,
 } from "@/web-utilities";
 
 const SANDBOX_HEIGHT = 600;
@@ -49,18 +53,19 @@ function decodeMazeFromCurrentUrl(): MazeState {
   return MazeCodec.decode(encodedMaze);
 }
 
-function clearCurrentUrlParams(): void {
-  const currentUrl = new URL(window.location.href);
-  currentUrl.search = "";
-  window.history.replaceState(null, "", currentUrl.toString());
-}
-
 function SandboxController() {
   const [maze, setMaze] = useState<MazeState | null>(null);
-  const [algorithm, setAlgorithm] = useState<AlgorithmKey>();
+  const [selectedAlgorithm, setSelectedAlgorithm] =
+    useState<AlgorithmSelection>("");
+  const [selectedRows, setSelectedRows] = useState(SANDBOX_ROWS);
+  const [selectedCols, setSelectedCols] = useState(SANDBOX_COLS);
   const [initialLoadFailed, setInitialLoadFailed] = useState(false);
   const initialLoadStarted = useRef(false);
   const requestInFlight = useRef(false);
+  const pendingShareableUrl = useRef<{
+    encodedMaze: ReturnType<typeof MazeCodec.parseCanonicalId>;
+    maze: MazeState;
+  } | null>(null);
   const [requestMaze, { loading }] = useLazyQuery(
     GENERATE_SANDBOX_MAZE,
     {
@@ -69,22 +74,22 @@ function SandboxController() {
   );
 
   const generateMaze = useCallback(async (
-    clearUrlAfterSuccess: boolean,
+    nextAlgorithm: AlgorithmKey,
+    rows: number,
+    cols: number,
   ): Promise<void> => {
     if (requestInFlight.current) {
       return;
     }
 
     requestInFlight.current = true;
-    const nextAlgorithm = getRandomEngine();
-
     try {
       const result = await requestMaze({
         variables: {
           input: {
             algorithm: GRAPHQL_ALGORITHM[nextAlgorithm],
-            rows: SANDBOX_ROWS,
-            cols: SANDBOX_COLS,
+            rows,
+            cols,
           },
         },
       });
@@ -101,13 +106,12 @@ function SandboxController() {
       });
       const decodedMaze = MazeCodec.decode(encodedMaze);
 
+      pendingShareableUrl.current = {
+        encodedMaze,
+        maze: decodedMaze,
+      };
       setMaze(decodedMaze);
-      setAlgorithm(nextAlgorithm);
       setInitialLoadFailed(false);
-
-      if (clearUrlAfterSuccess) {
-        clearCurrentUrlParams();
-      }
     } catch {
       setInitialLoadFailed(true);
       window.alert(GENERATION_ERROR_MESSAGE);
@@ -115,18 +119,6 @@ function SandboxController() {
       requestInFlight.current = false;
     }
   }, [requestMaze]);
-
-  const decodeCurrentUrl = useCallback((): void => {
-    try {
-      const decodedMaze = decodeMazeFromCurrentUrl();
-
-      setMaze(decodedMaze);
-      setAlgorithm(undefined);
-      setInitialLoadFailed(false);
-    } catch {
-      window.alert(DECODE_ERROR_MESSAGE);
-    }
-  }, []);
 
   useEffect(() => {
     if (initialLoadStarted.current) {
@@ -142,7 +134,12 @@ function SandboxController() {
 
       if (safeToRenderWithUrlParams()) {
         try {
-          setMaze(decodeMazeFromCurrentUrl());
+          const decodedMaze = decodeMazeFromCurrentUrl();
+
+          setMaze(decodedMaze);
+          setSelectedAlgorithm("");
+          setSelectedRows(decodedMaze.rows);
+          setSelectedCols(decodedMaze.cols);
         } catch {
           setInitialLoadFailed(true);
           window.alert(DECODE_ERROR_MESSAGE);
@@ -150,15 +147,46 @@ function SandboxController() {
         return;
       }
 
-      void generateMaze(false);
+      const defaultAlgorithm = getRandomEngine();
+      setSelectedAlgorithm(defaultAlgorithm);
+      void generateMaze(
+        defaultAlgorithm,
+        SANDBOX_ROWS,
+        SANDBOX_COLS,
+      );
     }, 0);
 
     return () => window.clearTimeout(initializeTimer);
   }, [generateMaze]);
 
-  const requestFreshMaze = useCallback((): void => {
-    void generateMaze(true);
-  }, [generateMaze]);
+  useEffect(() => {
+    const pendingUrl = pendingShareableUrl.current;
+
+    if (!maze || !pendingUrl || pendingUrl.maze !== maze) {
+      return;
+    }
+
+    updateWindowUrlWithoutReload(pendingUrl.encodedMaze);
+    pendingShareableUrl.current = null;
+  }, [maze]);
+
+  const refreshMaze = useCallback((): void => {
+    if (selectedAlgorithm === "") {
+      return;
+    }
+
+    void generateMaze(selectedAlgorithm, selectedRows, selectedCols);
+  }, [generateMaze, selectedAlgorithm, selectedCols, selectedRows]);
+
+  const retryInitialLoad = useCallback((): void => {
+    const retryAlgorithm = selectedAlgorithm || getRandomEngine();
+    setSelectedAlgorithm(retryAlgorithm);
+    void generateMaze(retryAlgorithm, selectedRows, selectedCols);
+  }, [generateMaze, selectedAlgorithm, selectedCols, selectedRows]);
+
+  const seeState = (): void => {
+    console.log("\nstate:", maze);
+  };
 
   if (!maze) {
     return (
@@ -167,7 +195,7 @@ function SandboxController() {
           {initialLoadFailed ? (
             <button
               disabled={loading}
-              onClick={requestFreshMaze}
+              onClick={retryInitialLoad}
               type="button"
             >
               {loading ? "generating..." : "retry"}
@@ -183,14 +211,35 @@ function SandboxController() {
   return (
     <div className={styles.page}>
       <div className="column">
-        <SandBoxMazeGraph
-          algorithm={algorithm}
-          className="mz-container"
+        <div className={styles.mazeStage}>
+          <SandBoxMazeGraph
+            className="mz-container"
+            maze={maze}
+          />
+        </div>
+        <SandboxMazeForm
+          algorithm={selectedAlgorithm}
+          cols={selectedCols}
           isGenerating={loading}
-          maze={maze}
-          onDecode={decodeCurrentUrl}
-          onRefresh={requestFreshMaze}
+          onAlgorithmChange={setSelectedAlgorithm}
+          onColsChange={setSelectedCols}
+          onRefresh={refreshMaze}
+          onRowsChange={setSelectedRows}
+          rows={selectedRows}
         />
+        <button
+          onClick={seeState}
+          style={{
+            color: "magenta",
+            cursor: "pointer",
+            fontSize: "18px",
+            marginTop: "12px",
+            padding: "5px",
+          }}
+          type="button"
+        >
+          print state
+        </button>
       </div>
     </div>
   );
