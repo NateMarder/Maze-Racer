@@ -205,7 +205,6 @@ const PlayerNode: React.FC<PlayerNodeProps> = (props) => {
       cy={cy}
       r={r}
       tabIndex={0}
-      style={{ outline: 'none' }}
     />
   );
 };

@@ -53,11 +53,6 @@ a {
   outline: none;
 }
 
-.game-container {
-  height: 100vh;
-  padding: 10px;
-}
-
 .mz-container {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
@@ -72,6 +67,7 @@ a {
   stroke: #ff55ff;
   fill: #ff55ff;
   cursor: pointer;
+  outline: none;
   z-index: 100;
 }
 
@@ -79,12 +75,6 @@ a {
   stroke: #6aff00;
   fill: #6aff00;
   cursor: pointer;
-}
-
-/* semantic ui overrides */
-.ui.centered.grid {
-  height: 100vh;
-  display: grid;
 }
 
 .insidewall {
@@ -99,9 +89,48 @@ a {
   stroke-linecap: round;
 }
 
-.debug-output {
+.sandbox-maze-form {
+  clear: both;
+  margin-top: 28px;
+}
+
+.sandbox-maze-form-fields {
+  align-items: end;
+  border: 0;
   display: flex;
-  flex-direction: column, row;
-  color: #fff;
-  background: rgb(181, 181, 181);
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+}
+
+.sandbox-maze-form-field {
+  color: whitesmoke;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sandbox-maze-form-select {
+  font-size: 16px;
+  min-width: 130px;
+  padding: 6px;
+}
+
+.sandbox-maze-refresh-button {
+  cursor: pointer;
+  font-size: 16px;
+  padding: 7px 14px;
+}
+
+.sandbox-maze-refresh-button:disabled {
+  cursor: not-allowed;
+}
+
+.sandbox-print-state-button {
+  color: magenta;
+  cursor: pointer;
+  font-size: 18px;
+  margin-top: 12px;
+  padding: 5px;
 }

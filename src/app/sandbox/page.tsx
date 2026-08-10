@@ -228,14 +228,8 @@ function SandboxController() {
           rows={selectedRows}
         />
         <button
+          className="sandbox-print-state-button"
           onClick={seeState}
-          style={{
-            color: "magenta",
-            cursor: "pointer",
-            fontSize: "18px",
-            marginTop: "12px",
-            padding: "5px",
-          }}
           type="button"
         >
           print state

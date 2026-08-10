@@ -1,6 +1,6 @@
 "use client";
 
-import type { CSSProperties, FormEvent } from "react";
+import type { FormEvent } from "react";
 import type { AlgorithmKey } from "@/maze/types";
 
 export type AlgorithmSelection = AlgorithmKey | "";
@@ -22,19 +22,6 @@ const dimensionOptions = Array.from(
   { length: MAX_DIMENSION - MIN_DIMENSION + 1 },
   (_, index) => MIN_DIMENSION + index,
 );
-
-const fieldStyle: CSSProperties = {
-  display: "flex",
-  flexDirection: "column",
-  gap: "6px",
-  color: "whitesmoke"
-};
-
-const selectStyle: CSSProperties = {
-  fontSize: "16px",
-  minWidth: "130px",
-  padding: "6px",
-};
 
 function hasSelectableDimension(value: number): boolean {
   return value >= MIN_DIMENSION && value <= MAX_DIMENSION;
@@ -76,29 +63,21 @@ export default function SandboxMazeForm({
 
   return (
     <form
+      className="sandbox-maze-form"
       onSubmit={submitForm}
-      style={{ clear: "both", marginTop: "28px" }}
     >
       <fieldset
+        className="sandbox-maze-form-fields"
         disabled={isGenerating}
-        style={{
-          alignItems: "end",
-          border: 0,
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "12px",
-          margin: 0,
-          padding: 0,
-        }}
       >
-        <label style={fieldStyle}>
+        <label className="sandbox-maze-form-field">
           Algorithm
           <select
             aria-label="Maze algorithm"
+            className="sandbox-maze-form-select"
             onChange={(event) => onAlgorithmChange(
               event.target.value as AlgorithmSelection,
             )}
-            style={selectStyle}
             value={algorithm}
           >
             <option value="">Select algorithm</option>
@@ -107,12 +86,12 @@ export default function SandboxMazeForm({
             <option value="eller">Eller</option>
           </select>
         </label>
-        <label style={fieldStyle}>
+        <label className="sandbox-maze-form-field">
           Rows
           <select
             aria-label="Maze rows"
+            className="sandbox-maze-form-select"
             onChange={(event) => onRowsChange(Number(event.target.value))}
-            style={selectStyle}
             value={rows}
           >
             <CurrentUrlDimension value={rows} />
@@ -121,12 +100,12 @@ export default function SandboxMazeForm({
             ))}
           </select>
         </label>
-        <label style={fieldStyle}>
+        <label className="sandbox-maze-form-field">
           Columns
           <select
             aria-label="Maze columns"
+            className="sandbox-maze-form-select"
             onChange={(event) => onColsChange(Number(event.target.value))}
-            style={selectStyle}
             value={cols}
           >
             <CurrentUrlDimension value={cols} />
@@ -136,12 +115,8 @@ export default function SandboxMazeForm({
           </select>
         </label>
         <button
+          className="sandbox-maze-refresh-button"
           disabled={!canRefresh || isGenerating}
-          style={{
-            cursor: canRefresh && !isGenerating ? "pointer" : "not-allowed",
-            fontSize: "16px",
-            padding: "7px 14px",
-          }}
           type="submit"
         >
           {isGenerating ? "refreshing..." : "refresh"}

@@ -23,7 +23,7 @@ describe("SandboxMazeForm", () => {
     expect(markup.match(/value="3"/g)).toHaveLength(2);
     expect(markup.match(/value="20"/g)).toHaveLength(2);
     expect(markup).not.toContain('value="2"');
-    expect(markup).toContain('<button disabled=""');
+    expect(markup).toMatch(/<button[^>]*disabled=""/);
   });
 
   it("shows URL dimensions outside the selectable range without enabling refresh", () => {
@@ -32,7 +32,7 @@ describe("SandboxMazeForm", () => {
     );
 
     expect(markup.match(/2 \(from URL\)/g)).toHaveLength(2);
-    expect(markup).toContain('<button disabled=""');
+    expect(markup).toMatch(/<button[^>]*disabled=""/);
   });
 
   it("disables the complete fieldset while generation is in flight", () => {
@@ -44,7 +44,7 @@ describe("SandboxMazeForm", () => {
       />,
     );
 
-    expect(markup).toContain('<fieldset disabled=""');
+    expect(markup).toMatch(/<fieldset[^>]*disabled=""/);
     expect(markup).toContain("refreshing...");
   });
 });
