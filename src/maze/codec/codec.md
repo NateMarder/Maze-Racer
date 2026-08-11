@@ -8,7 +8,7 @@ versions without coupling maze identity to a particular renderer.
 
 Its primary responsibilities are:
 
-1. Encode a generated `MazeState` into topology and logical coordinates.
+1. Encode a generated `MazeEncodingInput` into topology and logical coordinates.
 2. Produce and parse the compact, versioned canonical maze ID.
 3. Reconstruct an equivalent `MazeState` using client-provided presentation
    spacing.

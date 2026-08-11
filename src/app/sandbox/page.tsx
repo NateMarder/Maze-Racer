@@ -7,11 +7,9 @@ import { GraphQLProvider } from "@/graphql/GraphQLProvider";
 import { GENERATE_SANDBOX_MAZE } from "@/graphql/operations/generateSandboxMaze";
 import { MazeCodec } from "@/maze/codec/maze-codec";
 import SandBoxMazeGraph from "@/maze/maze-graphs/sandbox-maze-graph";
-import SandboxMazeForm, {
-  type AlgorithmSelection,
-} from "./sandbox-maze-form";
+import SandboxMazeForm from "./sandbox-maze-form";
 import type {
-  AlgorithmKey,
+  AlgorithmSelection,
   MazeAlgorithm,
   MazeState,
 } from "@/maze/types";
@@ -31,12 +29,6 @@ const SANDBOX_ROWS = Math.floor(
 const SANDBOX_COLS = Math.floor(
   (SANDBOX_WIDTH * 0.8) / SANDBOX_SPACING,
 );
-
-const GRAPHQL_ALGORITHM: Record<AlgorithmKey, MazeAlgorithm> = {
-  dfs: "DFS",
-  eller: "ELLER",
-  prim: "PRIM",
-};
 
 const GENERATION_ERROR_MESSAGE =
   "Unable to generate a maze. Please try again.";
@@ -74,7 +66,7 @@ function SandboxController() {
   );
 
   const generateMaze = useCallback(async (
-    nextAlgorithm: AlgorithmKey,
+    nextAlgorithm: MazeAlgorithm,
     rows: number,
     cols: number,
   ): Promise<void> => {
@@ -87,7 +79,7 @@ function SandboxController() {
       const result = await requestMaze({
         variables: {
           input: {
-            algorithm: GRAPHQL_ALGORITHM[nextAlgorithm],
+            algorithm: nextAlgorithm,
             rows,
             cols,
           },

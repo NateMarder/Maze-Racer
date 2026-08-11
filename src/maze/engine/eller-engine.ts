@@ -1,21 +1,17 @@
-import {
+import type {
     MazeNode,
+    MazeEngineInput,
+    MazeEngineResult,
     MazeNodeMap,
-    MazeState,
     NodeKey,
     WallKey,
 } from "../types";
 import { getOrthogonalKey, shuffle } from "./engine-utils";
 
-type EllerResult = {
-    route: WallKey[];
-    destNodeKey: NodeKey;
-};
-
-type DownwardCandidate = {
+interface DownwardCandidate {
     currentNode: MazeNode;
     nextNode: MazeNode;
-};
+}
 
 /**
  * Generates a perfect maze one row at a time using Eller's algorithm.
@@ -34,7 +30,7 @@ export default class EllerEngine {
     private carvedAdjacency = new Map<NodeKey, NodeKey[]>();
     private nextSetId = 1;
 
-    constructor(maze: MazeState) {
+    constructor(maze: MazeEngineInput) {
         this.nodeMap = {};
 
         maze.nodes.forEach((node) => {
@@ -62,7 +58,7 @@ export default class EllerEngine {
         this.destNodeKey = this.startNode.key;
     }
 
-    run(): EllerResult {
+    run(): MazeEngineResult {
         this.generateMazeWithEller();
         this.updateDestination();
 

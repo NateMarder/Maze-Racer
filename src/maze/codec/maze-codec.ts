@@ -1,8 +1,9 @@
 import { createPathsFromInactiveWalls } from "../engine/path/path-utils";
-import {
+import type {
     EncodedMaze,
     EncodedMazeV1,
     GridCoordinate,
+    MazeEncodingInput,
     MazeNode,
     MazePath,
     MazeState,
@@ -83,7 +84,7 @@ export function assertCanonicalTopology(
     }
 }
 
-function getGridStart(maze: MazeState): GridCoordinate {
+function getGridStart(maze: MazeEncodingInput): GridCoordinate {
     const start = maze.start
         ?? maze.nodes.find((node) => node.isStart)
         ?? {
@@ -95,7 +96,7 @@ function getGridStart(maze: MazeState): GridCoordinate {
 }
 
 export const MazeCodec = {
-    encode(maze: MazeState): EncodedMazeV1 {
+    encode(maze: MazeEncodingInput): EncodedMazeV1 {
         const {
             cols,
             rows,

@@ -1,7 +1,8 @@
-import { MazeNode, MazePath, MazeState, NodeKey } from "../types";
+import type { MazeNode, MazePath, NodeKey } from "../types";
 
-type GetNodesWithConnectionsProps = Partial<MazeState> & {
-    allPaths: MazePath[]
+interface GetNodesWithConnectionsProps {
+    nodes: MazeNode[];
+    allPaths: MazePath[];
 }
 
 export const getNodesWithConnectedSiblingsBasedOnPath = ({ nodes, allPaths }: GetNodesWithConnectionsProps): MazeNode[] => {

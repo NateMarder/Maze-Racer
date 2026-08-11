@@ -1,21 +1,17 @@
-import {
+import type {
     MazeNode,
+    MazeEngineInput,
+    MazeEngineResult,
     MazeNodeMap,
-    MazeState,
     NodeKey,
     WallKey,
 } from "../types";
 import { getOrthogonalKey } from "./engine-utils";
 
-type FrontierEdge = {
+interface FrontierEdge {
     fromKey: NodeKey;
     toKey: NodeKey;
-};
-
-type PrimResult = {
-    route: WallKey[];
-    destNodeKey: NodeKey;
-};
+}
 
 /**
  * Generates a perfect maze using randomized Prim's algorithm.
@@ -32,7 +28,7 @@ export default class PrimEngine {
     private startNode: MazeNode;
     private nodeMap: MazeNodeMap;
 
-    constructor(maze: MazeState) {
+    constructor(maze: MazeEngineInput) {
         this.nodeMap = {};
 
         maze.nodes.forEach((node) => {
@@ -60,7 +56,7 @@ export default class PrimEngine {
         this.destNodeKey = this.startNode.key;
     }
 
-    run(): PrimResult {
+    run(): MazeEngineResult {
         this.generateMazeWithPrim();
 
         return {

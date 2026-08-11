@@ -1,6 +1,6 @@
 import MazeNode from "../node/maze-node";
 import { binaryFromHex } from "./encode-utilities";
-import {
+import type {
     GridCoordinate,
     MazeNode as MazeNodeType,
     SvgCoordinate,
@@ -25,10 +25,10 @@ interface TranslateHexProps extends DecodeTopologyProps {
     spacing: number
 }
 
-export type GridPassage = {
+interface GridPassage {
     from: GridCoordinate;
     to: GridCoordinate;
-};
+}
 
 export const getFreshMazeNodes = ({
     rows,

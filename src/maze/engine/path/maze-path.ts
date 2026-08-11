@@ -1,10 +1,10 @@
 import { getOrthogonalKey } from "../engine-utils";
 import type { MazePath as MazePathType, NodeKey } from "../../types";
 
-type MazePathProps = {
+interface MazePathProps {
   nodeKey1: NodeKey;
   nodeKey2: NodeKey;
-};
+}
 
 export default class MazePath implements MazePathType {
   id: string;

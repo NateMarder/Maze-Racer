@@ -39,7 +39,7 @@ describe("SandboxMazeForm", () => {
     const markup = renderToStaticMarkup(
       <SandboxMazeForm
         {...defaultProps}
-        algorithm="prim"
+        algorithm="PRIM"
         isGenerating
       />,
     );

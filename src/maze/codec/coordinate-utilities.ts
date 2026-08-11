@@ -1,4 +1,4 @@
-import {
+import type {
     GridCoordinate,
     SvgCoordinate,
 } from "../types";

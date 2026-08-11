@@ -1,4 +1,4 @@
-import { MazeState } from "@/maze/types";
+import type { MazeState } from "@/maze/types";
 
 
 export function simpleMaze(): MazeState {
@@ -18,7 +18,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "30.90"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 30
             },
@@ -32,7 +31,6 @@ export function simpleMaze(): MazeState {
                     "30.30",
                     "30.150"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 90
             },
@@ -46,7 +44,6 @@ export function simpleMaze(): MazeState {
                     "30.90",
                     "90.150"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 150
             },
@@ -60,7 +57,6 @@ export function simpleMaze(): MazeState {
                     "30.270",
                     "90.210"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 210
             },
@@ -74,7 +70,6 @@ export function simpleMaze(): MazeState {
                     "30.330",
                     "30.210"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 270
             },
@@ -89,7 +84,6 @@ export function simpleMaze(): MazeState {
                     "30.270",
                     "30.390"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 330
             },
@@ -103,7 +97,6 @@ export function simpleMaze(): MazeState {
                     "30.330",
                     "30.450"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 390
             },
@@ -117,7 +110,6 @@ export function simpleMaze(): MazeState {
                     "30.390",
                     "30.510"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 450
             },
@@ -131,7 +123,6 @@ export function simpleMaze(): MazeState {
                     "30.450",
                     "90.510"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 510
             },
@@ -144,7 +135,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "90.570"
                 ],
-                "pathDirections": [],
                 "x": 30,
                 "y": 570
             },
@@ -158,7 +148,6 @@ export function simpleMaze(): MazeState {
                     "90.90",
                     "150.30"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 30
             },
@@ -172,7 +161,6 @@ export function simpleMaze(): MazeState {
                     "90.150",
                     "90.30"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 90
             },
@@ -186,7 +174,6 @@ export function simpleMaze(): MazeState {
                     "30.150",
                     "90.90"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 150
             },
@@ -200,7 +187,6 @@ export function simpleMaze(): MazeState {
                     "30.210",
                     "90.270"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 210
             },
@@ -214,7 +200,6 @@ export function simpleMaze(): MazeState {
                     "90.210",
                     "150.270"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 270
             },
@@ -228,7 +213,6 @@ export function simpleMaze(): MazeState {
                     "90.390",
                     "30.330"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 330
             },
@@ -242,7 +226,6 @@ export function simpleMaze(): MazeState {
                     "150.390",
                     "90.330"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 390
             },
@@ -255,7 +238,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "90.510"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 450
             },
@@ -270,7 +252,6 @@ export function simpleMaze(): MazeState {
                     "90.450",
                     "90.570"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 510
             },
@@ -284,7 +265,6 @@ export function simpleMaze(): MazeState {
                     "90.510",
                     "30.570"
                 ],
-                "pathDirections": [],
                 "x": 90,
                 "y": 570
             },
@@ -298,7 +278,6 @@ export function simpleMaze(): MazeState {
                     "90.30",
                     "210.30"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 30
             },
@@ -311,7 +290,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "150.150"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 90
             },
@@ -325,7 +303,6 @@ export function simpleMaze(): MazeState {
                     "210.150",
                     "150.90"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 150
             },
@@ -339,7 +316,6 @@ export function simpleMaze(): MazeState {
                     "150.270",
                     "210.210"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 210
             },
@@ -353,7 +329,6 @@ export function simpleMaze(): MazeState {
                     "90.270",
                     "150.210"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 270
             },
@@ -366,7 +341,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "210.330"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 330
             },
@@ -380,7 +354,6 @@ export function simpleMaze(): MazeState {
                     "150.450",
                     "90.390"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 390
             },
@@ -394,7 +367,6 @@ export function simpleMaze(): MazeState {
                     "150.510",
                     "150.390"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 450
             },
@@ -408,7 +380,6 @@ export function simpleMaze(): MazeState {
                     "150.570",
                     "150.450"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 510
             },
@@ -422,7 +393,6 @@ export function simpleMaze(): MazeState {
                     "210.570",
                     "150.510"
                 ],
-                "pathDirections": [],
                 "x": 150,
                 "y": 570
             },
@@ -436,7 +406,6 @@ export function simpleMaze(): MazeState {
                     "150.30",
                     "210.90"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 30
             },
@@ -450,7 +419,6 @@ export function simpleMaze(): MazeState {
                     "210.30",
                     "270.90"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 90
             },
@@ -465,7 +433,6 @@ export function simpleMaze(): MazeState {
                     "270.150",
                     "150.150"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 150
             },
@@ -479,7 +446,6 @@ export function simpleMaze(): MazeState {
                     "150.210",
                     "210.150"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 210
             },
@@ -492,7 +458,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "210.330"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 270
             },
@@ -507,7 +472,6 @@ export function simpleMaze(): MazeState {
                     "210.270",
                     "150.330"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 330
             },
@@ -521,7 +485,6 @@ export function simpleMaze(): MazeState {
                     "210.450",
                     "210.330"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 390
             },
@@ -535,7 +498,6 @@ export function simpleMaze(): MazeState {
                     "210.510",
                     "210.390"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 450
             },
@@ -549,7 +511,6 @@ export function simpleMaze(): MazeState {
                     "270.510",
                     "210.450"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 510
             },
@@ -563,7 +524,6 @@ export function simpleMaze(): MazeState {
                     "270.570",
                     "150.570"
                 ],
-                "pathDirections": [],
                 "x": 210,
                 "y": 570
             },
@@ -577,7 +537,6 @@ export function simpleMaze(): MazeState {
                     "270.90",
                     "330.30"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 30
             },
@@ -591,7 +550,6 @@ export function simpleMaze(): MazeState {
                     "210.90",
                     "270.30"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 90
             },
@@ -605,7 +563,6 @@ export function simpleMaze(): MazeState {
                     "210.150",
                     "330.150"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 150
             },
@@ -618,7 +575,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "270.270"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 210
             },
@@ -633,7 +589,6 @@ export function simpleMaze(): MazeState {
                     "270.210",
                     "270.330"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 270
             },
@@ -647,7 +602,6 @@ export function simpleMaze(): MazeState {
                     "270.270",
                     "270.390"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 330
             },
@@ -661,7 +615,6 @@ export function simpleMaze(): MazeState {
                     "270.330",
                     "330.390"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 390
             },
@@ -675,7 +628,6 @@ export function simpleMaze(): MazeState {
                     "330.450",
                     "270.510"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 450
             },
@@ -689,7 +641,6 @@ export function simpleMaze(): MazeState {
                     "270.450",
                     "210.510"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 510
             },
@@ -703,7 +654,6 @@ export function simpleMaze(): MazeState {
                     "330.570",
                     "210.570"
                 ],
-                "pathDirections": [],
                 "x": 270,
                 "y": 570
             },
@@ -717,7 +667,6 @@ export function simpleMaze(): MazeState {
                     "270.30",
                     "330.90"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 30
             },
@@ -731,7 +680,6 @@ export function simpleMaze(): MazeState {
                     "330.30",
                     "390.90"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 90
             },
@@ -745,7 +693,6 @@ export function simpleMaze(): MazeState {
                     "270.150",
                     "330.210"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 150
             },
@@ -759,7 +706,6 @@ export function simpleMaze(): MazeState {
                     "330.150",
                     "330.270"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 210
             },
@@ -773,7 +719,6 @@ export function simpleMaze(): MazeState {
                     "330.210",
                     "270.270"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 270
             },
@@ -787,7 +732,6 @@ export function simpleMaze(): MazeState {
                     "330.390",
                     "390.330"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 330
             },
@@ -801,7 +745,6 @@ export function simpleMaze(): MazeState {
                     "270.390",
                     "330.330"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 390
             },
@@ -815,7 +758,6 @@ export function simpleMaze(): MazeState {
                     "330.510",
                     "270.450"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 450
             },
@@ -829,7 +771,6 @@ export function simpleMaze(): MazeState {
                     "390.510",
                     "330.450"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 510
             },
@@ -843,7 +784,6 @@ export function simpleMaze(): MazeState {
                     "390.570",
                     "270.570"
                 ],
-                "pathDirections": [],
                 "x": 330,
                 "y": 570
             },
@@ -856,7 +796,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "450.30"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 30
             },
@@ -870,7 +809,6 @@ export function simpleMaze(): MazeState {
                     "330.90",
                     "390.150"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 90
             },
@@ -884,7 +822,6 @@ export function simpleMaze(): MazeState {
                     "390.90",
                     "450.150"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 150
             },
@@ -897,7 +834,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "390.270"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 210
             },
@@ -911,7 +847,6 @@ export function simpleMaze(): MazeState {
                     "390.330",
                     "390.210"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 270
             },
@@ -926,7 +861,6 @@ export function simpleMaze(): MazeState {
                     "390.270",
                     "390.390"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 330
             },
@@ -940,7 +874,6 @@ export function simpleMaze(): MazeState {
                     "390.330",
                     "390.450"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 390
             },
@@ -954,7 +887,6 @@ export function simpleMaze(): MazeState {
                     "390.390",
                     "390.510"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 450
             },
@@ -969,7 +901,6 @@ export function simpleMaze(): MazeState {
                     "450.510",
                     "330.510"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 510
             },
@@ -983,7 +914,6 @@ export function simpleMaze(): MazeState {
                     "450.570",
                     "330.570"
                 ],
-                "pathDirections": [],
                 "x": 390,
                 "y": 570
             },
@@ -998,7 +928,6 @@ export function simpleMaze(): MazeState {
                     "390.30",
                     "450.90"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 30
             },
@@ -1011,7 +940,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "450.30"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 90
             },
@@ -1025,7 +953,6 @@ export function simpleMaze(): MazeState {
                     "390.150",
                     "450.210"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 150
             },
@@ -1039,7 +966,6 @@ export function simpleMaze(): MazeState {
                     "450.150",
                     "450.270"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 210
             },
@@ -1053,7 +979,6 @@ export function simpleMaze(): MazeState {
                     "450.210",
                     "450.330"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 270
             },
@@ -1067,7 +992,6 @@ export function simpleMaze(): MazeState {
                     "450.270",
                     "450.390"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 330
             },
@@ -1081,7 +1005,6 @@ export function simpleMaze(): MazeState {
                     "450.330",
                     "510.390"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 390
             },
@@ -1094,7 +1017,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "450.510"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 450
             },
@@ -1108,7 +1030,6 @@ export function simpleMaze(): MazeState {
                     "390.510",
                     "450.450"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 510
             },
@@ -1122,7 +1043,6 @@ export function simpleMaze(): MazeState {
                     "510.570",
                     "390.570"
                 ],
-                "pathDirections": [],
                 "x": 450,
                 "y": 570
             },
@@ -1136,7 +1056,6 @@ export function simpleMaze(): MazeState {
                     "570.30",
                     "450.30"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 30
             },
@@ -1150,7 +1069,6 @@ export function simpleMaze(): MazeState {
                     "510.150",
                     "570.90"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 90
             },
@@ -1164,7 +1082,6 @@ export function simpleMaze(): MazeState {
                     "570.150",
                     "510.90"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 150
             },
@@ -1178,7 +1095,6 @@ export function simpleMaze(): MazeState {
                     "510.270",
                     "570.210"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 210
             },
@@ -1193,7 +1109,6 @@ export function simpleMaze(): MazeState {
                     "510.210",
                     "510.330"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 270
             },
@@ -1206,7 +1121,6 @@ export function simpleMaze(): MazeState {
                 "siblingKeys": [
                     "510.270"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 330
             },
@@ -1220,7 +1134,6 @@ export function simpleMaze(): MazeState {
                     "450.390",
                     "510.450"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 390
             },
@@ -1234,7 +1147,6 @@ export function simpleMaze(): MazeState {
                     "510.390",
                     "510.510"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 450
             },
@@ -1248,7 +1160,6 @@ export function simpleMaze(): MazeState {
                     "510.450",
                     "570.510"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 510
             },
@@ -1262,7 +1173,6 @@ export function simpleMaze(): MazeState {
                     "570.570",
                     "450.570"
                 ],
-                "pathDirections": [],
                 "x": 510,
                 "y": 570
             },
@@ -1276,7 +1186,6 @@ export function simpleMaze(): MazeState {
                     "570.90",
                     "510.30"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 30
             },
@@ -1290,7 +1199,6 @@ export function simpleMaze(): MazeState {
                     "510.90",
                     "570.30"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 90
             },
@@ -1304,7 +1212,6 @@ export function simpleMaze(): MazeState {
                     "570.210",
                     "510.150"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 150
             },
@@ -1318,7 +1225,6 @@ export function simpleMaze(): MazeState {
                     "510.210",
                     "570.150"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 210
             },
@@ -1332,7 +1238,6 @@ export function simpleMaze(): MazeState {
                     "570.330",
                     "510.270"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 270
             },
@@ -1346,7 +1251,6 @@ export function simpleMaze(): MazeState {
                     "570.390",
                     "570.270"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 330
             },
@@ -1360,7 +1264,6 @@ export function simpleMaze(): MazeState {
                     "570.450",
                     "570.330"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 390
             },
@@ -1374,7 +1277,6 @@ export function simpleMaze(): MazeState {
                     "570.510",
                     "570.390"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 450
             },
@@ -1389,7 +1291,6 @@ export function simpleMaze(): MazeState {
                     "570.450",
                     "570.570"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 510
             },
@@ -1403,7 +1304,6 @@ export function simpleMaze(): MazeState {
                     "570.510",
                     "510.570"
                 ],
-                "pathDirections": [],
                 "x": 570,
                 "y": 570
             }
@@ -2978,4 +2878,3 @@ export function simpleMaze(): MazeState {
         "serialized": "h=79db95624c8b999dc55c61c5dd97516586555d55962898aaa8&c=10&r=10&dx=150&dy=330&s=60"
     }
 }
-

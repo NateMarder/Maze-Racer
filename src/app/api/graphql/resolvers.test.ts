@@ -1,7 +1,10 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { MazeCodec } from "@/maze/codec/maze-codec";
 import PrimEngine from "@/maze/engine/prim-engine";
-import type { MazeAlgorithm } from "@/maze/types";
+import type {
+  GenerateSandboxMazeData,
+  MazeAlgorithm,
+} from "@/maze/types";
 import { apolloServer } from "./server";
 
 const GENERATE_MAZE_QUERY = `#graphql
@@ -10,21 +13,17 @@ const GENERATE_MAZE_QUERY = `#graphql
   }
 `;
 
-type GenerateMazeResult = {
-  generateSandboxMaze: string;
-};
-
-type GenerateMazeVariables = {
+interface GenerateMazeVariables {
   input: {
     algorithm: MazeAlgorithm | string;
     rows: number;
     cols: number;
   };
-};
+}
 
 async function executeGeneration(variables: GenerateMazeVariables) {
   const response = await apolloServer.executeOperation<
-    GenerateMazeResult,
+    GenerateSandboxMazeData,
     GenerateMazeVariables
   >({
     query: GENERATE_MAZE_QUERY,

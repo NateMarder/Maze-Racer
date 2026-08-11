@@ -1,22 +1,17 @@
 import { getNodesWithConnectedSiblingsBasedOnPath } from "../node/utilities";
 import { createPathsFromInactiveWalls } from "./path/path-utils";
-import {
+import type {
   EncodedMazeV1,
-  GenerateSandboxMazeInput,
-  MazeState,
-  NodeKey,
-  WallKey,
+  MazeEncodingInput,
+  MazeEngineInput,
+  MazeEngineResult,
+  MazeGenerationOptions,
 } from "../types";
 import DfsEngine from "./dfs-engine";
 import EllerEngine from "./eller-engine";
 import { getBlankNodesForEngineWithoutSpacing } from "./maze-node-factory";
 import PrimEngine from "./prim-engine";
 import { MazeCodec } from "../codec/maze-codec";
-
-type MazeEngineResult = {
-  destNodeKey: NodeKey;
-  route: WallKey[];
-};
 
 export function shuffle<T>(array: T[]): T[] {
   const result: T[] = [...array];
@@ -56,18 +51,10 @@ export function generateCanonicalMaze({
   rows,
   cols,
   algorithm,
-}: GenerateSandboxMazeInput): string {
+}: MazeGenerationOptions): string {
   const engineSpacing = 2;
-  const dataForMazeEngine: MazeState = {
-    allPaths: [],
-    destination: { x: 0, y: 0 },
-    inactiveWallKeys: [],
+  const dataForMazeEngine: MazeEngineInput = {
     spacing: engineSpacing,
-    walls: [],
-    height: rows * engineSpacing,
-    width: cols * engineSpacing,
-    cols,
-    rows,
     nodes: getBlankNodesForEngineWithoutSpacing({ rows, cols }),
   };
   let engineResult: MazeEngineResult;
@@ -91,7 +78,13 @@ export function generateCanonicalMaze({
     allPaths,
   });
   const [x, y] = destNodeKey.split('.').map(Number);
-  const updatedState: MazeState = { ...dataForMazeEngine, nodes, allPaths, destination: { x, y } };
+  const updatedState: MazeEncodingInput = {
+    ...dataForMazeEngine,
+    rows,
+    cols,
+    nodes,
+    destination: { x, y },
+  };
   const encodedMaze: EncodedMazeV1 = MazeCodec.encode(updatedState);
 
   return MazeCodec.getCanonicalId(encodedMaze);

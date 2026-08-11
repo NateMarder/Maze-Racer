@@ -1,4 +1,10 @@
-import { MazeNode, MazeState, WallKey, MazeNodeMap } from "../types";
+import type {
+    MazeEngineInput,
+    MazeEngineResult,
+    MazeNode,
+    MazeNodeMap,
+    WallKey,
+} from "../types";
 import { getOrthogonalKey, shuffle } from "./engine-utils";
 
 export default class DfsEngine {
@@ -9,7 +15,7 @@ export default class DfsEngine {
     private startNode: MazeNode | undefined;
     private nodeMap: MazeNodeMap;
 
-    constructor(maze: MazeState) {
+    constructor(maze: MazeEngineInput) {
         const { nodes } = maze;
         this.nodeMap = {};
         nodes.forEach((n) => {
@@ -34,7 +40,7 @@ export default class DfsEngine {
     }
 
 
-    run() {
+    run(): MazeEngineResult {
         this.generateMazeWithDfs();
         return {
             route: this.route,

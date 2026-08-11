@@ -1,111 +1,114 @@
+// Rendering and decoded maze state
+
 export type NodeKey = string;
 export type WallKey = string;
 
-export type MazeNode = {
+export interface Coordinate {
+  x: number;
+  y: number;
+}
+
+export type GridCoordinate = Coordinate;
+export type SvgCoordinate = Coordinate;
+
+export interface MazeNode {
   key: NodeKey;
   siblingKeys: NodeKey[];
   isStart: boolean;
   isDest: boolean;
   isVisited: boolean;
   distFromStart: number;
-  discoveredBy?: string;
-  pathDirections?: string[];
+  discoveredBy?: NodeKey;
   x: number;
   y: number;
-};
-
-export type EngineNode = Pick<MazeNode, 'discoveredBy' | 'siblingKeys' | 'isStart' | 'isDest' | 'distFromStart' | 'key' | 'isVisited' | 'x' | 'y'>;
-
-export type Coordinate = {
-  x: number,
-  y: number
 }
 
-export type GridCoordinate = Coordinate;
-export type SvgCoordinate = Coordinate;
-export type MazeCodecVersion = 0 | 1;
-
-type EncodedMazeBase = {
-  serialized: string;
-  rows: number;
-  cols: number;
-  spacing: number;
-};
-
-export type LegacyEncodedMaze = EncodedMazeBase & {
-  version: 0;
-  start: SvgCoordinate;
-  destination: SvgCoordinate;
-};
-
-export type EncodedMazeV1 = EncodedMazeBase & {
-  version: 1;
-  start: GridCoordinate;
-  destination: GridCoordinate;
-};
-
-export type EncodedMaze = LegacyEncodedMaze | EncodedMazeV1;
-
-export type MazeWall = {
+export interface MazeWall {
   id: WallKey;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
-};
+}
 
-export type MazePath = {
+export interface MazePath {
   id: string;
   key: string;
-  nodeKeys: [NodeKey, NodeKey]
+  nodeKeys: [NodeKey, NodeKey];
   crossWall: WallKey;
-};
-export type MazeNodeMap = Record<string,MazeNode>;
-export type NodeAdjacencyMap = Record<NodeKey, Record<NodeKey, 1>>;
+}
 
-export type MazeState = {
+export interface MazeState extends MazeEncodingInput {
   allPaths: MazePath[];
-  cols: number;
-  destination: Coordinate;
   height: number;
   inactiveWallKeys: WallKey[];
-  nodes: MazeNode[];
-  rows: number;
-  spacing: number;
   walls: MazeWall[];
   width: number;
   serialized?: string;
-  start?: SvgCoordinate;
-  algorithm?: AlgorithmKey;
-  codecVersion?: MazeCodecVersion;
+  codecVersion?: EncodedMaze["version"];
   canonicalId?: string;
-};
-export type GetHexFromNodesProps = Pick<MazeState, 'nodes' | 'cols' | 'rows' | 'spacing'>;
-export type EncoderProps = Omit<MazeState, 'serialized' | 'height' | 'width'>;
-export type AlgorithmKey = 'dfs' | 'prim' | 'eller';
+}
 
+export type AlgorithmSelection = MazeAlgorithm | "";
+
+// Engine and canonical encoding
 
 export type MazeAlgorithm = "DFS" | "ELLER" | "PRIM";
 
-export type GenerateSandboxMazeInput = {
+export interface MazeGenerationOptions {
   algorithm: MazeAlgorithm;
   rows: number;
   cols: number;
-};
+}
 
-export type GenerateSandboxMazeArgs = {
-  input: GenerateSandboxMazeInput;
-};
+export interface MazeEngineInput {
+  nodes: MazeNode[];
+  spacing: number;
+}
 
-export type GenerateSandboxMazeData = {
-  generateSandboxMaze: string;
-};
+export interface MazeEngineResult {
+  route: WallKey[];
+  destNodeKey: NodeKey;
+}
 
-export type GenerateSandboxMazeVariables = {
-  input: GenerateSandboxMazeInput;
-};
-
-export type BuildNodeArrayWithoutSpacingProps = {
+export interface MazeEncodingInput {
   rows: number;
   cols: number;
+  spacing: number;
+  nodes: MazeNode[];
+  destination: SvgCoordinate;
+  start?: SvgCoordinate;
+}
+
+export type MazeNodeMap = Record<NodeKey, MazeNode>;
+
+interface EncodedMazeBase {
+  serialized: string;
+  rows: number;
+  cols: number;
+  spacing: number;
+}
+
+export interface LegacyEncodedMaze extends EncodedMazeBase {
+  version: 0;
+  start: SvgCoordinate;
+  destination: SvgCoordinate;
+}
+
+export interface EncodedMazeV1 extends EncodedMazeBase {
+  version: 1;
+  start: GridCoordinate;
+  destination: GridCoordinate;
+}
+
+export type EncodedMaze = LegacyEncodedMaze | EncodedMazeV1;
+
+// GraphQL contract
+
+export interface GenerateSandboxMazeVariables {
+  input: MazeGenerationOptions;
+}
+
+export interface GenerateSandboxMazeData {
+  generateSandboxMaze: string;
 }

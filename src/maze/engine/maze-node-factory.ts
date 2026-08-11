@@ -1,12 +1,22 @@
-import { BuildNodeArrayWithoutSpacingProps, EngineNode, MazeState } from "../types";
+import type { MazeNode } from "../types";
 
-type BuildNodeArrayProps = Pick<MazeState, 'rows' | 'cols' | 'spacing'>;
-type addSiblingProps = BuildNodeArrayProps & {
-  nodeArray: EngineNode[]
+interface BuildNodeArrayProps {
+  rows: number;
+  cols: number;
+  spacing: number;
+}
+
+interface AddSiblingProps extends BuildNodeArrayProps {
+  nodeArray: MazeNode[];
+}
+
+interface BuildNodeArrayWithoutSpacingProps {
+  rows: number;
+  cols: number;
 }
 
 function buildNodeArray({ rows, cols, spacing }: BuildNodeArrayProps) {
-  const arrayOfNodes:EngineNode[] = [];
+  const arrayOfNodes: MazeNode[] = [];
   const offset = spacing / 2;
   for (let i = 0; i < cols; i += 1) {
     for (let j = 0; j < rows; j += 1) {
@@ -29,7 +39,7 @@ function buildNodeArray({ rows, cols, spacing }: BuildNodeArrayProps) {
   return arrayOfNodes;
 };
 
-function connectSiblings({ rows, cols, spacing, nodeArray }: addSiblingProps) {
+function connectSiblings({ rows, cols, spacing, nodeArray }: AddSiblingProps) {
 
   const offset = Math.round(spacing / 2);
 
@@ -62,7 +72,7 @@ function connectSiblings({ rows, cols, spacing, nodeArray }: addSiblingProps) {
  * This returns an array of nodes, with all the possible siblings addeed - like a maze
  * with zero-walls, just paths.
  */
-export function getBlankNodesForEngine({ rows, cols, spacing }: BuildNodeArrayProps): EngineNode[] {
+export function getBlankNodesForEngine({ rows, cols, spacing }: BuildNodeArrayProps): MazeNode[] {
   const nodeArray = buildNodeArray({ rows, cols, spacing });
   return connectSiblings({
     rows,
@@ -76,7 +86,7 @@ export function getBlankNodesForEngine({ rows, cols, spacing }: BuildNodeArrayPr
  * This returns an array of nodes, with all the possible siblings addeed - like a maze
  * with zero-walls, just paths.
  */
-export function getBlankNodesForEngineWithoutSpacing({ rows, cols }: BuildNodeArrayWithoutSpacingProps): EngineNode[] {
+export function getBlankNodesForEngineWithoutSpacing({ rows, cols }: BuildNodeArrayWithoutSpacingProps): MazeNode[] {
   // we will let the spacing be '2', as this will cause the offset to be '1', so the initial coordinates will retain simple integer math
   const spacing = 2;
   const nodeArray = buildNodeArray({ rows, cols, spacing });

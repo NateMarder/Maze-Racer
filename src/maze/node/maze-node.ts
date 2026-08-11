@@ -1,5 +1,5 @@
 'use client';
-import { MazeNode as MazeNodeProps } from '../types'
+import type { MazeNode as MazeNodeProps } from '../types'
 
 
 export default class MazeNode {
@@ -10,11 +10,10 @@ export default class MazeNode {
   distFromStart
   discoveredBy
   siblingKeys
-  pathDirections
   x
   y
 
-  constructor({ x, y, isStart, isDest, discoveredBy, siblingKeys, pathDirections }: MazeNodeProps) {
+  constructor({ x, y, isStart, isDest, discoveredBy, siblingKeys }: MazeNodeProps) {
     this.key = `${+x}.${+y}`;
     this.isVisited = false;
     this.isDest = isDest || false;
@@ -22,7 +21,6 @@ export default class MazeNode {
     this.distFromStart = 0;
     this.discoveredBy = discoveredBy ?? "";
     this.siblingKeys = siblingKeys ?? [];
-    this.pathDirections = pathDirections ?? [];
     this.x = x;
     this.y = y;
   }

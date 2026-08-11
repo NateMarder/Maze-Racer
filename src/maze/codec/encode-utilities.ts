@@ -1,8 +1,14 @@
-import {
-  GetHexFromNodesProps,
+import type {
   MazeNode,
 } from "../types";
 import { toGridCoordinate } from "./coordinate-utilities";
+
+interface GetHexFromNodesProps {
+  nodes: MazeNode[];
+  cols: number;
+  rows: number;
+  spacing: number;
+}
 
 /**
  * Compresses two logical cells into each hexadecimal character. Each bit

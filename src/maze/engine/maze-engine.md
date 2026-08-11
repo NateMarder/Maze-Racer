@@ -14,17 +14,19 @@ canonical maze ID to decode and render.
 
 ## Shared engine contract
 
-Each engine is constructed with the same `MazeState`. Its nodes describe the
-complete rectangular grid, including orthogonally adjacent sibling nodes, and the
-logical top-left cell `(0,0)` is marked as the start.
+Each engine is constructed with the same narrow `MazeEngineInput`. Its nodes
+describe the complete rectangular grid, including orthogonally adjacent sibling
+nodes, and the logical top-left cell `(0,0)` is marked as the start. The input
+contains only those nodes and their coordinate spacing; rendering state is not
+required by an engine.
 
 Calling `run()` returns the same shape for every engine:
 
 ```ts
-type MazeEngineResult = {
+interface MazeEngineResult {
   route: WallKey[];
   destNodeKey: NodeKey;
-};
+}
 ```
 
 `route` contains the wall keys to remove to form passages. `destNodeKey` identifies

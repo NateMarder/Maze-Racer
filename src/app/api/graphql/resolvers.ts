@@ -1,6 +1,6 @@
 
 import { GraphQLError } from "graphql";
-import { GenerateSandboxMazeArgs } from '@/maze/types';
+import type { GenerateSandboxMazeVariables } from '@/maze/types';
 import { generateCanonicalMaze } from '@/maze/engine/engine-utils';
 
 
@@ -32,7 +32,7 @@ export const resolvers = {
   Query: {
     generateSandboxMaze: (
       _parent: unknown,
-      { input }: GenerateSandboxMazeArgs,
+      { input }: GenerateSandboxMazeVariables,
     ) => {
       validateMazeDimensions(input.rows, input.cols);
 

@@ -1,13 +1,31 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { MazeCodec } from "./maze/codec/maze-codec";
 import { simpleMaze } from "./maze/codec/fixtures/simple-dfs-maze";
 import {
     encodeCanonicalIdForUrlParams,
     getEncodedMazeDataFromSearchParams,
+    getRandomEngine,
     getSearchParamsFromEncodedMaze,
 } from "./web-utilities";
 
 describe("maze URL utilities", () => {
+    afterEach(() => {
+        vi.restoreAllMocks();
+    });
+
+    it.each([
+        { randomValue: 0, expected: "DFS" },
+        { randomValue: 0.34, expected: "PRIM" },
+        { randomValue: 0.67, expected: "ELLER" },
+    ])(
+        "selects $expected from random value $randomValue",
+        ({ randomValue, expected }) => {
+            vi.spyOn(Math, "random").mockReturnValue(randomValue);
+
+            expect(getRandomEngine()).toBe(expected);
+        },
+    );
+
     it("encodes a canonical ID as an appendable maze query string", () => {
         const canonicalId =
             "v1:4x4:e8e1cda0:start=0,0:end=3,3";

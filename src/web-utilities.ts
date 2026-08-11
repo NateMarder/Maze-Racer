@@ -1,8 +1,8 @@
 import { MazeCodec } from "./maze/codec/maze-codec";
-import {
-    AlgorithmKey,
+import type {
     EncodedMaze,
     LegacyEncodedMaze,
+    MazeAlgorithm,
 } from "./maze/types";
 
 const DEFAULT_MAZE_SPACING = 60;
@@ -118,11 +118,11 @@ export const safeToRenderWithUrlParams = (): boolean => {
     return canonicalId.length > 0 || legacyHex.length > 0;
 };
 
-export const getRandomEngine = (): AlgorithmKey => {
-    const possibleAlgorithms: AlgorithmKey[] = [
-        "dfs",
-        "prim",
-        "eller",
+export const getRandomEngine = (): MazeAlgorithm => {
+    const possibleAlgorithms: MazeAlgorithm[] = [
+        "DFS",
+        "PRIM",
+        "ELLER",
     ];
     const randomIndex = Math.floor(Math.random() * possibleAlgorithms.length);
 

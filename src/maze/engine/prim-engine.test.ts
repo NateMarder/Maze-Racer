@@ -1,21 +1,13 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { getBlankNodesForEngine } from "./maze-node-factory";
-import { MazeNode, MazeState, NodeKey } from "../types";
+import type { MazeEngineInput, MazeNode, NodeKey } from "../types";
 import PrimEngine from "./prim-engine";
 import { getOrthogonalKey } from "./engine-utils";
 
-function createMazeState(rows = 4, cols = 4, spacing = 20): MazeState {
+function createMazeState(rows = 4, cols = 4, spacing = 20): MazeEngineInput {
     return {
-        allPaths: [],
-        cols,
-        destination: { x: 0, y: 0 },
-        height: rows * spacing,
-        inactiveWallKeys: [],
         nodes: getBlankNodesForEngine({ rows, cols, spacing }),
-        rows,
         spacing,
-        walls: [],
-        width: cols * spacing,
     };
 }
 

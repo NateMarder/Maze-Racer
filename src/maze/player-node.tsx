@@ -3,13 +3,9 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { eventServer, events } from '../events/events';
+import type { MazeNode as MazeNodeState } from './types';
 
 // --- TypeScript Interfaces ---
-interface MazeNode {
-  key: string;
-  siblingKeys: string[];
-}
-
 interface MoveArgs {
   x?: number;
   y?: number;
@@ -26,7 +22,7 @@ interface PlayerNodeProps {
   cy: number;
   r: number;
   offset: number;
-  map: MazeNode[];
+  map: Array<Pick<MazeNodeState, 'key' | 'siblingKeys'>>;
   destnodekey: string;
   mzgraphref: React.RefObject<SVGSVGElement | HTMLElement | null>;
 }

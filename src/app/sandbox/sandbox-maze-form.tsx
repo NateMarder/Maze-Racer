@@ -1,11 +1,9 @@
 "use client";
 
 import type { FormEvent } from "react";
-import type { AlgorithmKey } from "@/maze/types";
+import type { AlgorithmSelection } from "@/maze/types";
 
-export type AlgorithmSelection = AlgorithmKey | "";
-
-type SandboxMazeFormProps = {
+interface SandboxMazeFormProps {
   algorithm: AlgorithmSelection;
   cols: number;
   isGenerating: boolean;
@@ -14,7 +12,7 @@ type SandboxMazeFormProps = {
   onRefresh: () => void;
   onRowsChange: (rows: number) => void;
   rows: number;
-};
+}
 
 const MIN_DIMENSION = 3;
 const MAX_DIMENSION = 20;
@@ -81,9 +79,9 @@ export default function SandboxMazeForm({
             value={algorithm}
           >
             <option value="">Select algorithm</option>
-            <option value="dfs">DFS</option>
-            <option value="prim">Prim</option>
-            <option value="eller">Eller</option>
+            <option value="DFS">DFS</option>
+            <option value="PRIM">Prim</option>
+            <option value="ELLER">Eller</option>
           </select>
         </label>
         <label className="sandbox-maze-form-field">
