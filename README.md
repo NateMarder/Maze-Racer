@@ -13,6 +13,17 @@ The community competition and backend are still in development. The repository
 currently contains the maze generator, player controls, animation, codec, and a
 developer sandbox page.
 
+## 🤖 Working with AI Coding Agents
+
+This project uses strict TypeScript safety, Next.js 16 build pipelines, and mandatory versioning criteria for its maze identity systems. 
+
+If you are using an AI agentic helper (such as **Cursor, Claude Code, GitHub Copilot Agent, or ChatGPT Codex**), you **must** instruct the agent to parse and comply with our global constraints file before it modifies any code.
+
+### 🧭 Agent Initialization Prompt
+When spinning up your agentic workflow in this repository, start your very first prompt with this explicit directive:
+
+> "Read and strictly adhere to the project rules, execution scripts, and architectural boundaries defined in the root `AGENTS.md` file before generating or modifying any files in this repository."
+
 ## Engineering Highlights
 
 - **Canonical MazeCodec** — serializes an entire generated maze into a compact,

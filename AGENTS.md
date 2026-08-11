@@ -15,8 +15,8 @@ This version has breaking changes — APIs, conventions, and file structure may 
 - **Pre-commit Hooks:** This project uses `husky`. All generated or modified code must pass linting and unit testing criteria before a commit is finalized.
 
 ## 3. MazeCodec Critical Invariants (Strict Enforcement)
-- **Modifying MazeCodec:** Any changes to `MazeCodec` (the canonical identity engine) require an explicit check to determine if a serialization format version bump is necessary.
-- **Changelog Requirement:** If `MazeCodec` is modified or a new format version is introduced, you **must** document the changes in `./codec-changelog.md` in the same commit.
+- **Modifying MazeCodec:** Any changes to the files within `src/maze/codec/` require an explicit check to determine if a serialization format version bump is necessary.
+- **Changelog Requirement:** If `maze-codec.ts` or its utility layers (`encode-utilities.ts`, `decode-utilities.ts`, etc.) are modified, you **must** explicitly document those changes in `src/maze/codec/codec-changelog.md` within the same commit context.
 - **Immutability & URLs:** The canonical ID (stored in the `maze` URL parameter) handles topology, start, and end points ONLY. It must remain entirely decoupled from presentation spacing (`s` parameter) and rendering colors/UI states.
 - **Backward Compatibility:** Parsers must reject unknown canonical versions rather than guess, but previously supported formats must remain decodable to support stable legacy URLs.
 
@@ -31,6 +31,6 @@ Always execute these exact scripts inside your shell environment to validate cha
 - **Code Coverage Audit:** `npm run test:coverage`
 
 ## 5. Agent Safety Boundaries
-- **No Test Degradation:** When creating or modifying game loops or `MazeCodec` routines, you must write or update corresponding unit tests using `vitest` protecting round-trips, spacing independence, and rectangular mazes.
+- **No Test Degradation:** When creating or modifying game loops or `MazeCodec` routines, you must write or update corresponding unit tests using `vitest` inside `src/maze/codec/maze-codec.test.ts`, protecting round-trips, spacing independence, and rectangular mazes.
 - **No Token Overkill:** When updating GraphQL schemas or resolver contexts, do not reprint unaffected React components or UI layout code. Only print the absolute structural delta required.
 - **No Placeholders:** Never use partial functions or temporary `// TODO` markers in files.
