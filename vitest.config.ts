@@ -14,6 +14,8 @@ export default defineConfig({
       exclude: [
         "src/**/*.test.{js,jsx,ts,tsx}",
         "src/**/fixtures/**",
+        "src/**/defaults.ts",
+        "src/maze/types.ts",
       ],
       reporter: ["text", "html", "lcov", "json-summary"],
       reportsDirectory: "coverage",

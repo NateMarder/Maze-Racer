@@ -1,4 +1,4 @@
-// Rendering and decoded maze state
+// Rendering and decoding maze state
 
 export type NodeKey = string;
 export type WallKey = string;
