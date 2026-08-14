@@ -20,9 +20,8 @@ import {
   updateWindowUrlWithoutReload,
 } from "@/web-utilities";
 
-const SANDBOX_SPACING = 40;
-const SANDBOX_DEFAULT_DIMENSION = 12;
-
+const DEFAULT_SPACING = 40;
+const DEFAULT_ROW_COL_COUNT = 12;
 const GENERATION_ERROR_MESSAGE =
   "Unable to generate a maze. Please try again.";
 const DECODE_ERROR_MESSAGE =
@@ -30,11 +29,9 @@ const DECODE_ERROR_MESSAGE =
 
 function decodeMazeFromCurrentUrl(): MazeState {
   const encodedMaze = getEncodedMazeDataFromUrlParams();
-
   if (!Number.isFinite(encodedMaze.spacing) || encodedMaze.spacing <= 0) {
     throw new Error("Maze spacing must be a positive number.");
   }
-
   return MazeCodec.decode(encodedMaze);
 }
 
@@ -43,9 +40,9 @@ function SandboxController() {
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<AlgorithmSelection>("");
   const [selectedRows, setSelectedRows] =
-    useState(SANDBOX_DEFAULT_DIMENSION);
+    useState(DEFAULT_ROW_COL_COUNT);
   const [selectedCols, setSelectedCols] =
-    useState(SANDBOX_DEFAULT_DIMENSION);
+    useState(DEFAULT_ROW_COL_COUNT);
   const [initialLoadFailed, setInitialLoadFailed] = useState(false);
   const requestInFlight = useRef(false);
   const pendingShareableUrl = useRef<{
@@ -87,7 +84,7 @@ function SandboxController() {
       }
 
       const encodedMaze = MazeCodec.parseCanonicalId(canonicalId, {
-        spacing: SANDBOX_SPACING,
+        spacing: DEFAULT_SPACING,
       });
       const decodedMaze = MazeCodec.decode(encodedMaze);
 
@@ -125,8 +122,8 @@ function SandboxController() {
       setSelectedAlgorithm(defaultAlgorithm);
       void generateMaze(
         defaultAlgorithm,
-        SANDBOX_DEFAULT_DIMENSION,
-        SANDBOX_DEFAULT_DIMENSION,
+        DEFAULT_ROW_COL_COUNT,
+        DEFAULT_ROW_COL_COUNT,
       ).then((generated) => {
         if (!generated) {
           setInitialLoadFailed(true);
