@@ -20,15 +20,8 @@ import {
   updateWindowUrlWithoutReload,
 } from "@/web-utilities";
 
-const SANDBOX_HEIGHT = 600;
-const SANDBOX_WIDTH = 600;
 const SANDBOX_SPACING = 40;
-const SANDBOX_ROWS = Math.floor(
-  (SANDBOX_HEIGHT * 0.8) / SANDBOX_SPACING,
-);
-const SANDBOX_COLS = Math.floor(
-  (SANDBOX_WIDTH * 0.8) / SANDBOX_SPACING,
-);
+const SANDBOX_DEFAULT_DIMENSION = 12;
 
 const GENERATION_ERROR_MESSAGE =
   "Unable to generate a maze. Please try again.";
@@ -49,10 +42,11 @@ function SandboxController() {
   const [maze, setMaze] = useState<MazeState | null>(null);
   const [selectedAlgorithm, setSelectedAlgorithm] =
     useState<AlgorithmSelection>("");
-  const [selectedRows, setSelectedRows] = useState(SANDBOX_ROWS);
-  const [selectedCols, setSelectedCols] = useState(SANDBOX_COLS);
+  const [selectedRows, setSelectedRows] =
+    useState(SANDBOX_DEFAULT_DIMENSION);
+  const [selectedCols, setSelectedCols] =
+    useState(SANDBOX_DEFAULT_DIMENSION);
   const [initialLoadFailed, setInitialLoadFailed] = useState(false);
-  const initialLoadStarted = useRef(false);
   const requestInFlight = useRef(false);
   const pendingShareableUrl = useRef<{
     encodedMaze: ReturnType<typeof MazeCodec.parseCanonicalId>;
@@ -64,14 +58,13 @@ function SandboxController() {
       fetchPolicy: "no-cache",
     },
   );
-
-    const generateMaze = async (
+  const generateMaze = useCallback(async (
     nextAlgorithm: MazeAlgorithm,
     rows: number,
     cols: number,
-  ): Promise<void> => {
+  ): Promise<boolean> => {
     if (requestInFlight.current) {
-      return;
+      return false;
     }
 
     requestInFlight.current = true;
@@ -103,79 +96,22 @@ function SandboxController() {
         maze: decodedMaze,
       };
       setMaze(decodedMaze);
-      setInitialLoadFailed(false);
+      return true;
     } catch {
-      setInitialLoadFailed(true);
       window.alert(GENERATION_ERROR_MESSAGE);
+      return false;
     } finally {
       requestInFlight.current = false;
     }
-  }
-  // const generateMaze = useCallback(async (
-  //   nextAlgorithm: MazeAlgorithm,
-  //   rows: number,
-  //   cols: number,
-  // ): Promise<void> => {
-  //   if (requestInFlight.current) {
-  //     return;
-  //   }
-
-  //   requestInFlight.current = true;
-  //   try {
-  //     const result = await requestMaze({
-  //       variables: {
-  //         input: {
-  //           algorithm: nextAlgorithm,
-  //           rows,
-  //           cols,
-  //         },
-  //       },
-  //     });
-  //     const canonicalId = result.data?.generateSandboxMaze;
-
-  //     if (result.error || !canonicalId) {
-  //       throw result.error ?? new Error(
-  //         "The maze generation response did not include a canonical ID.",
-  //       );
-  //     }
-
-  //     const encodedMaze = MazeCodec.parseCanonicalId(canonicalId, {
-  //       spacing: SANDBOX_SPACING,
-  //     });
-  //     const decodedMaze = MazeCodec.decode(encodedMaze);
-
-  //     pendingShareableUrl.current = {
-  //       encodedMaze,
-  //       maze: decodedMaze,
-  //     };
-  //     setMaze(decodedMaze);
-  //     setInitialLoadFailed(false);
-  //   } catch {
-  //     setInitialLoadFailed(true);
-  //     window.alert(GENERATION_ERROR_MESSAGE);
-  //   } finally {
-  //     requestInFlight.current = false;
-  //   }
-  // }, [requestMaze]);
+  }, [requestMaze]);
 
   useEffect(() => {
-    if (initialLoadStarted.current) {
-      return;
-    }
-
     const initializeTimer = window.setTimeout(() => {
-      if (initialLoadStarted.current) {
-        return;
-      }
-
-      initialLoadStarted.current = true;
-
       if (safeToRenderWithUrlParams()) {
         try {
           const decodedMaze = decodeMazeFromCurrentUrl();
 
           setMaze(decodedMaze);
-          setSelectedAlgorithm("");
           setSelectedRows(decodedMaze.rows);
           setSelectedCols(decodedMaze.cols);
         } catch {
@@ -189,9 +125,13 @@ function SandboxController() {
       setSelectedAlgorithm(defaultAlgorithm);
       void generateMaze(
         defaultAlgorithm,
-        SANDBOX_ROWS,
-        SANDBOX_COLS,
-      );
+        SANDBOX_DEFAULT_DIMENSION,
+        SANDBOX_DEFAULT_DIMENSION,
+      ).then((generated) => {
+        if (!generated) {
+          setInitialLoadFailed(true);
+        }
+      });
     }, 0);
 
     return () => window.clearTimeout(initializeTimer);
@@ -208,19 +148,19 @@ function SandboxController() {
     pendingShareableUrl.current = null;
   }, [maze]);
 
-  const refreshMaze = useCallback((): void => {
+  const refreshMaze = (): void => {
     if (selectedAlgorithm === "") {
       return;
     }
 
     void generateMaze(selectedAlgorithm, selectedRows, selectedCols);
-  }, [generateMaze, selectedAlgorithm, selectedCols, selectedRows]);
+  };
 
-  const retryInitialLoad = useCallback((): void => {
+  const retryInitialLoad = (): void => {
     const retryAlgorithm = selectedAlgorithm || getRandomEngine();
     setSelectedAlgorithm(retryAlgorithm);
     void generateMaze(retryAlgorithm, selectedRows, selectedCols);
-  }, [generateMaze, selectedAlgorithm, selectedCols, selectedRows]);
+  };
 
   const seeState = (): void => {
     console.log("\nstate:", maze);
