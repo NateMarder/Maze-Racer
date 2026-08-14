@@ -65,7 +65,7 @@ function SandboxController() {
     },
   );
 
-  const generateMaze = useCallback(async (
+    const generateMaze = async (
     nextAlgorithm: MazeAlgorithm,
     rows: number,
     cols: number,
@@ -110,7 +110,53 @@ function SandboxController() {
     } finally {
       requestInFlight.current = false;
     }
-  }, [requestMaze]);
+  }
+  // const generateMaze = useCallback(async (
+  //   nextAlgorithm: MazeAlgorithm,
+  //   rows: number,
+  //   cols: number,
+  // ): Promise<void> => {
+  //   if (requestInFlight.current) {
+  //     return;
+  //   }
+
+  //   requestInFlight.current = true;
+  //   try {
+  //     const result = await requestMaze({
+  //       variables: {
+  //         input: {
+  //           algorithm: nextAlgorithm,
+  //           rows,
+  //           cols,
+  //         },
+  //       },
+  //     });
+  //     const canonicalId = result.data?.generateSandboxMaze;
+
+  //     if (result.error || !canonicalId) {
+  //       throw result.error ?? new Error(
+  //         "The maze generation response did not include a canonical ID.",
+  //       );
+  //     }
+
+  //     const encodedMaze = MazeCodec.parseCanonicalId(canonicalId, {
+  //       spacing: SANDBOX_SPACING,
+  //     });
+  //     const decodedMaze = MazeCodec.decode(encodedMaze);
+
+  //     pendingShareableUrl.current = {
+  //       encodedMaze,
+  //       maze: decodedMaze,
+  //     };
+  //     setMaze(decodedMaze);
+  //     setInitialLoadFailed(false);
+  //   } catch {
+  //     setInitialLoadFailed(true);
+  //     window.alert(GENERATION_ERROR_MESSAGE);
+  //   } finally {
+  //     requestInFlight.current = false;
+  //   }
+  // }, [requestMaze]);
 
   useEffect(() => {
     if (initialLoadStarted.current) {
