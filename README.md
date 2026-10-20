@@ -1,28 +1,12 @@
 # Maze Racer
 
-Maze Racer is a TypeScript and Next.js maze game that is growing into a
-competitive maze community.
-
-The long-term goal is a shared **Maze of the Day**: one maze, available to
-everyone in the world, with players competing to earn the title of Maze Master
-for that challenge. A backend will store the maze catalog and competition
-results, using each maze's compact hexadecimal representation as its canonical
-identity.
-
-The community competition and backend are still in development. The repository
-currently contains the maze generator, player controls, animation, codec, and a
-developer sandbox page.
-
-## 🤖 Working with AI Coding Agents
-
-This project uses strict TypeScript safety, Next.js 16 build pipelines, and mandatory versioning criteria for its maze identity systems. 
-
-If you are using an AI agentic helper (such as **Cursor, Claude Code, GitHub Copilot Agent, or ChatGPT Codex**), you **must** instruct the agent to parse and comply with our global constraints file before it modifies any code.
-
-### 🧭 Agent Initialization Prompt
-When spinning up your agentic workflow in this repository, start your very first prompt with this explicit directive:
-
-> "Read and strictly adhere to the project rules, execution scripts, and architectural boundaries defined in the root `AGENTS.md` file before generating or modifying any files in this repository."
+Maze Racer is a TypeScript and Next.js maze game. It was created by Nathan Marder, 
+of Portland Oregon. AI agents were used to help with code-reviews and with writing 
+some of the tests - but the game mechanics, codec, and algorithm implementations 
+were hand-crafted by yours truly. The idea behind this is to push the boundaries of
+what is 'possible' within the context of a modern React-app. The game feels fluid
+and snappy because of the careful attention that has been paid to state-management.
+Please pull this down, open up sandbox, and see for yourself.
 
 ## Engineering Highlights
 
